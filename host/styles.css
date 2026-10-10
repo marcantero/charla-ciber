@@ -430,22 +430,336 @@ body.hacked-mode .deco {
   box-shadow: 0 0 6px var(--green);
 }
 
-/* ═══════ GRID DE LOS 5 EQUIPOS ═══════ */
+/* ═══════ GRID RESPONSIVO PARA CUALQUIER NÚMERO DE EQUIPOS ═══════ */
 .teams-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 18px;
+  grid-template-columns: repeat(var(--teams-cols, 5), minmax(0, 1fr));
+  gap: 16px;
   flex: 1;
+  width: 100%;
+  min-height: 0;
 }
 
-@media (max-width: 1400px) {
-  .teams-grid {
-    grid-template-columns: repeat(3, 1fr);
+/* 5 EQUIPOS: 5 columnas en pantallas estándar/anchas, 3+2 en medianas */
+.teams-grid.teams-count-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+@media (max-width: 1280px) {
+  .teams-grid.teams-count-5 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-@media (max-width: 900px) {
-  .teams-grid {
+@media (max-width: 800px) {
+  .teams-grid.teams-count-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 550px) {
+  .teams-grid.teams-count-5 {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 6 EQUIPOS:
+   - En pantallas muy anchas/1080p completo (>1620px): 6 columnas en 1 fila
+   - En monitores/proyectores estándar (920px a 1620px): 3 columnas x 2 filas (3 arriba, 3 abajo, 100% equilibrado)
+   - En tablets/ventanas reducidas (580px a 920px): 2 columnas x 3 filas
+   - En móvil (<580px): 1 columna
+*/
+.teams-grid.teams-count-6 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (min-width: 1620px) {
+  .teams-grid.teams-count-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+@media (max-width: 920px) {
+  .teams-grid.teams-count-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 580px) {
+  .teams-grid.teams-count-6 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 7 EQUIPOS: 4 columnas en desktop (4 arriba, 3 abajo), 3 en mediana, 2 en pequeña */
+.teams-grid.teams-count-7 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 1180px) {
+  .teams-grid.teams-count-7 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 820px) {
+  .teams-grid.teams-count-7 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 550px) {
+  .teams-grid.teams-count-7 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 8 EQUIPOS: 4 columnas x 2 filas (4 arriba, 4 abajo, 100% simétrico) */
+.teams-grid.teams-count-8 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 1180px) {
+  .teams-grid.teams-count-8 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 820px) {
+  .teams-grid.teams-count-8 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 550px) {
+  .teams-grid.teams-count-8 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 9 a 10 EQUIPOS: 5 columnas x 2 filas */
+.teams-grid.teams-count-9,
+.teams-grid.teams-count-10 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+@media (max-width: 1400px) {
+  .teams-grid.teams-count-9,
+  .teams-grid.teams-count-10 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1050px) {
+  .teams-grid.teams-count-9,
+  .teams-grid.teams-count-10 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .teams-grid.teams-count-9,
+  .teams-grid.teams-count-10 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 500px) {
+  .teams-grid.teams-count-9,
+  .teams-grid.teams-count-10 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Fallback genérico para más de 10 equipos */
+.teams-grid.many-teams:not([class*="teams-count-"]) {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+/* ═══════ MODO COMPACTO CUANDO HAY 6 O MÁS EQUIPOS ═══════ */
+#host-dashboard-screen.has-many-teams {
+  padding: 14px 22px;
+}
+.has-many-teams .dashboard-container {
+  gap: 12px;
+}
+.has-many-teams .dashboard-header {
+  padding: 10px 18px;
+  gap: 16px;
+}
+.has-many-teams .hud-tag {
+  font-size: 0.65rem;
+  margin-bottom: 2px;
+}
+.has-many-teams .hud-title {
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+}
+.has-many-teams .hud-threat-widget {
+  max-width: 380px;
+  gap: 4px;
+}
+.has-many-teams .threat-meta {
+  font-size: 0.68rem;
+}
+.has-many-teams .threat-track {
+  height: 8px;
+}
+.has-many-teams .hud-live-clock {
+  font-size: 1rem;
+}
+.has-many-teams .hud-status-chip {
+  font-size: 0.68rem;
+  padding: 3px 10px;
+}
+
+/* Reducción de dimensiones de las tarjetas cuando hay 6+ equipos */
+.teams-grid.many-teams {
+  gap: 12px;
+}
+.has-many-teams .team-card,
+.many-teams .team-card {
+  padding: 10px 12px;
+  gap: 8px;
+}
+.has-many-teams .card-header,
+.many-teams .card-header {
+  padding-bottom: 6px;
+}
+.has-many-teams .team-node-tag,
+.many-teams .team-node-tag {
+  font-size: 0.62rem;
+}
+.has-many-teams .team-name,
+.many-teams .team-name {
+  font-size: 0.98rem;
+}
+.has-many-teams .online-badge,
+.many-teams .online-badge {
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  gap: 4px;
+}
+.has-many-teams .stability-section,
+.many-teams .stability-section {
+  gap: 3px;
+}
+.has-many-teams .stability-meta,
+.many-teams .stability-meta {
+  font-size: 0.65rem;
+}
+.has-many-teams .stability-bar,
+.many-teams .stability-bar {
+  height: 6px;
+}
+.has-many-teams .phases-list,
+.many-teams .phases-list {
+  gap: 4px;
+}
+.has-many-teams .phase-slot,
+.many-teams .phase-slot {
+  padding: 4px 8px;
+}
+.has-many-teams .slot-left,
+.many-teams .slot-left {
+  gap: 6px;
+}
+.has-many-teams .slot-num,
+.many-teams .slot-num {
+  font-size: 0.7rem;
+}
+.has-many-teams .slot-name,
+.many-teams .slot-name {
+  font-size: 0.72rem;
+}
+.has-many-teams .slot-tool,
+.many-teams .slot-tool {
+  font-size: 0.62rem;
+}
+.has-many-teams .slot-badge,
+.many-teams .slot-badge {
+  font-size: 0.62rem;
+  padding: 2px 5px;
+}
+.has-many-teams .card-footer,
+.many-teams .card-footer {
+  padding-top: 6px;
+  font-size: 0.66rem;
+}
+.has-many-teams .winner-badge,
+.many-teams .winner-badge {
+  font-size: 0.66rem;
+}
+
+/* Footer y terminal compactados */
+.has-many-teams .terminal-bar {
+  padding: 5px 12px;
+  font-size: 0.68rem;
+}
+.has-many-teams .terminal-logs {
+  height: 60px;
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+/* Adaptación responsive para pantallas con altura reducida (laptops y proyectores 768p/800p) */
+@media (max-height: 900px) {
+  #host-dashboard-screen {
+    padding: 12px 18px;
+  }
+  .dashboard-container {
+    gap: 10px;
+  }
+  .dashboard-header {
+    padding: 8px 14px;
+  }
+  .hud-title {
+    font-size: 1.1rem;
+  }
+  .teams-grid {
+    gap: 10px;
+  }
+  .team-card {
+    padding: 9px 11px;
+    gap: 6px;
+  }
+  .card-header {
+    padding-bottom: 5px;
+  }
+  .phases-list {
+    gap: 3px;
+  }
+  .phase-slot {
+    padding: 3px 6px;
+  }
+  .slot-name {
+    font-size: 0.7rem;
+  }
+  .card-footer {
+    padding-top: 5px;
+  }
+  .terminal-logs {
+    height: 52px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-height: 750px) {
+  #host-dashboard-screen {
+    padding: 8px 12px;
+  }
+  .dashboard-header {
+    padding: 6px 10px;
+  }
+  .team-card {
+    padding: 7px 9px;
+    gap: 5px;
+  }
+  .phases-list {
+    gap: 2px;
+  }
+  .phase-slot {
+    padding: 2px 5px;
+  }
+  .terminal-logs {
+    height: 42px;
+  }
+}
+
+@media (max-width: 950px) {
+  .dashboard-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hud-threat-widget {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
   }
 }
 

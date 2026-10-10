@@ -852,9 +852,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const teamParam = urlParams.get('team');
   const savedTeam = sessionStorage.getItem('ciber_team_id');
 
-  if (teamParam && parseInt(teamParam, 10) >= 1 && parseInt(teamParam, 10) <= 5) {
+  if (teamParam && parseInt(teamParam, 10) >= 1 && parseInt(teamParam, 10) <= 20) {
     initPlayerSocket(parseInt(teamParam, 10));
-  } else if (savedTeam && parseInt(savedTeam, 10) >= 1 && parseInt(savedTeam, 10) <= 5) {
+  } else if (savedTeam && parseInt(savedTeam, 10) >= 1 && parseInt(savedTeam, 10) <= 20) {
     initPlayerSocket(parseInt(savedTeam, 10));
   } else {
     const modal = document.getElementById('team-modal');

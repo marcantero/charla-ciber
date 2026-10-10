@@ -828,7 +828,7 @@ window.addEventListener('keydown', (e) => {
 });
 
 // ═══════════════════════════════════════════════════════════
-//  5. RENDERIZADO DINÁMICO DE LOS 5 BLOQUES DE EQUIPOS
+//  5. RENDERIZADO DINÁMICO DE LOS BLOQUES DE EQUIPOS
 // ═══════════════════════════════════════════════════════════
 function buildInitialTeamsGrid() {
   const grid = document.getElementById('teams-grid');
@@ -836,11 +836,25 @@ function buildInitialTeamsGrid() {
   grid.innerHTML = '';
 
   const numTeams = parseInt((appConfig && appConfig.numeroEquipos) || Object.keys(teamsState).length || 5, 10);
+
+  // Asignar clases dinámicas al grid y al contenedor según el número de equipos
+  grid.className = `teams-grid teams-count-${numTeams} ${numTeams >= 6 ? 'many-teams' : ''}`;
+  grid.style.setProperty('--teams-cols', numTeams >= 6 ? (numTeams === 6 ? '3' : '4') : numTeams);
+  grid.style.setProperty('--teams-count', numTeams);
+
+  const dashScreen = document.getElementById('host-dashboard-screen');
+  if (dashScreen) {
+    dashScreen.classList.toggle('has-many-teams', numTeams >= 6);
+    dashScreen.setAttribute('data-teams-count', numTeams);
+  }
+
   for (let id = 1; id <= numTeams; id++) {
     const card = document.createElement('div');
     card.className = 'team-card tech-frame state-corrupted-100';
     card.id = `team-card-${id}`;
     card.setAttribute('data-team', id);
+
+    const teamCustomName = (appConfig && appConfig.equipos && appConfig.equipos[id] && appConfig.equipos[id].nombre) || `EQUIPO ${id}`;
 
     card.innerHTML = `
       <div class="frame-corner top-left"></div>
@@ -852,7 +866,7 @@ function buildInitialTeamsGrid() {
       <div class="card-header">
         <div>
           <div class="team-node-tag mono">// NODO 0${id}</div>
-          <h3 class="team-name" id="team-title-${id}">EQUIPO ${id}</h3>
+          <h3 class="team-name" id="team-title-${id}">${teamCustomName}</h3>
         </div>
         <div class="online-badge mono" id="team-online-${id}">
           <span class="online-dot"></span> <span class="online-text">EN ESPERA</span>
@@ -906,7 +920,15 @@ function updateTeamsDisplay(teams) {
   let totalPhasesSolvedAcrossAll = 0;
   let onlineTeamsCount = 0;
 
-  for (let id = 1; id <= 5; id++) {
+  const numTeams = parseInt((appConfig && appConfig.numeroEquipos) || Object.keys(teamsState).length || 5, 10);
+
+  // Si la cantidad de equipos visualizados difiere de numTeams, reconstruir grid
+  const currentCards = document.querySelectorAll('.team-card');
+  if (currentCards.length !== numTeams) {
+    buildInitialTeamsGrid();
+  }
+
+  for (let id = 1; id <= numTeams; id++) {
     const team = teams[id] || { currentPhase: 0, completedPhases: [], onlineCount: 0 };
     const card = document.getElementById(`team-card-${id}`);
     if (!card) continue;
@@ -993,7 +1015,6 @@ function updateTeamsDisplay(teams) {
   }
 
   // 5. Actualizar widget de Amenaza Global del Instituto
-  const numTeams = parseInt((appConfig && appConfig.numeroEquipos) || Object.keys(teamsState).length || 5, 10);
   const maxPossible = numTeams * 5;
   const threatRemaining = Math.max(0, Math.round(((maxPossible - totalPhasesSolvedAcrossAll) / maxPossible) * 100));
 
@@ -1030,7 +1051,7 @@ function updateTeamsDisplay(teams) {
   // 6. Contador de equipos online
   const counterEl = document.getElementById('active-teams-counter');
   if (counterEl) {
-    counterEl.textContent = `EQUIPOS ONLINE: ${onlineTeamsCount} / 5`;
+    counterEl.textContent = `EQUIPOS ONLINE: ${onlineTeamsCount} / ${numTeams}`;
   }
 }
 
@@ -1107,6 +1128,9 @@ function initHostSocket() {
   });
 
   socket.on('host:update', (data) => {
+    if (data && data.config) {
+      applyConfigToHost(data.config);
+    }
     if (data && data.teams) {
       updateTeamsDisplay(data.teams);
     }

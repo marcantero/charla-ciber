@@ -45,6 +45,24 @@ let TEAMS_COUNT = parseInt(appConfig.numeroEquipos || 5, 10);
 // Estado centralizado de la partida en memoria
 let teamsState = {};
 
+function syncTeamsState() {
+  appConfig = loadConfig();
+  TEAMS_COUNT = parseInt(appConfig.numeroEquipos || 5, 10);
+  for (let i = 1; i <= TEAMS_COUNT; i++) {
+    if (!teamsState[i]) {
+      teamsState[i] = {
+        id: i,
+        name: (appConfig.equipos && appConfig.equipos[i] && appConfig.equipos[i].nombre) || `Equipo ${i}`,
+        currentPhase: 0,
+        completedPhases: [],
+        onlineCount: 0,
+        lastActive: null,
+        completedAt: null
+      };
+    }
+  }
+}
+
 function initTeamsState() {
   appConfig = loadConfig();
   TEAMS_COUNT = parseInt(appConfig.numeroEquipos || 5, 10);
@@ -84,7 +102,7 @@ app.get('/', (req, res) => {
 // Endpoint API para consultar estado en formato JSON
 // Endpoint para que Host y Players lean la configuración en tiempo real
 app.get('/api/config', (req, res) => {
-  appConfig = loadConfig();
+  syncTeamsState();
   res.json(appConfig);
 });
 
@@ -105,6 +123,7 @@ io.on('connection', (socket) => {
 
   // --- Registro de Host ---
   socket.on('host:init', () => {
+    syncTeamsState();
     clientRole = 'host';
     socket.join('hosts_room');
     socket.emit('host:update', {
@@ -117,6 +136,7 @@ io.on('connection', (socket) => {
 
   // --- Registro de Jugador ---
   socket.on('player:join', (data) => {
+    syncTeamsState();
     clientRole = 'player';
     const teamId = parseInt(data.teamId || data.team || 0, 10);
 
