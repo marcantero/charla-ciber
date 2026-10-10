@@ -27,23 +27,7 @@
   <!-- ============================================================== -->
   <div class="screen" id="presentation-screen">
     <div class="pres-container">
-      <!-- Barra superior formal de la presentación -->
-      <header class="pres-header">
-        <div class="pres-brand">
-          <div class="pres-logo">🏛️</div>
-          <div class="pres-brand-text">
-            <span class="pres-brand-title">IES TECNOLÓGICO</span>
-            <span class="pres-brand-sub">DEPARTAMENTO DE INFORMÁTICA Y COMUNICACIONES</span>
-          </div>
-        </div>
-        <div class="pres-meta">
-          <span class="pres-meta-item">AULA MAGNA</span>
-          <span class="pres-sep">•</span>
-          <span class="pres-meta-item" id="pres-live-date">OCTUBRE 2026</span>
-          <span class="pres-sep">•</span>
-          <span class="pres-meta-item pres-clock" id="pres-live-clock">--:--:--</span>
-        </div>
-      </header>
+      <!-- Visor de Diapositivas (4 Diapositivas Formales a Pantalla Completa) -->
 
       <!-- Visor de Diapositivas (4 Diapositivas Formales) -->
       <div class="slides-viewport" id="main-slide">
@@ -167,30 +151,6 @@
         </article>
 
       </div>
-
-      <!-- Barra de navegación formal e inocente de la presentación -->
-      <footer class="slide-footer-bar">
-        <div class="slide-counter">
-          Diapositiva <strong id="current-slide-num">1</strong> de <strong>4</strong>
-        </div>
-
-        <div class="slide-pagination-dots" id="slide-dots">
-          <button class="slide-dot active" onclick="goToSlide(1)" title="Diapositiva 1"></button>
-          <button class="slide-dot" onclick="goToSlide(2)" title="Diapositiva 2"></button>
-          <button class="slide-dot" onclick="goToSlide(3)" title="Diapositiva 3"></button>
-          <button class="slide-dot" onclick="goToSlide(4)" title="Diapositiva 4"></button>
-        </div>
-
-        <div class="slide-nav-buttons">
-          <button class="btn-slide-nav btn-prev" id="btn-slide-prev" onclick="prevSlide()" disabled title="Diapositiva anterior">
-            <span>◀</span> <span>Anterior</span>
-          </button>
-          <button class="btn-slide-nav btn-next" id="btn-slide-next" onclick="nextSlide()" title="Siguiente diapositiva">
-            <span>Siguiente</span> <span>▶</span>
-          </button>
-        </div>
-      </footer>
-
     </div>
   </div>
 

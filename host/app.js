@@ -788,11 +788,18 @@ window.addEventListener('keydown', (e) => {
       return;
     }
 
+    // Tecla 'F' o 'f': Activar/desactivar pantalla completa
+    if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      toggleFullscreen();
+      return;
+    }
+
     // Teclas estándar para una presentación formal
     if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       nextSlide();
-    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace') {
       e.preventDefault();
       prevSlide();
     }
@@ -1123,6 +1130,25 @@ function confirmResetGame() {
 // Inicializar al cargar el DOM
 window.addEventListener('DOMContentLoaded', () => {
   initHostSocket();
+
+  const presScreen = document.getElementById('presentation-screen');
+  if (presScreen) {
+    presScreen.addEventListener('click', (e) => {
+      if (isHackingActive) return;
+      // Clic en el tercio izquierdo (30%) retrocede, clic en el resto avanza
+      if (e.clientX < window.innerWidth * 0.3) {
+        prevSlide();
+      } else {
+        nextSlide();
+      }
+    });
+
+    // Doble clic para pantalla completa
+    presScreen.addEventListener('dblclick', (e) => {
+      e.stopPropagation();
+      toggleFullscreen();
+    });
+  }
 });
 
 fetchHostConfig();

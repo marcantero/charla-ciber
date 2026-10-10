@@ -752,6 +752,57 @@ function updateSlideDisplay() {
   if (btnNext) btnNext.disabled = currentSlide === totalSlides;
 }
 
+window.addEventListener('keydown', (e) => {
+  const presScreen = document.getElementById('presentation-screen');
+  const isPresVisible = presScreen && !presScreen.classList.contains('hidden');
+
+  if (isPresVisible) {
+    if (e.key === 'h' || e.key === 'H') {
+      e.preventDefault();
+      triggerHackAnimation();
+      return;
+    }
+    if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.warn(err));
+      } else {
+        document.exitFullscreen().catch(err => console.warn(err));
+      }
+      return;
+    }
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace') {
+      e.preventDefault();
+      prevSlide();
+    }
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const presScreen = document.getElementById('presentation-screen');
+  if (presScreen) {
+    presScreen.addEventListener('click', (e) => {
+      if (isHackingActive) return;
+      if (e.clientX < window.innerWidth * 0.3) {
+        prevSlide();
+      } else {
+        nextSlide();
+      }
+    });
+    presScreen.addEventListener('dblclick', (e) => {
+      e.stopPropagation();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.warn(err));
+      } else {
+        document.exitFullscreen().catch(err => console.warn(err));
+      }
+    });
+  }
+});
+
 function triggerHackAnimation() {
   if (isHackingActive) return;
   isHackingActive = true;
