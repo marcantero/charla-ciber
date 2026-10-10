@@ -983,6 +983,97 @@ body {
   color: #fff;
 }
 
+/* ═══════════════════════════════════════
+   LINUX CHEATSHEET (FASE 02)
+   ═══════════════════════════════════════ */
+.linux-cheatsheet-card {
+  background: rgba(12, 6, 12, 0.95);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.08), inset 0 0 20px rgba(0, 240, 255, 0.03);
+  backdrop-filter: blur(8px);
+}
+.cheatsheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  padding-bottom: 12px;
+}
+.cheatsheet-title {
+  font-size: 0.78rem;
+  color: var(--white);
+  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cheatsheet-tag {
+  font-size: 0.68rem;
+  color: var(--cyan);
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  padding: 3px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+}
+.cheatsheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.cheat-item {
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--cyan);
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.cheat-item:hover {
+  border-left-color: var(--red);
+  border-color: rgba(255, 0, 60, 0.3);
+  background: rgba(255, 0, 60, 0.04);
+  transform: translateY(-2px);
+}
+.cheat-cmd {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cheat-prompt {
+  color: var(--red);
+  font-weight: 800;
+}
+.cheat-desc {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--white-soft);
+}
+.cheat-desc strong {
+  color: var(--green);
+}
+.cheat-desc code {
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 4px;
+  border-radius: 2px;
+  color: var(--cyan);
+}
+
 /* Fake terminal */
 .fake-terminal {
   background: #0d0d0d;

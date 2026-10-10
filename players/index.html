@@ -295,32 +295,45 @@
   <!-- FASE 2: TERMINAL -->
   <div class="screen hidden phase-screen" id="phase-2-screen">
     <div class="phase-header">
-      <div class="phase-badge mono">// FASE 02 / TERMINAL</div>
-      <div class="phase-tool mono">Linux (ls -la, cat)</div>
+      <div class="phase-badge mono">// FASE 02 // <span class="censor-noise">?*&%</span></div>
+      <div class="phase-tool mono glitched-target"><span class="censor-tag">[ACCESO RESTRINGIDO]</span></div>
     </div>
     <div class="phase-body">
-      <div class="phase-mission-box">
-        <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha dejado pistas en archivos ocultos del servidor.<br>Utiliza <strong>ls
-            -la</strong> para ver archivos ocultos y <strong>cat</strong> para leerlos.</p>
-      </div>
-      <div class="fake-terminal">
-        <div class="terminal-header">
-          <span class="terminal-dot red"></span>
-          <span class="terminal-dot yellow"></span>
-          <span class="terminal-dot green"></span>
-          <span class="terminal-title mono">server@instituto-comprometido:~$</span>
+      <!-- Cheatsheet de comandos de navegación Linux -->
+      <div class="linux-cheatsheet-card">
+        <div class="cheatsheet-header">
+          <div class="cheatsheet-title mono">
+            <span class="status-blip"></span>
+            MANUAL DE REFERENCIA RÁPIDA // NAVEGACIÓN EN TERMINAL LINUX
+          </div>
+          <div class="cheatsheet-tag mono">BASH_SHELL_CHEAT_SHEET</div>
         </div>
-        <div class="fake-term-body mono">
-          <div class="fterm-line"><span class="fterm-prompt">$</span> ls -la</div>
-          <div class="fterm-line fterm-result">total 24</div>
-          <div class="fterm-line fterm-result">drwxr-xr-x jowie staff 768 Oct 6 08:00 .</div>
-          <div class="fterm-line fterm-result">-rw-r--r-- jowie staff 1024 Oct 6 08:00 readme.txt</div>
-          <div class="fterm-line fterm-result fterm-hidden">-rw------- root root 512 Oct 6 08:00 .clave_sistema</div>
-          <div class="fterm-line fterm-result fterm-hidden">-rw------- root root 64 Oct 6 08:00 .pista_final</div>
-          <div class="fterm-line"><span class="fterm-prompt">$</span> cat .pista_final</div>
-          <div class="fterm-line fterm-key">La clave es: ALFA-7743</div>
-          <div class="fterm-line fterm-cursor-line">&#9608;</div>
+
+        <div class="cheatsheet-grid">
+          <div class="cheat-item">
+            <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> ls</div>
+            <div class="cheat-desc">Lista los archivos y carpetas del directorio actual.</div>
+          </div>
+          <div class="cheat-item">
+            <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> ls -la</div>
+            <div class="cheat-desc">Lista todos los archivos detallados, <strong>incluyendo ocultos</strong> (que empiezan por punto <code>.</code>).</div>
+          </div>
+          <div class="cheat-item">
+            <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> cd &lt;carpeta&gt;</div>
+            <div class="cheat-desc">Entra en una carpeta o directorio (<em>Change Directory</em>).</div>
+          </div>
+          <div class="cheat-item">
+            <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> cd ..</div>
+            <div class="cheat-desc">Retrocede un nivel al directorio padre o superior.</div>
+          </div>
+          <div class="cheat-item">
+            <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> pwd</div>
+            <div class="cheat-desc">Muestra la ruta completa del directorio donde estás (<em>Print Working Directory</em>).</div>
+          </div>
+          <div class="cheat-item">
+            <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> cat &lt;archivo&gt;</div>
+            <div class="cheat-desc">Lee y muestra el contenido completo de un archivo de texto en pantalla.</div>
+          </div>
         </div>
       </div>
       <div class="answer-section">
