@@ -1,3 +1,23 @@
+let appConfig = { nombreInstituto: 'IES Tecnológico', numeroEquipos: 5, claves: {} };
+async function fetchRootConfig() {
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      appConfig = await res.json();
+      applyRootConfig(appConfig);
+    }
+  } catch(e) {}
+}
+function applyRootConfig(cfg) {
+  if (!cfg) return;
+  appConfig = cfg;
+  const instEl = document.getElementById('hacker-msg-inst');
+  if (instEl) instEl.textContent = cfg.nombreInstituto || 'vuestro instituto';
+  const teamsEl = document.getElementById('hacker-msg-teams');
+  if (teamsEl) teamsEl.textContent = `${cfg.numeroEquipos || 5} grupos`;
+}
+fetchRootConfig();
+
 // ================================================================
 //  CHARLA CIBER - Instituto Hackeado
 //  Configuration: phases, answers, transitions
@@ -156,7 +176,9 @@ function playAIVoice() {
 function speakSynthesizedAnonymous() {
   if ('speechSynthesis' in window && !isMuted) {
     window.speechSynthesis.cancel();
-    const text = "Atención instituto... Si nadie me detiene, todos vuestros sistemas serán cifrados. Tenéis 5 retos para evitarlo.";
+    const inst = (appConfig && appConfig.nombreInstituto) ? appConfig.nombreInstituto : 'instituto';
+    const numG = (appConfig && appConfig.numeroEquipos) ? appConfig.numeroEquipos : '5';
+    const text = `Hola ${inst}, me he infiltrado en vuestro instituto, jajajajaja. Voy a cifrar todos vuestros datos. Pero para que esto sea más divertido voy a dejaros unos retos para que podáis pararme. Tendréis que hacer ${numG} grupos, con el objetivo de intentar pararme con todo lo que habéis aprendido en esta charla. Mucha suerte.`;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
     utterance.pitch = 0.22;

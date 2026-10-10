@@ -1,3 +1,43 @@
+let appConfig = {
+  nombreInstituto: 'IES Tecnológico',
+  numeroEquipos: 5,
+  claves: {}
+};
+
+async function fetchHostConfig() {
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      const data = await res.json();
+      applyConfigToHost(data);
+    }
+  } catch (e) {
+    console.warn('Usando configuración local:', e);
+  }
+}
+
+function applyConfigToHost(cfg) {
+  if (!cfg) return;
+  appConfig = cfg;
+  
+  // Actualizar nombre del instituto en los títulos
+  document.querySelectorAll('.pres-brand-title').forEach(el => {
+    el.textContent = cfg.nombreInstituto || 'IES TECNOLÓGICO';
+  });
+
+  // Actualizar mensaje de texto del hacker
+  const instEl = document.getElementById('hacker-msg-inst');
+  if (instEl) instEl.textContent = cfg.nombreInstituto || 'vuestro instituto';
+  
+  const teamsEl = document.getElementById('hacker-msg-teams');
+  if (teamsEl) teamsEl.textContent = `${cfg.numeroEquipos || 5} grupos`;
+
+  // Reconstruir la parrilla de equipos si aún no ha comenzado la partida
+  if (typeof buildInitialTeamsGrid === 'function') {
+    buildInitialTeamsGrid();
+  }
+}
+
 // ================================================================
 //  HOST DASHBOARD — APP.JS
 //  Presentación Inocente, Hackeo de Anonymous y Monitorización
@@ -168,7 +208,9 @@ function playAIVoice() {
 function speakSynthesizedAnonymous() {
   if ('speechSynthesis' in window && !isMuted) {
     window.speechSynthesis.cancel();
-    const text = "Atención instituto... Si nadie me detiene, todos vuestros sistemas serán cifrados. Tenéis 5 retos para evitarlo.";
+    const inst = (appConfig && appConfig.nombreInstituto) ? appConfig.nombreInstituto : 'instituto';
+    const numG = (appConfig && appConfig.numeroEquipos) ? appConfig.numeroEquipos : '5';
+    const text = `Hola ${inst}, me he infiltrado en vuestro instituto, jajajajaja. Voy a cifrar todos vuestros datos. Pero para que esto sea más divertido voy a dejaros unos retos para que podáis pararme. Tendréis que hacer ${numG} grupos, con el objetivo de intentar pararme con todo lo que habéis aprendido en esta charla. Mucha suerte.`;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
     utterance.pitch = 0.22; // Voz ultra grave y amenazante
@@ -520,7 +562,8 @@ function buildInitialTeamsGrid() {
   if (!grid) return;
   grid.innerHTML = '';
 
-  for (let id = 1; id <= 5; id++) {
+  const numTeams = parseInt((appConfig && appConfig.numeroEquipos) || Object.keys(teamsState).length || 5, 10);
+  for (let id = 1; id <= numTeams; id++) {
     const card = document.createElement('div');
     card.className = 'team-card tech-frame state-corrupted-100';
     card.id = `team-card-${id}`;
@@ -822,3 +865,5 @@ function confirmResetGame() {
 window.addEventListener('DOMContentLoaded', () => {
   initHostSocket();
 });
+
+fetchHostConfig();

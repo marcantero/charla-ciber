@@ -19,22 +19,44 @@ const io = new Server(server, {
 });
 
 const PORT = process.env.PORT || 4000;
-const TEAMS_COUNT = 5;
+
+// Cargar configuración desde config.json
+function loadConfig() {
+  try {
+    const configPath = path.join(__dirname, 'config.json');
+    if (fs.existsSync(configPath)) {
+      const raw = fs.readFileSync(configPath, 'utf8');
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error('Error al leer config.json:', err);
+  }
+  return {
+    nombreInstituto: 'IES Tecnológico',
+    numeroEquipos: 5,
+    claves: {}
+  };
+}
+
+let appConfig = loadConfig();
+let TEAMS_COUNT = parseInt(appConfig.numeroEquipos || 5, 10);
 
 // Estado centralizado de la partida en memoria
 let teamsState = {};
 
 function initTeamsState() {
+  appConfig = loadConfig();
+  TEAMS_COUNT = parseInt(appConfig.numeroEquipos || 5, 10);
   teamsState = {};
   for (let i = 1; i <= TEAMS_COUNT; i++) {
     teamsState[i] = {
       id: i,
-      name: `Equipo ${i}`,
-      currentPhase: 0,        // 0 = no iniciado, 1..5 = última fase completada
-      completedPhases: [],    // Array de números de fase completados [1, 2, ...]
+      name: (appConfig.equipos && appConfig.equipos[i] && appConfig.equipos[i].nombre) || `Equipo ${i}`,
+      currentPhase: 0,
+      completedPhases: [],
       onlineCount: 0,
       lastActive: null,
-      completedAt: null       // Timestamp si completó las 5 fases
+      completedAt: null
     };
   }
 }
@@ -59,6 +81,12 @@ app.get('/', (req, res) => {
 });
 
 // Endpoint API para consultar estado en formato JSON
+// Endpoint para que Host y Players lean la configuración en tiempo real
+app.get('/api/config', (req, res) => {
+  appConfig = loadConfig();
+  res.json(appConfig);
+});
+
 app.get('/api/status', (req, res) => {
   res.json({
     active: true,
@@ -80,6 +108,7 @@ io.on('connection', (socket) => {
     socket.join('hosts_room');
     socket.emit('host:update', {
       teams: teamsState,
+      config: appConfig,
       timestamp: Date.now(),
       message: 'Conectado al servidor de control'
     });
@@ -100,9 +129,10 @@ io.on('connection', (socket) => {
 
       socket.join(`team_${teamId}`);
 
-      // Enviar al jugador el estado que lleva su equipo
+      // Enviar al jugador el estado que lleva su equipo y la configuración
       socket.emit('player:init_state', {
         team: teamsState[teamId],
+        config: appConfig,
         timestamp: Date.now()
       });
 
@@ -162,6 +192,7 @@ io.on('connection', (socket) => {
   // --- Host reinicia la partida ---
   socket.on('host:reset_game', () => {
     console.log('[CONTROL] Host ha solicitado REINICIAR el escape room.');
+    appConfig = loadConfig();
     initTeamsState();
 
     // Notificar a todos los hosts y jugadores
