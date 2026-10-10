@@ -8,12 +8,12 @@
   <meta name="description" content="Presentación interactiva de ciberseguridad y escape room de instituto hackeado en red local.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
-  <!-- Fondo cibernético Matrix -->
+<body class="in-formal-presentation">
+  <!-- Fondo cibernético Matrix (oculto durante la presentación formal) -->
   <canvas id="matrix-canvas"></canvas>
   <div class="scanlines"></div>
   <div class="crt-flicker"></div>
@@ -22,75 +22,175 @@
   <div class="deco deco-bl"></div>
   <div class="deco deco-br"></div>
 
-  <!-- Controles flotantes para el ponente/profesor -->
-  <div class="host-floating-controls">
-    <button id="trigger-hack-btn" class="btn-util btn-hack-shortcut mono" onclick="triggerHackAnimation()" title="Disparar hackeo repentino (o presiona tecla H)">
-      <span class="btn-icon">⚡</span> HACKEAR (Tecla H)
-    </button>
-    <button id="fullscreen-btn" class="btn-util mono" onclick="toggleFullscreen()" title="Pantalla Completa">
-      <span class="btn-icon">⛶</span> PANTALLA COMPLETA
-    </button>
-    <button id="mute-btn" class="btn-util mono" onclick="toggleMute()" title="Silenciar Sonido">
-      <span id="mute-icon">🔊</span> SONIDO
-    </button>
-    <button id="reset-btn" class="btn-util btn-danger mono" onclick="requestResetGame()" title="Reiniciar Partida">
-      <span>↺</span> REINICIAR PARTIDA
-    </button>
-  </div>
-
   <!-- ============================================================== -->
-  <!-- 0. PANTALLA DE PRESENTACIÓN INOCENTE (PREVIA AL HACKEO)        -->
+  <!-- 0. PANTALLA DE PRESENTACIÓN FORMAL E INSTITUCIONAL             -->
   <!-- ============================================================== -->
   <div class="screen" id="presentation-screen">
     <div class="pres-container">
-      <!-- Barra superior institucional de la presentación -->
-      <div class="pres-header">
-        <div class="pres-badge">
-          <span class="badge-icon">🏛️</span>
-          <span class="badge-text">IES TECNOLÓGICO // DPTO. INFORMÁTICA Y REDES</span>
+      <!-- Barra superior formal de la presentación -->
+      <header class="pres-header">
+        <div class="pres-brand">
+          <div class="pres-logo">🏛️</div>
+          <div class="pres-brand-text">
+            <span class="pres-brand-title">IES TECNOLÓGICO</span>
+            <span class="pres-brand-sub">DEPARTAMENTO DE INFORMÁTICA Y COMUNICACIONES</span>
+          </div>
         </div>
         <div class="pres-meta">
-          <span>AULA MAGNA</span>
-          <span class="pres-sep">|</span>
-          <span id="pres-live-date">OCTUBRE 2026</span>
-          <span class="pres-sep">|</span>
-          <span id="pres-live-clock">--:--:--</span>
+          <span class="pres-meta-item">AULA MAGNA</span>
+          <span class="pres-sep">•</span>
+          <span class="pres-meta-item" id="pres-live-date">OCTUBRE 2026</span>
+          <span class="pres-sep">•</span>
+          <span class="pres-meta-item pres-clock" id="pres-live-clock">--:--:--</span>
         </div>
+      </header>
+
+      <!-- Visor de Diapositivas (4 Diapositivas Formales) -->
+      <div class="slides-viewport" id="main-slide">
+        
+        <!-- DIAPOSITIVA 1: Portada Institucional -->
+        <article class="slide-card active" id="slide-1" data-slide="1">
+          <div class="slide-badge">CONFERENCIA DE APERTURA // CIBERSEGURIDAD 2026</div>
+          <h1 class="slide-title">Ciberseguridad y Protección de Datos en Entornos Educativos</h1>
+          <p class="slide-subtitle">
+            Estrategias de prevención, análisis de vulnerabilidades y buenas prácticas digitales para toda la comunidad escolar.
+          </p>
+
+          <div class="slide-cover-meta-grid">
+            <div class="cover-meta-card">
+              <span class="meta-label">DIRIGIDO A</span>
+              <span class="meta-value">Alumnado y Profesorado</span>
+            </div>
+            <div class="cover-meta-card">
+              <span class="meta-label">PONENTE</span>
+              <span class="meta-value">Equipo Docente de Redes y Sistemas</span>
+            </div>
+            <div class="cover-meta-card">
+              <span class="meta-label">UBICACIÓN</span>
+              <span class="meta-value">Aula Magna // Red Local</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- DIAPOSITIVA 2: Vectores de Ataque -->
+        <article class="slide-card" id="slide-2" data-slide="2">
+          <div class="slide-badge">MÓDULO 1: ANÁLISIS DE VULNERABILIDADES</div>
+          <h2 class="slide-title">Principales Amenazas en Centros de Enseñanza</h2>
+          <p class="slide-subtitle">
+            Los centros educativos son objetivo habitual de ciberataques debido al gran volumen de datos sensibles y terminales conectados.
+          </p>
+
+          <div class="slide-topics-grid">
+            <div class="topic-box">
+              <div class="topic-icon">🎣</div>
+              <h3 class="topic-title">1. Ingeniería Social & Phishing</h3>
+              <p class="topic-desc">Correos y mensajes fraudulentos dirigidos a profesores y secretaría con el objetivo de sustraer claves de acceso institucionales.</p>
+            </div>
+            <div class="topic-box">
+              <div class="topic-icon">🔒</div>
+              <h3 class="topic-title">2. Ransomware y Extorsión</h3>
+              <p class="topic-desc">Software malicioso que secuestra y cifra expedientes académicos, actas y notas confidenciales exigiendo un rescate.</p>
+            </div>
+            <div class="topic-box">
+              <div class="topic-icon">📶</div>
+              <h3 class="topic-title">3. Redes Wi-Fi y Equipos BYOD</h3>
+              <p class="topic-desc">Dispositivos personales desprotegidos conectados a la red del centro escolar que sirven como vector de entrada para intrusos.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- DIAPOSITIVA 3: Buenas Prácticas y Prevención -->
+        <article class="slide-card" id="slide-3" data-slide="3">
+          <div class="slide-badge">MÓDULO 2: MEDIDAS DE PREVENCIÓN</div>
+          <h2 class="slide-title">Pilares Fundamentales de la Higiene Digital</h2>
+          <p class="slide-subtitle">
+            Medidas técnicas y hábitos de protección indispensables para blindar los equipos y la información personal frente a intrusiones.
+          </p>
+
+          <div class="slide-topics-grid">
+            <div class="topic-box">
+              <div class="topic-icon">🔑</div>
+              <h3 class="topic-title">1. Claves Fuertes y 2FA</h3>
+              <p class="topic-desc">Contraseñas robustas de más de 12 caracteres, uso de gestores de claves y doble factor de autenticación obligatorio.</p>
+            </div>
+            <div class="topic-box">
+              <div class="topic-icon">🛡️</div>
+              <h3 class="topic-title">2. Segmentación de Redes</h3>
+              <p class="topic-desc">Separación estricta entre la red de alumnos, aulas de prácticas y la subred de gestión administrativa y servidores.</p>
+            </div>
+            <div class="topic-box">
+              <div class="topic-icon">💾</div>
+              <h3 class="topic-title">3. Copias de Seguridad (3-2-1)</h3>
+              <p class="topic-desc">Tres copias de los datos en dos soportes diferentes, con al menos una copia externa desconectada de la red (offline).</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- DIAPOSITIVA 4: Protocolo de Respuesta ante Incidentes -->
+        <article class="slide-card" id="slide-4" data-slide="4">
+          <div class="slide-badge">MÓDULO 3: PROTOCOLO DE CONTINGENCIA</div>
+          <h2 class="slide-title">Protocolo de Actuación ante un Incidente</h2>
+          <p class="slide-subtitle">
+            ¿Cómo debe reaccionar el centro escolar si se detecta un comportamiento anómalo o una intrusión en los servidores?
+          </p>
+
+          <div class="slide-steps-grid">
+            <div class="step-card">
+              <div class="step-num">01</div>
+              <div class="step-content">
+                <h4 class="step-title">Aislamiento Inmediato</h4>
+                <p class="step-desc">Desconectar los cables de red Ethernet o desactivar la Wi-Fi del equipo afectado para frenar la propagación.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">02</div>
+              <div class="step-content">
+                <h4 class="step-title">Preservación de Evidencias</h4>
+                <p class="step-desc">No reiniciar ni apagar bruscamente el ordenador para no borrar la memoria RAM requerida en el análisis forense.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">03</div>
+              <div class="step-content">
+                <h4 class="step-title">Comunicación al Soporte</h4>
+                <p class="step-desc">Avisar con urgencia a los administradores del centro y equipo directivo para activar las alertas de seguridad.</p>
+              </div>
+            </div>
+            <div class="step-card">
+              <div class="step-num">04</div>
+              <div class="step-content">
+                <h4 class="step-title">Comprobación del Perímetro</h4>
+                <p class="step-desc">Monitorizar cortafuegos y tráfico de red para descartar accesos no autorizados en tiempo real...</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
       </div>
 
-      <!-- Diapositiva principal de la charla -->
-      <div class="slide-card" id="main-slide">
-        <div class="slide-tag">MÓDULO 1: CONCEPTOS GENERALES</div>
-        <h1 class="slide-title">JORNADA DE CIBERSEGURIDAD Y PROTECCIÓN DE DATOS</h1>
-        <p class="slide-subtitle">Comprendiendo las amenazas actuales en entornos educativos y domésticos</p>
-
-        <div class="slide-topics-grid">
-          <div class="topic-box">
-            <div class="topic-icon">🔐</div>
-            <h3 class="topic-title">1. Autenticación y 2FA</h3>
-            <p class="topic-desc">Contraseñas robustas, claves únicas y factores de doble verificación.</p>
-          </div>
-          <div class="topic-box">
-            <div class="topic-icon">🛡️</div>
-            <h3 class="topic-title">2. Cortafuegos y Redes</h3>
-            <p class="topic-desc">Protección perimetral de centros educativos frente a intrusiones externas.</p>
-          </div>
-          <div class="topic-box">
-            <div class="topic-icon">🎣</div>
-            <h3 class="topic-title">3. Ingeniería Social</h3>
-            <p class="topic-desc">Identificación de correos falsos, enlaces trampa y vectores de ataque.</p>
-          </div>
+      <!-- Barra de navegación formal e inocente de la presentación -->
+      <footer class="slide-footer-bar">
+        <div class="slide-counter">
+          Diapositiva <strong id="current-slide-num">1</strong> de <strong>4</strong>
         </div>
 
-        <div class="slide-footer-bar">
-          <div class="slide-number">Diapositiva 1 de 12 — Introducción</div>
-          <div class="slide-instruction">Pulsa <kbd>Espacio</kbd>, <kbd>H</kbd> o el botón para continuar</div>
-          <button class="btn-slide-next" onclick="triggerHackAnimation()">
-            <span>Siguiente Diapositiva</span>
-            <span>▶</span>
+        <div class="slide-pagination-dots" id="slide-dots">
+          <button class="slide-dot active" onclick="goToSlide(1)" title="Diapositiva 1"></button>
+          <button class="slide-dot" onclick="goToSlide(2)" title="Diapositiva 2"></button>
+          <button class="slide-dot" onclick="goToSlide(3)" title="Diapositiva 3"></button>
+          <button class="slide-dot" onclick="goToSlide(4)" title="Diapositiva 4"></button>
+        </div>
+
+        <div class="slide-nav-buttons">
+          <button class="btn-slide-nav btn-prev" id="btn-slide-prev" onclick="prevSlide()" disabled title="Diapositiva anterior">
+            <span>◀</span> <span>Anterior</span>
+          </button>
+          <button class="btn-slide-nav btn-next" id="btn-slide-next" onclick="nextSlide()" title="Siguiente diapositiva">
+            <span>Siguiente</span> <span>▶</span>
           </button>
         </div>
-      </div>
+      </footer>
+
     </div>
   </div>
 
@@ -229,6 +329,19 @@
             <span class="chip-dot"></span> <span id="server-status-text">CONECTADO</span>
           </div>
         </div>
+
+        <!-- Controles para el profesor en el dashboard (sin spoilers en la presentación) -->
+        <div class="hud-host-actions">
+          <button id="fullscreen-btn" class="btn-hud-control" onclick="toggleFullscreen()" title="Pantalla Completa">
+            <span class="btn-icon">⛶</span> PANTALLA COMPLETA
+          </button>
+          <button id="mute-btn" class="btn-hud-control" onclick="toggleMute()" title="Silenciar Sonido">
+            <span id="mute-icon">🔊</span> SONIDO
+          </button>
+          <button id="reset-btn" class="btn-hud-control btn-hud-danger" onclick="requestResetGame()" title="Reiniciar Partida">
+            <span class="btn-icon">↺</span> REINICIAR
+          </button>
+        </div>
       </header>
 
       <!-- Cuadrícula principal de los 5 equipos -->
@@ -248,32 +361,17 @@
             <span class="term-indicator mono" id="active-teams-counter">EQUIPOS ONLINE: 0 / 5</span>
           </div>
           <div class="terminal-logs mono" id="terminal-logs">
-            <div class="log-entry log-sys">[00:00:00] [INICIALIZACIÓN] Servidor de control conectado. Esperando a los 5 equipos...</div>
+            <div class="log-line log-sys">// SISTEMA INICIADO: Monitor de red en escucha en puerto 4000</div>
+            <div class="log-line log-sys">// Esperando conexión de los 5 equipos de alumnos...</div>
           </div>
         </div>
       </footer>
     </div>
   </div>
 
-  <!-- Modal de confirmación para reiniciar -->
-  <div id="reset-confirm-modal" class="modal-backdrop hidden">
-    <div class="modal-card tech-frame">
-      <div class="frame-corner top-left"></div>
-      <div class="frame-corner top-right"></div>
-      <div class="frame-corner bottom-left"></div>
-      <div class="frame-corner bottom-right"></div>
-      <div class="modal-tag mono">// ACCIÓN CRÍTICA DE ADMINISTRADOR //</div>
-      <h3 class="modal-title">¿REINICIAR TODA LA PARTIDA?</h3>
-      <p class="modal-desc mono">Esta acción restablecerá el progreso de los 5 equipos a la Fase 1 y notificará a todos los navegadores conectados.</p>
-      <div class="modal-buttons">
-        <button class="btn-modal btn-cancel mono" onclick="closeResetModal()">CANCELAR</button>
-        <button class="btn-modal btn-confirm mono" onclick="confirmResetGame()">SÍ, REINICIAR</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Script cliente de Socket.io provisto por el servidor Express -->
+  <!-- Socket.io cliente y lógica del host -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

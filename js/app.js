@@ -681,9 +681,61 @@ function startNextFile() {
 // ═══════════════════════════════════════════════════════════
 //  ANIMACIÓN DE HACKEO DE ANONYMOUS
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  NAVEGACIÓN FORMAL DE DIAPOSITIVAS (1 a 4)
+// ═══════════════════════════════════════════════════════════
+let currentSlide = 1;
+const totalSlides = 4;
+
+function goToSlide(n) {
+  if (isHackingActive) return;
+  if (n < 1 || n > totalSlides) return;
+  currentSlide = n;
+  updateSlideDisplay();
+}
+
+function nextSlide() {
+  if (isHackingActive) return;
+  if (currentSlide < totalSlides) {
+    currentSlide++;
+    updateSlideDisplay();
+  }
+}
+
+function prevSlide() {
+  if (isHackingActive) return;
+  if (currentSlide > 1) {
+    currentSlide--;
+    updateSlideDisplay();
+  }
+}
+
+function updateSlideDisplay() {
+  document.querySelectorAll('.slide-card').forEach((card) => {
+    const num = parseInt(card.getAttribute('data-slide'));
+    card.classList.toggle('active', num === currentSlide);
+  });
+
+  const counterEl = document.getElementById('current-slide-num');
+  if (counterEl) counterEl.textContent = currentSlide;
+
+  const dots = document.querySelectorAll('.slide-dot');
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle('active', idx + 1 === currentSlide);
+  });
+
+  const btnPrev = document.getElementById('btn-slide-prev');
+  const btnNext = document.getElementById('btn-slide-next');
+  if (btnPrev) btnPrev.disabled = currentSlide === 1;
+  if (btnNext) btnNext.disabled = currentSlide === totalSlides;
+}
+
 function triggerHackAnimation() {
   if (isHackingActive) return;
   isHackingActive = true;
+
+  document.body.classList.remove('in-formal-presentation');
+  document.body.classList.add('hacked-mode');
 
   initAudio();
   playHackGlitchSound();
@@ -912,13 +964,24 @@ function launchVictoryEffect() {
 //  KEYBOARD SHORTCUT: Press ESC to go back to briefing
 // ═══════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════
-//  ATAJOS DE TECLADO: H (Hack), Espacio, Enter, ESC
+//  ATAJOS DE TECLADO: Tecla H Secreta, Flechas para Diapositivas
 // ═══════════════════════════════════════════════════════════
 document.addEventListener('keydown', (e) => {
   if (currentScreen === 'presentation-screen') {
-    if (e.key === 'h' || e.key === 'H' || e.key === ' ' || e.key === 'Enter') {
+    // Tecla 'H' o 'h': Disparador secreto del hackeo de Anonymous
+    if (e.key === 'h' || e.key === 'H') {
       e.preventDefault();
       triggerHackAnimation();
+      return;
+    }
+
+    // Teclas estándar para una presentación formal
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      prevSlide();
     }
   } else if (currentScreen === 'hack-takeover-screen') {
     if (e.key === ' ' || e.key === 'Enter') {

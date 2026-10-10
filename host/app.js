@@ -257,6 +257,7 @@ function resizeMatrix() {
 
 function drawMatrix() {
   if (!mCtx) return;
+  if (document.body.classList.contains('in-formal-presentation')) return;
   mCtx.fillStyle = 'rgba(4, 2, 4, 0.08)';
   mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
   mCtx.fillStyle = '#ff003c';
@@ -302,16 +303,76 @@ updateClock();
 // ═══════════════════════════════════════════════════════════
 //  4. ANIMACIÓN INICIAL DEL HACKEO DE ANONYMOUS
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  NAVEGACIÓN FORMAL DE DIAPOSITIVAS (1 a 4)
+// ═══════════════════════════════════════════════════════════
+let currentSlide = 1;
+const totalSlides = 4;
+
+function goToSlide(n) {
+  if (isHackingActive) return;
+  if (n < 1 || n > totalSlides) return;
+  currentSlide = n;
+  updateSlideDisplay();
+}
+
+function nextSlide() {
+  if (isHackingActive) return;
+  if (currentSlide < totalSlides) {
+    currentSlide++;
+    updateSlideDisplay();
+  }
+}
+
+function prevSlide() {
+  if (isHackingActive) return;
+  if (currentSlide > 1) {
+    currentSlide--;
+    updateSlideDisplay();
+  }
+}
+
+function updateSlideDisplay() {
+  document.querySelectorAll('.slide-card').forEach((card) => {
+    const num = parseInt(card.getAttribute('data-slide'));
+    card.classList.toggle('active', num === currentSlide);
+  });
+
+  const counterEl = document.getElementById('current-slide-num');
+  if (counterEl) counterEl.textContent = currentSlide;
+
+  const dots = document.querySelectorAll('.slide-dot');
+  dots.forEach((dot, idx) => {
+    dot.classList.toggle('active', idx + 1 === currentSlide);
+  });
+
+  const btnPrev = document.getElementById('btn-slide-prev');
+  const btnNext = document.getElementById('btn-slide-next');
+  if (btnPrev) btnPrev.disabled = currentSlide === 1;
+  if (btnNext) {
+    btnNext.disabled = currentSlide === totalSlides;
+  }
+}
+
 function triggerHackAnimation() {
   if (isHackingActive) return;
   isHackingActive = true;
 
+  // Romper el modo formal de la presentación
+  document.body.classList.remove('in-formal-presentation');
+  document.body.classList.add('hacked-mode');
+
   initAudio();
   playHackGlitchSound();
 
+  // Glitch en el viewport de diapositivas
   const presSlide = document.getElementById('main-slide');
   if (presSlide) {
     presSlide.classList.add('glitching');
+  }
+  const activeSlide = document.querySelector('.slide-card.active');
+  if (activeSlide) {
+    activeSlide.classList.add('glitching');
   }
 
   // Tras 1.3s de glitch destructivo en la diapositiva, irrupción de Anonymous
@@ -363,15 +424,26 @@ function openHostDashboardFromHack() {
   logTerminalEvent('Monitorización activada. 5 equipos convocados para neutralizar a Anonymous.', 'log-sys');
 }
 
-// Atajos de teclado: 'H', 'Espacio' o 'Enter' para detonar el hackeo en plena presentación
+// Atajos de teclado formales para la presentación y tecla H secreta
 window.addEventListener('keydown', (e) => {
   const presScreen = document.getElementById('presentation-screen');
   const isPresVisible = presScreen && !presScreen.classList.contains('hidden');
 
   if (isPresVisible) {
-    if (e.key === 'h' || e.key === 'H' || e.key === ' ' || e.key === 'Enter') {
+    // Tecla 'H' o 'h': Disparador secreto del hackeo de Anonymous
+    if (e.key === 'h' || e.key === 'H') {
       e.preventDefault();
       triggerHackAnimation();
+      return;
+    }
+
+    // Teclas estándar para una presentación formal
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      prevSlide();
     }
   }
 });
