@@ -767,6 +767,27 @@ window.addEventListener('keydown', (e) => {
       return;
     }
 
+    // Tecla F o f: Pantalla completa
+    if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      toggleFullscreen();
+      return;
+    }
+
+    // Tecla M o m: Silenciar / Activar sonido
+    if (e.key === 'm' || e.key === 'M') {
+      e.preventDefault();
+      toggleMute();
+      return;
+    }
+
+    // Tecla R o r: Solicitar confirmación de reinicio de partida
+    if (e.key === 'r' || e.key === 'R') {
+      e.preventDefault();
+      requestResetGame();
+      return;
+    }
+
     // Teclas 1, 2, 3 para probar rápidamente las 3 animaciones y audios de debilitamiento
     if (e.key === '1') {
       previewWeakeningSequence(1);
