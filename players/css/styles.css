@@ -207,6 +207,31 @@ body {
 .status-text { color: var(--white-muted); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .status-spacer { flex: 1; }
 .status-sep { color: var(--red); opacity: 0.5; }
+.player-timer-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  color: var(--cyan);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+}
+.player-timer-badge.warning {
+  border-color: rgba(255, 176, 0, 0.6);
+  color: var(--amber);
+  background: rgba(255, 176, 0, 0.1);
+}
+.player-timer-badge.urgent {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(255, 0, 60, 0.15);
+  animation: pulse-red 1s infinite alternate;
+}
 
 /* Hero content */
 .hero-content {

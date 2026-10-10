@@ -5,10 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SISTEMA COMPROMETIDO — Interfaz de Equipo</title>
-  <meta name="description" content="Misión de emergencia multijugador: colabora con tu equipo para neutralizar la IA y salvar el instituto.">
+  <meta name="description"
+    content="Misión de emergencia multijugador: colabora con tu equipo para neutralizar la IA y salvar el instituto.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -23,13 +26,16 @@
 
   <!-- Mute button -->
   <button id="mute-btn" onclick="toggleMute()" title="Silenciar">
-    <svg id="mute-icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+    <svg id="mute-icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
     </svg>
-    <svg id="mute-icon-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
-      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-      <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+    <svg id="mute-icon-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" style="display:none">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <line x1="23" y1="9" x2="17" y2="15" />
+      <line x1="17" y1="9" x2="23" y2="15" />
     </svg>
   </button>
 
@@ -67,6 +73,11 @@
           <span id="player-team-label">EQUIPO: --</span>
         </div>
         <div class="status-spacer"></div>
+        <div class="player-timer-badge mono" id="player-timer-badge" title="Tiempo de misión restante">
+          <span class="timer-badge-dot">⏳</span>
+          <span id="player-countdown">45:00</span>
+        </div>
+        <span class="status-sep">//</span>
         <span class="status-text mono">IP: 192.168.1.XXX</span>
         <span class="status-sep">//</span>
         <span class="status-text mono" id="live-time">--:--:--</span>
@@ -98,7 +109,8 @@
             <div class="terminal-progress-wrapper" id="term-progress-wrapper" style="display:none;">
               <div class="term-file-line">
                 <span class="term-label mono">cifrando</span>
-                <span class="term-filename mono" id="term-filename" style="transition: opacity 0.18s ease;">notas-examen-final-v7.xlsx</span>
+                <span class="term-filename mono" id="term-filename"
+                  style="transition: opacity 0.18s ease;">notas-examen-final-v7.xlsx</span>
                 <span class="term-cursor">&#9608;</span>
               </div>
               <div class="progress-track">
@@ -113,7 +125,8 @@
         </div>
         <div class="mission-brief">
           <div class="brief-header mono">// MISIÓN //</div>
-          <p class="brief-text">Una IA ha tomado el control de los sistemas de nuestro instituto.<br>Tienes <strong>5 retos</strong> para recuperarlo. Falla y lo pierdes todo.</p>
+          <p class="brief-text">Una IA ha tomado el control de los sistemas de nuestro instituto.<br>Tienes <strong>5
+              retos</strong> para recuperarlo. Falla y lo pierdes todo.</p>
         </div>
         <button class="btn-hack" id="start-btn" onclick="startMission()">
           <span class="btn-text">ACEPTAR MISIÓN</span>
@@ -146,7 +159,9 @@
       <div class="briefing-tag mono">// MISIÓN DE RECUPERACIÓN DE SISTEMAS //</div>
       <h2 class="briefing-title glitch-text" data-text="OPERACIÓN FIREWALL">OPERACIÓN FIREWALL</h2>
       <div class="divider"></div>
-      <p class="briefing-desc">La IA ha cifrado todos los archivos del centro. Para recuperarlos,<br>tendréis que superar <strong>5 fases</strong> de seguridad. Trabajaréis en equipo.<br>Cada fase os acerca a recuperar el control del sistema.</p>
+      <p class="briefing-desc">Anonymous ha cifrado todos los archivos del centro. Para recuperarlos,<br>tendréis que
+        superar <strong>5 fases</strong> de seguridad. Trabajaréis en equipo.<br>Cada fase os acerca a recuperar el
+        control del sistema.</p>
       <div class="phases-table">
         <div class="phases-header">
           <span class="ph-col">FASE</span>
@@ -199,7 +214,9 @@
       <div class="trans-num" id="trans-num">01</div>
       <div class="trans-name" id="trans-name">AUDIO</div>
       <div class="trans-desc" id="trans-desc">Analiza la señal de audio</div>
-      <div class="trans-bar"><div class="trans-bar-fill" id="trans-bar-fill"></div></div>
+      <div class="trans-bar">
+        <div class="trans-bar-fill" id="trans-bar-fill"></div>
+      </div>
       <div class="trans-pct mono" id="trans-pct">0%</div>
     </div>
   </div>
@@ -213,7 +230,8 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha escondido un mensaje secreto dentro de un archivo de audio.<br>Utilizad <strong>Audacity</strong> para analizar el espectrograma y encontrar el código oculto.</p>
+        <p class="mission-text">La IA ha escondido un mensaje secreto dentro de un archivo de audio.<br>Utilizad
+          <strong>Audacity</strong> para analizar el espectrograma y encontrar el código oculto.</p>
       </div>
       <div class="clue-box">
         <div class="clue-label mono">// ARCHIVO INTERCEPTADO //</div>
@@ -242,7 +260,8 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha dejado pistas en archivos ocultos del servidor.<br>Utiliza <strong>ls -la</strong> para ver archivos ocultos y <strong>cat</strong> para leerlos.</p>
+        <p class="mission-text">La IA ha dejado pistas en archivos ocultos del servidor.<br>Utiliza <strong>ls
+            -la</strong> para ver archivos ocultos y <strong>cat</strong> para leerlos.</p>
       </div>
       <div class="fake-terminal">
         <div class="terminal-header">
@@ -254,10 +273,10 @@
         <div class="fake-term-body mono">
           <div class="fterm-line"><span class="fterm-prompt">$</span> ls -la</div>
           <div class="fterm-line fterm-result">total 24</div>
-          <div class="fterm-line fterm-result">drwxr-xr-x  jowie  staff   768 Oct  6 08:00 .</div>
-          <div class="fterm-line fterm-result">-rw-r--r--  jowie  staff  1024 Oct  6 08:00 readme.txt</div>
-          <div class="fterm-line fterm-result fterm-hidden">-rw-------  root   root    512 Oct  6 08:00 .clave_sistema</div>
-          <div class="fterm-line fterm-result fterm-hidden">-rw-------  root   root     64 Oct  6 08:00 .pista_final</div>
+          <div class="fterm-line fterm-result">drwxr-xr-x jowie staff 768 Oct 6 08:00 .</div>
+          <div class="fterm-line fterm-result">-rw-r--r-- jowie staff 1024 Oct 6 08:00 readme.txt</div>
+          <div class="fterm-line fterm-result fterm-hidden">-rw------- root root 512 Oct 6 08:00 .clave_sistema</div>
+          <div class="fterm-line fterm-result fterm-hidden">-rw------- root root 64 Oct 6 08:00 .pista_final</div>
           <div class="fterm-line"><span class="fterm-prompt">$</span> cat .pista_final</div>
           <div class="fterm-line fterm-key">La clave es: ALFA-7743</div>
           <div class="fterm-line fterm-cursor-line">&#9608;</div>
@@ -283,7 +302,9 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha escondido datos en los metadatos de una imagen.<br>Utiliza <strong>exiftool</strong> para inspeccionarla y <strong>unzip</strong> si hace falta descomprimir archivos.</p>
+        <p class="mission-text">La IA ha escondido datos en los metadatos de una imagen.<br>Utiliza
+          <strong>exiftool</strong> para inspeccionarla y <strong>unzip</strong> si hace falta descomprimir archivos.
+        </p>
       </div>
       <div class="clue-box">
         <div class="clue-label mono">// ARCHIVO SOSPECHOSO //</div>
@@ -319,14 +340,17 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha cifrado el código final con una función matemática.<br>Descubre los valores <strong>a</strong> y <strong>b</strong> usando GeoGebra y la recta <strong>y = ax + b</strong>.</p>
+        <p class="mission-text">La IA ha cifrado el código final con una función matemática.<br>Descubre los valores
+          <strong>a</strong> y <strong>b</strong> usando GeoGebra y la recta <strong>y = ax + b</strong>.</p>
       </div>
       <div class="clue-box">
         <div class="clue-label mono">// DATOS INTERCEPTADOS //</div>
         <div class="crypto-data mono">
           <div class="crypto-row"><span class="crypto-label">Punto A:</span><span class="crypto-val">(2, 7)</span></div>
-          <div class="crypto-row"><span class="crypto-label">Punto B:</span><span class="crypto-val">(5, 13)</span></div>
-          <div class="crypto-row"><span class="crypto-label">Incógnita:</span><span class="crypto-val">cuando x = 10, y = ?</span></div>
+          <div class="crypto-row"><span class="crypto-label">Punto B:</span><span class="crypto-val">(5, 13)</span>
+          </div>
+          <div class="crypto-row"><span class="crypto-label">Incógnita:</span><span class="crypto-val">cuando x = 10, y
+              = ?</span></div>
         </div>
         <div class="crypto-hint mono">// La respuesta es el código descifrado //</div>
       </div>
@@ -350,20 +374,26 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN FINAL</div>
-        <p class="mission-text">Tenéis todos los códigos. Ahora hay que combinarlos para descifrar el sistema.<br><strong>Toda la clase debe ponerse de acuerdo</strong> e introducir la secuencia final.</p>
+        <p class="mission-text">Tenéis todos los códigos. Ahora hay que combinarlos para descifrar el
+          sistema.<br><strong>Toda la clase debe ponerse de acuerdo</strong> e introducir la secuencia final.</p>
       </div>
       <div class="climax-codes mono">
         <div class="code-collect">
-          <div class="code-item"><span class="code-phase">FASE 01</span><span class="code-val" id="col-code-1">[ ??? ]</span></div>
-          <div class="code-item"><span class="code-phase">FASE 02</span><span class="code-val" id="col-code-2">[ ??? ]</span></div>
-          <div class="code-item"><span class="code-phase">FASE 03</span><span class="code-val" id="col-code-3">[ ??? ]</span></div>
-          <div class="code-item"><span class="code-phase">FASE 04</span><span class="code-val" id="col-code-4">[ ??? ]</span></div>
+          <div class="code-item"><span class="code-phase">FASE 01</span><span class="code-val" id="col-code-1">[ ???
+              ]</span></div>
+          <div class="code-item"><span class="code-phase">FASE 02</span><span class="code-val" id="col-code-2">[ ???
+              ]</span></div>
+          <div class="code-item"><span class="code-phase">FASE 03</span><span class="code-val" id="col-code-3">[ ???
+              ]</span></div>
+          <div class="code-item"><span class="code-phase">FASE 04</span><span class="code-val" id="col-code-4">[ ???
+              ]</span></div>
         </div>
       </div>
       <div class="answer-section">
         <div class="answer-label mono">SECUENCIA FINAL (combina todos los códigos):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-5" type="text" placeholder="FASE1-FASE2-FASE3-FASE4" maxlength="50" autocomplete="off">
+          <input class="hack-input" id="ans-5" type="text" placeholder="FASE1-FASE2-FASE3-FASE4" maxlength="50"
+            autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(5)">DESCIFRAR</button>
         </div>
         <div class="answer-feedback" id="feedback-5"></div>
@@ -384,7 +414,9 @@
       <div class="victory-tag mono">// SISTEMA RECUPERADO //</div>
       <h2 class="victory-title glitch-text" data-text="ACCESO RESTAURADO">ACCESO RESTAURADO</h2>
       <div class="divider"></div>
-      <p class="victory-text">Habéis superado todos los retos y neutralizado la IA.<br><strong>El sistema del instituto está de nuevo bajo control humano.</strong><br><br>Habéis demostrado que la ciberseguridad es cosa de todos.</p>
+      <p class="victory-text">Habéis superado todos los retos y neutralizado la IA.<br><strong>El sistema del instituto
+          está de nuevo bajo control humano.</strong><br><br>Habéis demostrado que la ciberseguridad es cosa de todos.
+      </p>
       <div class="victory-stats mono">
         <span>5 / 5 FASES COMPLETADAS</span>
         <span class="sep-v">|</span>
@@ -397,4 +429,5 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>

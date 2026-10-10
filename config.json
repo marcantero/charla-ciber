@@ -1,7 +1,8 @@
 {
   "_comentario": "CONFIGURACIÓN DEL ESCAPE ROOM — Modifica estos valores para personalizar tu charla",
   "nombreInstituto": "Institut Vil·la Romana",
-  "numeroEquipos": 6,
+  "numeroEquipos": 5,
+  "tiempoMinutos": 45,
   "mensajeHacker": {
     "saludo": "Hola {nombreInstituto}, me he infiltrado en vuestro instituto jajajajaja (risa malvada).",
     "cuerpo": "Voy a cifrar todos vuestros datos. Pero para que esto sea más divertido voy a dejaros unos retos para que podáis pararme.\nTendréis que hacer {numeroEquipos} grupos, con el objetivo de intentar pararme con todo lo que habéis aprendido en esta charla.\nMucha suerte."

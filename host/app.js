@@ -32,6 +32,11 @@ function applyConfigToHost(cfg) {
   const teamsEl = document.getElementById('hacker-msg-teams');
   if (teamsEl) teamsEl.textContent = `${cfg.numeroEquipos || 5} grupos`;
 
+  // Inicializar o sincronizar el temporizador de cuenta atrás configurable
+  if (typeof syncMissionTimerConfig === 'function') {
+    syncMissionTimerConfig(cfg);
+  }
+
   // Reconstruir la parrilla de equipos si aún no ha comenzado la partida
   if (typeof buildInitialTeamsGrid === 'function') {
     buildInitialTeamsGrid();
@@ -546,8 +551,150 @@ if (matrixCanvas) {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  3. RELOJ EN VIVO
+//  3. RELOJ EN VIVO Y CUENTA ATRÁS CONFIGURABLE
 // ═══════════════════════════════════════════════════════════
+let missionTotalSeconds = 45 * 60; // 45 minutos por defecto
+let missionRemainingSeconds = 45 * 60;
+let missionTimerInterval = null;
+let isMissionTimerRunning = false;
+let isMissionTimerStarted = false;
+let hasPlayedTimerWarning = false;
+let hasPlayedTimerUrgent = false;
+
+function syncMissionTimerConfig(cfg) {
+  const mins = parseFloat(cfg.tiempoMinutos || cfg.minutos || cfg.tiempo || 45);
+  const totalSecs = Math.max(60, Math.round(mins * 60));
+  missionTotalSeconds = totalSecs;
+
+  // Si no ha empezado a correr, ajustamos el tiempo restante
+  if (!isMissionTimerStarted) {
+    missionRemainingSeconds = totalSecs;
+    hasPlayedTimerWarning = false;
+    hasPlayedTimerUrgent = false;
+  }
+  renderCountdownDisplay();
+}
+
+function startMissionTimer() {
+  if (isMissionTimerRunning) return;
+  isMissionTimerRunning = true;
+  isMissionTimerStarted = true;
+
+  const widget = document.getElementById('hud-countdown-widget');
+  const btn = document.getElementById('btn-toggle-timer');
+  if (widget) widget.classList.remove('paused');
+  if (btn) btn.textContent = '⏸';
+
+  if (!missionTimerInterval) {
+    missionTimerInterval = setInterval(tickMissionTimer, 1000);
+  }
+}
+
+function pauseMissionTimer() {
+  isMissionTimerRunning = false;
+  const widget = document.getElementById('hud-countdown-widget');
+  const btn = document.getElementById('btn-toggle-timer');
+  if (widget) widget.classList.add('paused');
+  if (btn) btn.textContent = '▶';
+}
+
+function toggleMissionTimer(e) {
+  if (e) e.stopPropagation();
+  if (isMissionTimerRunning) {
+    pauseMissionTimer();
+    logTerminalEvent('Temporizador de misión pausado manualmente.', 'log-sys');
+  } else {
+    startMissionTimer();
+    logTerminalEvent('Temporizador de misión reanudado.', 'log-sys');
+  }
+}
+
+function resetMissionTimer() {
+  isMissionTimerRunning = false;
+  isMissionTimerStarted = false;
+  hasPlayedTimerWarning = false;
+  hasPlayedTimerUrgent = false;
+  if (missionTimerInterval) {
+    clearInterval(missionTimerInterval);
+    missionTimerInterval = null;
+  }
+  const mins = parseFloat((appConfig && (appConfig.tiempoMinutos || appConfig.minutos)) || 45);
+  missionTotalSeconds = Math.max(60, Math.round(mins * 60));
+  missionRemainingSeconds = missionTotalSeconds;
+  
+  const widget = document.getElementById('hud-countdown-widget');
+  const btn = document.getElementById('btn-toggle-timer');
+  if (widget) {
+    widget.classList.remove('paused', 'warning', 'urgent');
+  }
+  if (btn) btn.textContent = '▶';
+  renderCountdownDisplay();
+}
+
+function tickMissionTimer() {
+  if (!isMissionTimerRunning) return;
+
+  if (missionRemainingSeconds > 0) {
+    missionRemainingSeconds--;
+  }
+
+  // Notificación auditiva y visual al entrar en últimos 5 minutos (300s)
+  if (missionRemainingSeconds <= 300 && missionRemainingSeconds > 60 && !hasPlayedTimerWarning) {
+    hasPlayedTimerWarning = true;
+    logTerminalEvent('⚠️ ADVERTENCIA: Quedan menos de 5 minutos para el cifrado definitivo.', 'log-alert');
+    if (!isMuted && typeof playAdvanceChime === 'function') playAdvanceChime();
+  }
+
+  // Notificación auditiva y visual en el último minuto (60s)
+  if (missionRemainingSeconds <= 60 && missionRemainingSeconds > 0 && !hasPlayedTimerUrgent) {
+    hasPlayedTimerUrgent = true;
+    logTerminalEvent('🚨 CRÍTICO: ¡ÚLTIMO MINUTO! Bloqueo inminente del sistema escolar.', 'log-alert');
+    if (!isMuted && typeof playHackGlitchSound === 'function') playHackGlitchSound();
+  }
+
+  if (missionRemainingSeconds === 0) {
+    isMissionTimerRunning = false;
+    clearInterval(missionTimerInterval);
+    missionTimerInterval = null;
+    logTerminalEvent('⌛ TIEMPO AGOTADO: La cuenta atrás ha expirado. Protocolo de bloqueo activado.', 'log-alert');
+    if (!isMuted && typeof playHackGlitchSound === 'function') playHackGlitchSound();
+  }
+
+  renderCountdownDisplay();
+}
+
+function renderCountdownDisplay() {
+  const digitsEl = document.getElementById('dash-countdown-digits');
+  const widget = document.getElementById('hud-countdown-widget');
+  if (!digitsEl) return;
+
+  const total = Math.max(0, missionRemainingSeconds);
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const seconds = total % 60;
+
+  let formatted = '';
+  if (hours > 0) {
+    formatted = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  } else {
+    formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  digitsEl.textContent = formatted;
+
+  if (widget) {
+    if (total <= 60) {
+      widget.classList.add('urgent');
+      widget.classList.remove('warning');
+    } else if (total <= 300) {
+      widget.classList.add('warning');
+      widget.classList.remove('urgent');
+    } else {
+      widget.classList.remove('warning', 'urgent');
+    }
+  }
+}
+
 function updateClock() {
   const now = new Date();
   const timeStr = now.toTimeString().slice(0, 8);
@@ -749,7 +896,10 @@ function openHostDashboardFromHack() {
   if (hackScreen) hackScreen.classList.add('hidden');
   if (dashScreen) dashScreen.classList.remove('hidden');
 
-  logTerminalEvent('Monitorización activada. 5 equipos convocados para neutralizar a Anonymous.', 'log-sys');
+  // Iniciar la cuenta atrás automáticamente al entrar al dashboard
+  startMissionTimer();
+
+  logTerminalEvent('Monitorización activada. Equipos convocados para neutralizar la amenaza.', 'log-sys');
 }
 
 // Atajos de teclado formales para la presentación y tecla H secreta
@@ -764,6 +914,13 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeWeakeningOverlay();
       closeResetModal();
+      return;
+    }
+
+    // Tecla Espacio: Pausar/Reanudar cuenta atrás
+    if (e.key === ' ' && !e.target.matches('input, textarea, button')) {
+      e.preventDefault();
+      toggleMissionTimer();
       return;
     }
 
@@ -1141,6 +1298,7 @@ function initHostSocket() {
     hackerMilestones = { m1: false, m2: false, m3: false };
     testStageCounter = 1;
     closeWeakeningOverlay();
+    resetMissionTimer();
     logTerminalEvent('Partida reiniciada desde el servidor central.', 'log-sys');
   });
 }

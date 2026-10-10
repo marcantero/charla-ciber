@@ -286,7 +286,17 @@
         </div>
 
         <div class="hud-meta mono">
-          <div class="hud-live-clock" id="dash-live-time">--:--:--</div>
+          <!-- Widget de Cuenta Atrás Configurable -->
+          <div class="hud-countdown-widget" id="hud-countdown-widget" title="Cuenta atrás de la misión (Espacio para pausar/reanudar)">
+            <span class="countdown-icon">⏳</span>
+            <div class="countdown-body">
+              <span class="countdown-label">TIEMPO RESTANTE</span>
+              <span class="countdown-digits" id="dash-countdown-digits">--:--</span>
+            </div>
+            <button class="countdown-ctrl-btn" id="btn-toggle-timer" onclick="toggleMissionTimer(event)" title="Pausar / Reanudar temporizador">⏸</button>
+          </div>
+
+          <div class="hud-live-clock" id="dash-live-time" title="Hora local actual">--:--:--</div>
           <div class="hud-status-chip" id="server-status-chip">
             <span class="chip-dot"></span> <span id="server-status-text">CONECTADO</span>
           </div>
