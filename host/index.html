@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CENTRAL DE CONTROL — Dashboard del Host</title>
-  <meta name="description" content="Panel de control para el proyector de aula: monitorización en tiempo real del escape room de ciberseguridad.">
+  <title>Jornada de Ciberseguridad — IES Tecnológico</title>
+  <meta name="description" content="Presentación interactiva de ciberseguridad y escape room de instituto hackeado en red local.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 </head>
 
 <body>
-  <!-- Fondo cibernético -->
+  <!-- Fondo cibernético Matrix -->
   <canvas id="matrix-canvas"></canvas>
   <div class="scanlines"></div>
   <div class="crt-flicker"></div>
@@ -22,8 +22,11 @@
   <div class="deco deco-bl"></div>
   <div class="deco deco-br"></div>
 
-  <!-- Botones flotantes de utilidad -->
+  <!-- Controles flotantes para el ponente/profesor -->
   <div class="host-floating-controls">
+    <button id="trigger-hack-btn" class="btn-util btn-hack-shortcut mono" onclick="triggerHackAnimation()" title="Disparar hackeo repentino (o presiona tecla H)">
+      <span class="btn-icon">⚡</span> HACKEAR (Tecla H)
+    </button>
     <button id="fullscreen-btn" class="btn-util mono" onclick="toggleFullscreen()" title="Pantalla Completa">
       <span class="btn-icon">⛶</span> PANTALLA COMPLETA
     </button>
@@ -31,66 +34,168 @@
       <span id="mute-icon">🔊</span> SONIDO
     </button>
     <button id="reset-btn" class="btn-util btn-danger mono" onclick="requestResetGame()" title="Reiniciar Partida">
-      <span>↺</span> REINICIAR ESCAPE ROOM
+      <span>↺</span> REINICIAR PARTIDA
     </button>
   </div>
 
   <!-- ============================================================== -->
-  <!-- 1. INTRO CINEMATOGRÁFICA DE LA IA                              -->
+  <!-- 0. PANTALLA DE PRESENTACIÓN INOCENTE (PREVIA AL HACKEO)        -->
   <!-- ============================================================== -->
-  <div class="screen" id="host-intro-screen">
-    <div class="intro-container">
-      <div class="status-bar mono">
-        <span class="status-dot blink-red"></span>
-        <span class="status-text">[!] NODO CENTRAL COMPROMETIDO</span>
-        <div class="status-spacer"></div>
-        <span class="status-text">HOST: PROYECTOR DE AULA</span>
-        <span class="status-sep">//</span>
-        <span class="status-text" id="intro-live-time">--:--:--</span>
+  <div class="screen" id="presentation-screen">
+    <div class="pres-container">
+      <!-- Barra superior institucional de la presentación -->
+      <div class="pres-header">
+        <div class="pres-badge">
+          <span class="badge-icon">🏛️</span>
+          <span class="badge-text">IES TECNOLÓGICO // DPTO. INFORMÁTICA Y REDES</span>
+        </div>
+        <div class="pres-meta">
+          <span>AULA MAGNA</span>
+          <span class="pres-sep">|</span>
+          <span id="pres-live-date">OCTUBRE 2026</span>
+          <span class="pres-sep">|</span>
+          <span id="pres-live-clock">--:--:--</span>
+        </div>
       </div>
 
-      <div class="intro-body">
-        <div class="ai-warning-box">
-          <div class="ai-badge mono">&lt; TRANSMISIÓN FORZADA // PROTOCOLO HOSTIL &gt;</div>
-          <h1 class="ai-threat-title glitch-text" data-text="AMENAZA DE CIFRADO GLOBAL">
-            AMENAZA DE CIFRADO GLOBAL
-          </h1>
-          <div class="ai-quote-container">
-            <div class="quote-symbol">“</div>
-            <p class="ai-message glitch-text" id="ai-voice-text" data-text="Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo.">
-              Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo.
-            </p>
-            <div class="quote-author mono">// ENTIDAD_IA_MASTER_v4</div>
+      <!-- Diapositiva principal de la charla -->
+      <div class="slide-card" id="main-slide">
+        <div class="slide-tag">MÓDULO 1: CONCEPTOS GENERALES</div>
+        <h1 class="slide-title">JORNADA DE CIBERSEGURIDAD Y PROTECCIÓN DE DATOS</h1>
+        <p class="slide-subtitle">Comprendiendo las amenazas actuales en entornos educativos y domésticos</p>
+
+        <div class="slide-topics-grid">
+          <div class="topic-box">
+            <div class="topic-icon">🔐</div>
+            <h3 class="topic-title">1. Autenticación y 2FA</h3>
+            <p class="topic-desc">Contraseñas robustas, claves únicas y factores de doble verificación.</p>
+          </div>
+          <div class="topic-box">
+            <div class="topic-icon">🛡️</div>
+            <h3 class="topic-title">2. Cortafuegos y Redes</h3>
+            <p class="topic-desc">Protección perimetral de centros educativos frente a intrusiones externas.</p>
+          </div>
+          <div class="topic-box">
+            <div class="topic-icon">🎣</div>
+            <h3 class="topic-title">3. Ingeniería Social</h3>
+            <p class="topic-desc">Identificación de correos falsos, enlaces trampa y vectores de ataque.</p>
           </div>
         </div>
 
-        <div class="intro-meta-grid mono">
-          <div class="meta-item">
-            <span class="meta-label">ESTADO DE ARCHIVOS:</span>
-            <span class="meta-val text-red">CIFRADO INMINENTE</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">EQUIPOS OBJETIVO:</span>
-            <span class="meta-val text-white">5 NODOS DE ALUMNOS</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">DEFENSA REQUERIDA:</span>
-            <span class="meta-val text-green">5 FASES DE CIBERSEGURIDAD</span>
-          </div>
-        </div>
-
-        <div class="intro-actions">
-          <button class="btn-cyber-primary" id="start-defense-btn" onclick="startHostDashboard()">
-            <span class="btn-cyber-text">INICIAR MONITORIZACIÓN Y ACTIVAR DEFENSAS</span>
-            <span class="btn-cyber-arrow">▶</span>
+        <div class="slide-footer-bar">
+          <div class="slide-number">Diapositiva 1 de 12 — Introducción</div>
+          <div class="slide-instruction">Pulsa <kbd>Espacio</kbd>, <kbd>H</kbd> o el botón para continuar</div>
+          <button class="btn-slide-next" onclick="triggerHackAnimation()">
+            <span>Siguiente Diapositiva</span>
+            <span>▶</span>
           </button>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="intro-bottom-bar mono">
-        <span id="intro-ip-label">RED LOCAL: CONECTADA</span>
-        <span id="intro-port-label">PUERTO: 4000</span>
-        <span class="text-red">NIVEL DE CIFRADO: 100% CRÍTICO</span>
+  <!-- ============================================================== -->
+  <!-- 1. OVERLAY DE HACKEO REPENTINO DE ANONYMOUS                   -->
+  <!-- ============================================================== -->
+  <div class="screen hidden" id="hack-takeover-screen">
+    <div class="hack-container">
+      <!-- Alerta roja parpadeante de intrusión -->
+      <div class="breach-alert-bar mono">
+        <span class="status-dot blink-red"></span>
+        <span class="alert-title">[!] ALERTA CRÍTICA: TRANSMISIÓN INTERCEPTADA // SEÑAL FORZADA [!]</span>
+        <span class="status-dot blink-red"></span>
+      </div>
+
+      <div class="hack-stage">
+        <!-- Visual del Hacker Anonymous -->
+        <div class="anon-visual-panel">
+          <div class="anon-avatar-box">
+            <!-- Máscara ciberpunk estilizada de Anonymous con circuitos -->
+            <svg class="anon-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Capucha negra -->
+              <path d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#0c050a" stroke="#ff003c" stroke-width="2.5"/>
+              <!-- Base de máscara blanca / ciber -->
+              <path d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff003c" stroke-width="2.5"/>
+              <!-- Cejas marcadas -->
+              <path d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+              <!-- Ojos de escaneo láser -->
+              <ellipse cx="92" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+              <circle cx="92" cy="118" r="4" fill="#00ff66" class="anon-eye-laser"/>
+              <ellipse cx="148" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+              <circle cx="148" cy="118" r="4" fill="#00ff66" class="anon-eye-laser"/>
+              <!-- Bigote curvado en punta -->
+              <path d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
+              <!-- Sonrisa enigmática -->
+              <path d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <!-- Perilla ciberpunk -->
+              <path d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
+              <!-- Circuitos que fluyen -->
+              <line x1="92" y1="125" x2="92" y2="152" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <line x1="148" y1="125" x2="148" y2="152" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <circle cx="92" cy="152" r="2.5" fill="#00ff66"/>
+              <circle cx="148" cy="152" r="2.5" fill="#00ff66"/>
+            </svg>
+            <div class="anon-name-tag mono">IDENTIDAD: 0xANONYMOUS // INTRUSO</div>
+          </div>
+
+          <!-- Estado de los sistemas del instituto -->
+          <div class="institute-damage-panel mono">
+            <div class="damage-header">// ESTADO DE VULNERABILIDAD DEL INSTITUTO //</div>
+            <div class="damage-item">
+              <span>SERVIDOR DE NOTAS:</span>
+              <span class="text-red">CIFRANDO... [89%]</span>
+            </div>
+            <div class="damage-item">
+              <span>EXPEDIENTES Y DNI:</span>
+              <span class="text-red">BLOQUEADO</span>
+            </div>
+            <div class="damage-item">
+              <span>CÁMARAS DEL CENTRO:</span>
+              <span class="text-red">ACCESO TOMADO</span>
+            </div>
+            <div class="damage-item">
+              <span>FIREWALL DEL IES:</span>
+              <span class="text-red">DERRIBADO</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal de ataque en tiempo real y mensaje del hacker -->
+        <div class="anon-terminal-panel">
+          <div class="terminal-box">
+            <div class="terminal-header mono">
+              <span class="term-dot red"></span>
+              <span class="term-dot yellow"></span>
+              <span class="term-dot green"></span>
+              <span class="term-title">anonymous@dark-proxy:~$ attack_institute.sh</span>
+            </div>
+            <div class="terminal-body mono" id="anon-terminal-output">
+              <div class="term-log-line">&gt; Escaneando subred educativa 192.168.1.0/24...</div>
+              <div class="term-log-line">&gt; Vulnerabilidad crítica detectada en puerto 8080.</div>
+              <div class="term-log-line text-red">&gt; [OK] Inyección de payload de cifrado ejecutada.</div>
+              <div class="term-log-line text-green">&gt; ROOT ACCESO CONCEDIDO A: root@ies-servidor</div>
+              <div class="term-log-line">&gt; Interrumpiendo pantalla del aula...</div>
+            </div>
+          </div>
+
+          <!-- Mensaje amenazante del Anónimo -->
+          <div class="anon-speech-box">
+            <div class="speech-pre mono">&lt; MENSAJE PARA EL INSTITUTO &gt;</div>
+            <h2 class="speech-quote glitch-text" id="anon-quote-text" data-text="Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo.">
+              "Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo."
+            </h2>
+            <p class="speech-desc mono">
+              He bloqueado vuestra red en 5 fases de seguridad. Si los 5 equipos no resuelven los retos a tiempo, todos los datos se perderán para siempre.
+            </p>
+          </div>
+
+          <div class="hack-actions">
+            <button class="btn-counterattack" id="btn-enter-dashboard" onclick="openHostDashboardFromHack()">
+              <span class="btn-ca-text">ACEPTAR EL RETO // MONITORIZAR EQUIPOS</span>
+              <span class="btn-ca-arrow">▶</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

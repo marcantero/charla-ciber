@@ -50,6 +50,9 @@ app.use('/host', express.static(path.join(__dirname, 'host')));
 // Ruta para los Jugadores (Alumnos)
 app.use('/players', express.static(path.join(__dirname, 'players')));
 
+// Ruta para archivos de audio opcionales (mp3, wav)
+app.use('/audio', express.static(path.join(__dirname, 'audio')));
+
 // Redirección por defecto a /host o portal
 app.get('/', (req, res) => {
   res.redirect('/host');

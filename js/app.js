@@ -12,21 +12,191 @@ let reverbNode = null;
 let dryBus     = null;
 let wetBus     = null;
 let isMuted    = false;
+let isHackingActive = false;
 
 function initAudio() {
   if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  masterGain = audioCtx.createGain();
-  masterGain.gain.value = 0.6;
-  masterGain.connect(audioCtx.destination);
-  reverbNode = buildReverb();
-  dryBus = audioCtx.createGain(); dryBus.gain.value = 0.78;
-  wetBus = audioCtx.createGain(); wetBus.gain.value = 0.22;
-  reverbNode.connect(wetBus);
-  dryBus.connect(masterGain);
-  wetBus.connect(masterGain);
-  startAmbientDrone();
-  startRandomGlitches();
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.6;
+    masterGain.connect(audioCtx.destination);
+    reverbNode = buildReverb();
+    dryBus = audioCtx.createGain(); dryBus.gain.value = 0.78;
+    wetBus = audioCtx.createGain(); wetBus.gain.value = 0.22;
+    reverbNode.connect(wetBus);
+    dryBus.connect(masterGain);
+    wetBus.connect(masterGain);
+  } catch (e) {
+    console.warn('AudioContext no inicializado:', e);
+  }
+}
+
+// 1.1 Glitch de interferencia eléctrica inicial
+function playHackGlitchSound() {
+  initAudio();
+  if (isMuted) return;
+
+  const glitchAudio = new Audio('/audio/hack_glitch.mp3');
+  glitchAudio.play().catch(() => {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const dur = 1.2;
+    const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.7;
+
+    const noiseSrc = audioCtx.createBufferSource();
+    noiseSrc.buffer = buf;
+    
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(3200, now);
+    filter.frequency.exponentialRampToValueAtTime(120, now + dur);
+
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+    noiseSrc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    noiseSrc.start(now);
+
+    const osc = audioCtx.createOscillator();
+    const oscGain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(60, now + 0.8);
+    oscGain.gain.setValueAtTime(0.2, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+    osc.connect(oscGain);
+    oscGain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.8);
+  });
+}
+
+// 1.2 Sirena de alarma de brecha de seguridad
+function playSirenAlarm() {
+  initAudio();
+  if (isMuted) return;
+
+  const sirenAudio = new Audio('/audio/siren_alarm.mp3');
+  sirenAudio.play().catch(() => {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(650, now);
+    osc.frequency.linearRampToValueAtTime(950, now + 0.6);
+    osc.frequency.linearRampToValueAtTime(650, now + 1.2);
+    osc.frequency.linearRampToValueAtTime(950, now + 1.8);
+    osc.frequency.linearRampToValueAtTime(650, now + 2.4);
+
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 2.6);
+  });
+}
+
+// 1.3 Voz distorsionada del Anónimo
+function playAIVoice() {
+  initAudio();
+
+  if (audioCtx && !isMuted) {
+    const now = audioCtx.currentTime;
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(52, now);
+    osc1.frequency.exponentialRampToValueAtTime(36, now + 5.0);
+
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(104, now);
+    osc2.frequency.exponentialRampToValueAtTime(72, now + 5.0);
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(400, now);
+    filter.Q.value = 6;
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.28, now + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 5.5);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 5.8);
+    osc2.stop(now + 5.8);
+  }
+
+  const customVoice = new Audio('/audio/anon_voice.mp3');
+  customVoice.play().catch(() => {
+    const fallbackVoice = new Audio('/audio/ai_voice.mp3');
+    fallbackVoice.play().catch(() => {
+      speakSynthesizedAnonymous();
+    });
+  });
+}
+
+function speakSynthesizedAnonymous() {
+  if ('speechSynthesis' in window && !isMuted) {
+    window.speechSynthesis.cancel();
+    const text = "Atención instituto... Si nadie me detiene, todos vuestros sistemas serán cifrados. Tenéis 5 retos para evitarlo.";
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.pitch = 0.22;
+    utterance.rate = 0.82;
+    utterance.volume = 1.0;
+    
+    const voices = window.speechSynthesis.getVoices();
+    const esVoice = voices.find(v => v.lang.startsWith('es'));
+    if (esVoice) utterance.voice = esVoice;
+
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  if (masterGain) {
+    masterGain.gain.value = isMuted ? 0 : 0.6;
+  }
+  const onIcon = document.getElementById('mute-icon-on');
+  const offIcon = document.getElementById('mute-icon-off');
+  const muteBtn = document.getElementById('mute-btn');
+  if (onIcon && offIcon) {
+    onIcon.style.display = isMuted ? 'none' : 'block';
+    offIcon.style.display = isMuted ? 'block' : 'none';
+  }
+  if (muteBtn) {
+    muteBtn.classList.toggle('muted', isMuted);
+  }
+  if (isMuted && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => console.warn(err));
+  } else {
+    document.exitFullscreen().catch(err => console.warn(err));
+  }
 }
 
 // Synthesized convolver reverb
@@ -330,7 +500,7 @@ const WRONG_MSG = [
 
 // State
 let collectedCodes = {};
-let currentScreen = 'intro-screen';
+let currentScreen = 'presentation-screen';
 
 // ═══════════════════════════════════════════════════════════
 //  MATRIX RAIN CANVAS
@@ -375,9 +545,14 @@ setInterval(drawMatrix, 50);
 // ═══════════════════════════════════════════════════════════
 function updateClock() {
   const el = document.getElementById('live-time');
-  if (!el) return;
   const now = new Date();
-  el.textContent = now.toTimeString().slice(0, 8);
+  const timeStr = now.toTimeString().slice(0, 8);
+  const dateStr = now.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+  if (el) el.textContent = timeStr;
+  const pClock = document.getElementById('pres-live-clock');
+  const pDate = document.getElementById('pres-live-date');
+  if (pClock) pClock.textContent = timeStr;
+  if (pDate) pDate.textContent = dateStr;
 }
 updateClock();
 setInterval(updateClock, 1000);
@@ -503,8 +678,64 @@ function startNextFile() {
   }, 30);
 }
 
-// Start terminal animation after 600ms
-setTimeout(typeTerminal, 600);
+// ═══════════════════════════════════════════════════════════
+//  ANIMACIÓN DE HACKEO DE ANONYMOUS
+// ═══════════════════════════════════════════════════════════
+function triggerHackAnimation() {
+  if (isHackingActive) return;
+  isHackingActive = true;
+
+  initAudio();
+  playHackGlitchSound();
+
+  const presSlide = document.getElementById('main-slide');
+  if (presSlide) {
+    presSlide.classList.add('glitching');
+  }
+
+  // Tras 1.3s de glitch en la diapositiva, irrupción de Anonymous
+  setTimeout(() => {
+    showScreen('hack-takeover-screen');
+
+    // Reproducir sirena y voz distorsionada
+    playSirenAlarm();
+    setTimeout(playAIVoice, 600);
+
+    // Escribir terminal de ataque en tiempo real
+    simulateAnonymousTerminal();
+  }, 1300);
+}
+
+function simulateAnonymousTerminal() {
+  const terminalOut = document.getElementById('anon-terminal-output');
+  if (!terminalOut) return;
+
+  const extraLogs = [
+    '> Infiltrando servidores DNS y router gateway 192.168.1.1...',
+    '> Servidor de calificaciones y expedientes: [ENCRIPTADO]',
+    '> Protocolo de extorsión activado en el IES Tecnológico.',
+    '> [!] ALERTA: Brecha completa. Todos los accesos bloqueados.'
+  ];
+
+  extraLogs.forEach((lineText, index) => {
+    setTimeout(() => {
+      const lineEl = document.createElement('div');
+      lineEl.className = 'term-log-line text-red';
+      lineEl.textContent = lineText;
+      terminalOut.appendChild(lineEl);
+      terminalOut.scrollTop = terminalOut.scrollHeight;
+    }, 1200 + index * 900);
+  });
+}
+
+function openIntroFromHack() {
+  showScreen('intro-screen');
+  startAmbientDrone();
+  startRandomGlitches();
+  if (!terminalReady) {
+    setTimeout(typeTerminal, 400);
+  }
+}
 
 // ═══════════════════════════════════════════════════════════
 //  SCREEN NAVIGATION
@@ -680,8 +911,21 @@ function launchVictoryEffect() {
 // ═══════════════════════════════════════════════════════════
 //  KEYBOARD SHORTCUT: Press ESC to go back to briefing
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  ATAJOS DE TECLADO: H (Hack), Espacio, Enter, ESC
+// ═══════════════════════════════════════════════════════════
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && currentScreen !== 'intro-screen' && currentScreen !== 'victory-screen') {
+  if (currentScreen === 'presentation-screen') {
+    if (e.key === 'h' || e.key === 'H' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      triggerHackAnimation();
+    }
+  } else if (currentScreen === 'hack-takeover-screen') {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      openIntroFromHack();
+    }
+  } else if (e.key === 'Escape' && currentScreen !== 'intro-screen' && currentScreen !== 'victory-screen') {
     showScreen('briefing-screen');
   }
 });

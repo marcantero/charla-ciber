@@ -1,0 +1,25 @@
+====================================================================
+  CARPETA DE AUDIOS OPCIONALES — ESCAPE ROOM CIBERSEGURIDAD
+====================================================================
+
+El sistema cuenta con un motor procedural de sonido mediante Web Audio API
+que sintetiza interferencias, sirenas de alarma y voz distorsionada de la IA
+de forma 100% autónoma y sin dependencias.
+
+Sin embargo, si quieres utilizar tus propios audios distorsionados grabados
+o efectos de sonido personalizados, simplemente coloca los archivos MP3
+en esta carpeta con los siguientes nombres:
+
+1. anon_voice.mp3 (o ai_voice.mp3)
+   -> Voz distorsionada del anónimo/IA cuando hackea la pantalla.
+   -> Mensaje recomendado: "Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo."
+
+2. hack_glitch.mp3
+   -> Efecto de sonido de interferencia eléctrica / corte de señal inicial.
+
+3. siren_alarm.mp3
+   -> Efecto de sonido de alarma o sirena de intrusión.
+
+El sistema detectará automáticamente si estos archivos existen. Si no los
+encuentra, utilizará los sintetizadores de audio generativo en tiempo real.
+====================================================================

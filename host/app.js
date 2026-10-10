@@ -1,6 +1,6 @@
 // ================================================================
 //  HOST DASHBOARD — APP.JS
-//  Control Central, Animaciones en Tiempo Real y Voz IA
+//  Presentación Inocente, Hackeo de Anonymous y Monitorización
 // ================================================================
 
 // Definición de las 5 fases para visualización
@@ -16,10 +16,11 @@ let teamsState = {};
 let isMuted = false;
 let audioCtx = null;
 let socket = null;
-let isFirstHostInit = true;
+let sirenInterval = null;
+let isHackingActive = false;
 
 // ═══════════════════════════════════════════════════════════
-//  1. MOTOR DE AUDIO CIBERNÉTICO (Web Audio API)
+//  1. MOTOR DE AUDIO CIBERNÉTICO & SONIDOS DISTORSIONADOS
 // ═══════════════════════════════════════════════════════════
 function initAudio() {
   if (audioCtx) return;
@@ -30,35 +31,116 @@ function initAudio() {
   }
 }
 
-// Reproduce la voz siniestra distorsionada de la IA al iniciar
+// 1.1 Glitch de interferencia eléctrica inicial
+function playHackGlitchSound() {
+  initAudio();
+  if (isMuted) return;
+
+  // Intentar cargar MP3 local primero si existe
+  const glitchAudio = new Audio('/audio/hack_glitch.mp3');
+  glitchAudio.play().catch(() => {
+    // Fallback: Sintetizador procedural Web Audio API de cortocircuito
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    
+    // Ruido blanco filtrado (estática CRT)
+    const dur = 1.2;
+    const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.7;
+
+    const noiseSrc = audioCtx.createBufferSource();
+    noiseSrc.buffer = buf;
+    
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(3200, now);
+    filter.frequency.exponentialRampToValueAtTime(120, now + dur);
+
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+    noiseSrc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    noiseSrc.start(now);
+
+    // Tono digital chirriante
+    const osc = audioCtx.createOscillator();
+    const oscGain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(60, now + 0.8);
+    oscGain.gain.setValueAtTime(0.2, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+    osc.connect(oscGain);
+    oscGain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.8);
+  });
+}
+
+// 1.2 Sirena de alarma de brecha de seguridad
+function playSirenAlarm() {
+  initAudio();
+  if (isMuted) return;
+
+  // Intentar cargar MP3 local primero
+  const sirenAudio = new Audio('/audio/siren_alarm.mp3');
+  sirenAudio.play().catch(() => {
+    // Fallback: Sirena de alarma sintetizada
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(650, now);
+    osc.frequency.linearRampToValueAtTime(950, now + 0.6);
+    osc.frequency.linearRampToValueAtTime(650, now + 1.2);
+    osc.frequency.linearRampToValueAtTime(950, now + 1.8);
+    osc.frequency.linearRampToValueAtTime(650, now + 2.4);
+
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 2.6);
+  });
+}
+
+// 1.3 Voz distorsionada del Anónimo / IA
 function playAIVoice() {
   initAudio();
 
-  // 1. Sintetizador de graves y modulación robótica mediante Web Audio API
+  // 1. Generador de graves misteriosos y zumbido de fondo
   if (audioCtx && !isMuted) {
     const now = audioCtx.currentTime;
     
-    // Osciladores de subgrave distorsionado (55Hz y 110Hz)
+    // Subgraves de tensión (50Hz y 100Hz)
     const osc1 = audioCtx.createOscillator();
     const osc2 = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     const filter = audioCtx.createBiquadFilter();
 
     osc1.type = 'sawtooth';
-    osc1.frequency.setValueAtTime(55, now);
-    osc1.frequency.exponentialRampToValueAtTime(38, now + 4.5);
+    osc1.frequency.setValueAtTime(52, now);
+    osc1.frequency.exponentialRampToValueAtTime(36, now + 5.0);
 
     osc2.type = 'square';
-    osc2.frequency.setValueAtTime(110, now);
-    osc2.frequency.exponentialRampToValueAtTime(75, now + 4.5);
+    osc2.frequency.setValueAtTime(104, now);
+    osc2.frequency.exponentialRampToValueAtTime(72, now + 5.0);
 
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(450, now);
-    filter.Q.value = 8;
+    filter.frequency.setValueAtTime(400, now);
+    filter.Q.value = 6;
 
     gain.gain.setValueAtTime(0.001, now);
-    gain.gain.linearRampToValueAtTime(0.25, now + 0.3);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 5.0);
+    gain.gain.linearRampToValueAtTime(0.28, now + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 5.5);
 
     osc1.connect(filter);
     osc2.connect(filter);
@@ -67,34 +149,32 @@ function playAIVoice() {
 
     osc1.start(now);
     osc2.start(now);
-    osc1.stop(now + 5.2);
-    osc2.stop(now + 5.2);
-
-    // Ruido estático de glitch
-    playGlitchBurst();
-    setTimeout(playGlitchBurst, 800);
-    setTimeout(playGlitchBurst, 2100);
+    osc1.stop(now + 5.8);
+    osc2.stop(now + 5.8);
   }
 
-  // 2. Intento de cargar audio MP3 si el usuario lo colocó en audio/ai_voice.mp3
-  const mp3Audio = new Audio('audio/ai_voice.mp3');
-  mp3Audio.play().catch(() => {
-    // Si no hay mp3, usamos SpeechSynthesis con pitch ultra grave distorsionado
-    speakSynthesizedAI();
+  // 2. Comprobar si hay archivo de voz MP3 personalizado en audio/
+  const customVoice = new Audio('/audio/anon_voice.mp3');
+  customVoice.play().catch(() => {
+    // Si no está anon_voice.mp3, probar ai_voice.mp3
+    const fallbackVoice = new Audio('/audio/ai_voice.mp3');
+    fallbackVoice.play().catch(() => {
+      // Fallback a SpeechSynthesis robótica demoníaca
+      speakSynthesizedAnonymous();
+    });
   });
 }
 
-function speakSynthesizedAI() {
+function speakSynthesizedAnonymous() {
   if ('speechSynthesis' in window && !isMuted) {
     window.speechSynthesis.cancel();
-    const text = "Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo.";
+    const text = "Atención instituto... Si nadie me detiene, todos vuestros sistemas serán cifrados. Tenéis 5 retos para evitarlo.";
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
-    utterance.pitch = 0.25; // Voz demoníaca/robótica grave
-    utterance.rate = 0.85;  // Ritmo pausado y amenazante
+    utterance.pitch = 0.22; // Voz ultra grave y amenazante
+    utterance.rate = 0.82;  // Ritmo pausado
     utterance.volume = 1.0;
     
-    // Buscar voz grave si está disponible
     const voices = window.speechSynthesis.getVoices();
     const esVoice = voices.find(v => v.lang.startsWith('es'));
     if (esVoice) utterance.voice = esVoice;
@@ -103,24 +183,7 @@ function speakSynthesizedAI() {
   }
 }
 
-function playGlitchBurst() {
-  if (!audioCtx || isMuted) return;
-  const now = audioCtx.currentTime;
-  const dur = 0.08 + Math.random() * 0.1;
-  const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.6;
-  const src = audioCtx.createBufferSource();
-  src.buffer = buf;
-  const g = audioCtx.createGain();
-  g.gain.setValueAtTime(0.12, now);
-  g.gain.exponentialRampToValueAtTime(0.001, now + dur);
-  src.connect(g);
-  g.connect(audioCtx.destination);
-  src.start(now);
-}
-
-// Sonido cibernético de avance de fase
+// 1.4 Sonido de avance de fase y victoria
 function playAdvanceChime() {
   if (!audioCtx || isMuted) return;
   const now = audioCtx.currentTime;
@@ -140,7 +203,6 @@ function playAdvanceChime() {
   });
 }
 
-// Sonido épico de victoria para equipo que completa los 5 retos
 function playVictoryFanfare() {
   if (!audioCtx || isMuted) return;
   const now = audioCtx.currentTime;
@@ -224,28 +286,95 @@ if (matrixCanvas) {
 function updateClock() {
   const now = new Date();
   const timeStr = now.toTimeString().slice(0, 8);
-  const el1 = document.getElementById('intro-live-time');
-  const el2 = document.getElementById('dash-live-time');
+  const dateStr = now.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
+  
+  const el1 = document.getElementById('pres-live-clock');
+  const el2 = document.getElementById('pres-live-date');
+  const el3 = document.getElementById('dash-live-time');
+  
   if (el1) el1.textContent = timeStr;
-  if (el2) el2.textContent = timeStr;
+  if (el2) el2.textContent = dateStr;
+  if (el3) el3.textContent = timeStr;
 }
 setInterval(updateClock, 1000);
 updateClock();
 
 // ═══════════════════════════════════════════════════════════
-//  4. TRANSICIÓN DE INTRO A DASHBOARD
+//  4. ANIMACIÓN INICIAL DEL HACKEO DE ANONYMOUS
 // ═══════════════════════════════════════════════════════════
-function startHostDashboard() {
-  playAIVoice();
+function triggerHackAnimation() {
+  if (isHackingActive) return;
+  isHackingActive = true;
 
-  const intro = document.getElementById('host-intro-screen');
-  const dash = document.getElementById('host-dashboard-screen');
+  initAudio();
+  playHackGlitchSound();
 
-  if (intro) intro.classList.add('hidden');
-  if (dash) dash.classList.remove('hidden');
+  const presSlide = document.getElementById('main-slide');
+  if (presSlide) {
+    presSlide.classList.add('glitching');
+  }
 
-  logTerminalEvent('[HOST] Monitorización central activada. Defensas del instituto en línea.', 'log-sys');
+  // Tras 1.3s de glitch destructivo en la diapositiva, irrupción de Anonymous
+  setTimeout(() => {
+    const presScreen = document.getElementById('presentation-screen');
+    const hackScreen = document.getElementById('hack-takeover-screen');
+
+    if (presScreen) presScreen.classList.add('hidden');
+    if (hackScreen) hackScreen.classList.remove('hidden');
+
+    // Reproducir sirena y voz distorsionada del Anónimo
+    playSirenAlarm();
+    setTimeout(playAIVoice, 600);
+
+    // Simular escritura en tiempo real de la terminal de ataque
+    simulateAnonymousTerminal();
+  }, 1300);
 }
+
+function simulateAnonymousTerminal() {
+  const terminalOut = document.getElementById('anon-terminal-output');
+  if (!terminalOut) return;
+
+  const extraLogs = [
+    '> Infiltrando servidores DNS y router gateway 192.168.1.1...',
+    '> Servidor de calificaciones y exámenes: [ENCRIPTADO]',
+    '> Protocolo de extorsión activado en el IES Tecnológico.',
+    '> [!] ALERTA: 5 terminales de alumnos detectadas en la red.'
+  ];
+
+  extraLogs.forEach((lineText, index) => {
+    setTimeout(() => {
+      const lineEl = document.createElement('div');
+      lineEl.className = 'term-log-line text-red';
+      lineEl.textContent = lineText;
+      terminalOut.appendChild(lineEl);
+      terminalOut.scrollTop = terminalOut.scrollHeight;
+    }, 1200 + index * 900);
+  });
+}
+
+function openHostDashboardFromHack() {
+  const hackScreen = document.getElementById('hack-takeover-screen');
+  const dashScreen = document.getElementById('host-dashboard-screen');
+
+  if (hackScreen) hackScreen.classList.add('hidden');
+  if (dashScreen) dashScreen.classList.remove('hidden');
+
+  logTerminalEvent('Monitorización activada. 5 equipos convocados para neutralizar a Anonymous.', 'log-sys');
+}
+
+// Atajos de teclado: 'H', 'Espacio' o 'Enter' para detonar el hackeo en plena presentación
+window.addEventListener('keydown', (e) => {
+  const presScreen = document.getElementById('presentation-screen');
+  const isPresVisible = presScreen && !presScreen.classList.contains('hidden');
+
+  if (isPresVisible) {
+    if (e.key === 'h' || e.key === 'H' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      triggerHackAnimation();
+    }
+  }
+});
 
 // ═══════════════════════════════════════════════════════════
 //  5. RENDERIZADO DINÁMICO DE LOS 5 BLOQUES DE EQUIPOS
@@ -412,7 +541,6 @@ function updateTeamsDisplay(teams) {
   }
 
   // 5. Actualizar widget de Amenaza Global del Instituto
-  // 5 equipos x 5 fases = 25 fases totales posibles
   const maxPossible = 25;
   const threatRemaining = Math.max(0, Math.round(((maxPossible - totalPhasesSolvedAcrossAll) / maxPossible) * 100));
   const threatPctEl = document.getElementById('global-threat-pct');
