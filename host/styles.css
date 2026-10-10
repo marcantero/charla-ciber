@@ -1188,15 +1188,46 @@ body.hacked-mode .deco {
   font-size: 0.78rem;
   color: var(--white-soft);
 }
+
 .terminal-body {
-  padding: 16px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 0.84rem;
-  min-height: 130px;
-  line-height: 1.5;
+  font-size: 0.83rem;
+  height: 220px;
+  max-height: 220px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  line-height: 1.45;
+  background: rgba(4, 1, 3, 0.95);
+  scrollbar-width: thin;
+  scrollbar-color: var(--red) #0d0408;
 }
+.terminal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal-body::-webkit-scrollbar-track {
+  background: rgba(10, 4, 8, 0.8);
+}
+.terminal-body::-webkit-scrollbar-thumb {
+  background: var(--red-dark);
+  border-radius: 3px;
+}
+.terminal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--red);
+}
+
+.term-log-line {
+  color: var(--white-muted);
+  animation: termLineFade 0.2s ease-out;
+  word-break: break-word;
+}
+.term-log-line.text-red { color: #ff3355 !important; font-weight: 600; }
+.term-log-line.text-green { color: #00ff66 !important; font-weight: 600; }
+.term-log-line.text-amber { color: #ffb000 !important; }
+.term-log-line.text-cyan { color: #38bdf8 !important; }
+
 .term-log-line {
   color: var(--white-muted);
   animation: termLineFade 0.2s ease-out;
