@@ -43,13 +43,13 @@ function applyConfigToHost(cfg) {
 //  Presentación Inocente, Hackeo de Anonymous y Monitorización
 // ================================================================
 
-// Definición de las 5 fases para visualización
+// Definición de los 5 retos para visualización
 const PHASES_INFO = [
-  { num: 1, name: 'AUDIO',    tool: 'Audacity'            },
-  { num: 2, name: 'TERMINAL', tool: 'Linux (ls -la, cat)' },
-  { num: 3, name: 'FORENSE',  tool: 'exiftool + unzip'    },
-  { num: 4, name: 'CRIPTO',   tool: 'GeoGebra (y=ax+b)'   },
-  { num: 5, name: 'CLÍMAX',   tool: 'Descifrado Final'    }
+  { num: 1, name: 'RETO 1' },
+  { num: 2, name: 'RETO 2' },
+  { num: 3, name: 'RETO 3' },
+  { num: 4, name: 'RETO 4' },
+  { num: 5, name: 'RETO 5' }
 ];
 
 let teamsState = {};
@@ -890,10 +890,7 @@ function buildInitialTeamsGrid() {
           <div class="phase-slot" id="slot-${id}-${p.num}">
             <div class="slot-left">
               <span class="slot-num">0${p.num}</span>
-              <div>
-                <div class="slot-name">${p.name}</div>
-                <div class="slot-tool">${p.tool}</div>
-              </div>
+              <div class="slot-name">${p.name}</div>
             </div>
             <span class="slot-badge" id="badge-${id}-${p.num}">BLOQUEADO</span>
           </div>
@@ -1072,8 +1069,8 @@ function triggerTeamAdvanceAnimation(data) {
   const banner = document.createElement('div');
   banner.className = 'decoding-banner';
   banner.innerHTML = `
-    <div class="decoding-text mono">&gt;&gt; FASE 0${phase} DESCIFRADA &lt;&lt;</div>
-    <div class="mono" style="font-size:0.8rem; color:var(--white-soft);">${PHASES_INFO[phase - 1].name}</div>
+    <div class="decoding-text mono">&gt;&gt; RETO 0${phase} SUPERADO &lt;&lt;</div>
+    <div class="mono" style="font-size:0.85rem; color:var(--green); letter-spacing:0.1em;">${PHASES_INFO[phase - 1].name}</div>
   `;
   card.appendChild(banner);
   setTimeout(() => banner.remove(), 2000);
@@ -1081,10 +1078,10 @@ function triggerTeamAdvanceAnimation(data) {
   // Efecto de sonido
   if (isFinished) {
     playVictoryFanfare();
-    logTerminalEvent(`🏆 ¡VICTORIA! ${teamName} ha descifrado las 5 fases y recuperado el control del instituto.`, 'log-advance');
+    logTerminalEvent(`🏆 ¡VICTORIA! ${teamName} ha superado los 5 retos y recuperado el control del instituto.`, 'log-advance');
   } else {
     playAdvanceChime();
-    logTerminalEvent(`[!] ${teamName} ha superado con éxito la FASE 0${phase} (${PHASES_INFO[phase - 1].name}). Progreso: ${totalCompleted}/5`, 'log-advance');
+    logTerminalEvent(`[!] ${teamName} ha superado con éxito el RETO 0${phase}. Progreso: ${totalCompleted}/5`, 'log-advance');
   }
 }
 

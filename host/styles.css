@@ -654,11 +654,14 @@ body.hacked-mode .deco {
 }
 .has-many-teams .slot-name,
 .many-teams .slot-name {
+  font-family: var(--font-display);
   font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 .has-many-teams .slot-tool,
 .many-teams .slot-tool {
-  font-size: 0.62rem;
+  display: none !important;
 }
 .has-many-teams .slot-badge,
 .many-teams .slot-badge {
@@ -957,11 +960,11 @@ body.hacked-mode .deco {
 .slot-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 .slot-num {
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--white-muted);
 }
@@ -969,13 +972,19 @@ body.hacked-mode .deco {
   color: var(--green);
 }
 .slot-name {
-  font-size: 0.78rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
   color: var(--white-soft);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.phase-slot.completed .slot-name {
+  color: var(--green);
+  text-shadow: 0 0 8px var(--green-glow);
 }
 .slot-tool {
-  font-size: 0.68rem;
-  color: var(--white-muted);
+  display: none !important;
 }
 .slot-badge {
   font-size: 0.68rem;
