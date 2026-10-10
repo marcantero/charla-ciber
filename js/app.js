@@ -643,7 +643,22 @@ function typeTerminal() {
   }, 38);
 }
 
+let terminalProgressInterval = null;
+let terminalTimeout = null;
+
+function stopTerminalEncryption() {
+  if (terminalProgressInterval) {
+    clearInterval(terminalProgressInterval);
+    terminalProgressInterval = null;
+  }
+  if (terminalTimeout) {
+    clearTimeout(terminalTimeout);
+    terminalTimeout = null;
+  }
+}
+
 function startNextFile() {
+  if (currentScreen !== 'splash-screen') return;
   const wrapper = document.getElementById('term-progress-wrapper');
   const fill    = document.getElementById('progress-fill');
   const pct     = document.getElementById('progress-pct');
@@ -672,7 +687,13 @@ function startNextFile() {
   // Animate progress 0 → 100
   let progress = 0;
   let lastTickAt = 0;
-  const interval = setInterval(() => {
+  terminalProgressInterval = setInterval(() => {
+    if (currentScreen !== 'splash-screen') {
+      clearInterval(terminalProgressInterval);
+      terminalProgressInterval = null;
+      return;
+    }
+
     // Speed: fast at start, slow near end for drama
     let step;
     if      (progress < 60)  step = 1.4;
@@ -688,14 +709,21 @@ function startNextFile() {
     // Tick sound every ~10%
     if (Math.floor(progress) % 10 === 0 && Math.floor(progress) !== lastTickAt) {
       lastTickAt = Math.floor(progress);
-      playProgressTick(Math.floor(progress));
+      if (currentScreen === 'splash-screen') {
+        playProgressTick(Math.floor(progress));
+      }
     }
 
     if (progress >= 100) {
-      clearInterval(interval);
-      playFileComplete();
+      clearInterval(terminalProgressInterval);
+      terminalProgressInterval = null;
+      if (currentScreen === 'splash-screen') {
+        playFileComplete();
+      }
       // Brief pause at 100%, then next file
-      setTimeout(() => startNextFile(), 600);
+      if (currentScreen === 'splash-screen') {
+        terminalTimeout = setTimeout(() => startNextFile(), 600);
+      }
     }
   }, 30);
 }
@@ -939,6 +967,7 @@ function showScreen(id) {
 }
 
 function startMission() {
+  stopTerminalEncryption();
   showScreen('briefing-screen');
 }
 
