@@ -224,22 +224,63 @@
   <!-- FASE 1: AUDIO -->
   <div class="screen hidden phase-screen" id="phase-1-screen">
     <div class="phase-header">
-      <div class="phase-badge mono">// FASE 01 / AUDIO</div>
-      <div class="phase-tool mono">Audacity</div>
+      <div class="phase-badge mono">// FASE 01 // <span class="censor-noise">§#@!</span></div>
+      <div class="phase-tool mono glitched-target"><span class="censor-tag">[ARCHIVO BLOQUEADO]</span></div>
     </div>
     <div class="phase-body">
-      <div class="phase-mission-box">
-        <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha escondido un mensaje secreto dentro de un archivo de audio.<br>Utilizad
-          <strong>Audacity</strong> para analizar el espectrograma y encontrar el código oculto.</p>
-      </div>
-      <div class="clue-box">
-        <div class="clue-label mono">// ARCHIVO INTERCEPTADO //</div>
-        <div class="clue-content">
-          <span class="clue-file mono">mensaje_secreto.wav</span>
-          <span class="clue-hint mono">[pista: mira el espectrograma]</span>
+      <!-- Cyber Audio Intercept Player -->
+      <div class="cyber-audio-card">
+        <div class="cyber-audio-header">
+          <div class="cyber-audio-title mono">
+            <span class="status-blip"></span>
+            SEÑAL DE AUDIO INTERCEPTADA // FREQ: 44.1kHz
+          </div>
+          <div class="cyber-audio-badge mono">ENCRIPTADO // ARCHIVO CLASIFICADO</div>
+        </div>
+
+        <div class="cyber-waveform-box">
+          <div class="waveform-visualizer" id="wave-bars">
+            <span class="wb"></span><span class="wb"></span><span class="wb"></span><span class="wb"></span>
+            <span class="wb"></span><span class="wb"></span><span class="wb"></span><span class="wb"></span>
+            <span class="wb"></span><span class="wb"></span><span class="wb"></span><span class="wb"></span>
+            <span class="wb"></span><span class="wb"></span><span class="wb"></span><span class="wb"></span>
+            <span class="wb"></span><span class="wb"></span><span class="wb"></span><span class="wb"></span>
+            <span class="wb"></span><span class="wb"></span><span class="wb"></span><span class="wb"></span>
+            <span class="wb"></span><span class="wb"></span><span class="wb"></span><span class="wb"></span>
+            <span class="wb"></span><span class="wb"></span><span class="wb"></span><span class="wb"></span>
+          </div>
+        </div>
+
+        <audio id="audio-intercept" src="/audio/mensaje_secreto.wav" preload="metadata"></audio>
+
+        <div class="cyber-audio-controls">
+          <button class="audio-btn-play" id="audio-play-btn" onclick="toggleInterceptAudio()">
+            <span class="play-icon" id="audio-play-icon">&#9658;</span>
+            <span id="audio-play-label">REPRODUCIR</span>
+          </button>
+
+          <div class="audio-progress-container">
+            <div class="audio-timeline" id="audio-timeline" onclick="seekInterceptAudio(event)">
+              <div class="audio-timeline-fill" id="audio-timeline-fill"></div>
+            </div>
+            <div class="audio-time-row mono">
+              <span id="audio-time-current">00:00</span>
+              <span class="audio-time-divider">/</span>
+              <span id="audio-time-total">--:--</span>
+            </div>
+          </div>
+
+          <a href="/audio/mensaje_secreto.wav" download="mensaje_secreto.wav" class="audio-btn-download mono">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            DESCARGAR ARCHIVO (.WAV)
+          </a>
         </div>
       </div>
+
       <div class="answer-section">
         <div class="answer-label mono">INTRODUCE EL CÓDIGO ENCONTRADO:</div>
         <div class="answer-input-row">
