@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CENTRAL DE CONTROL — Dashboard del Host</title>
+  <meta name="description" content="Panel de control para el proyector de aula: monitorización en tiempo real del escape room de ciberseguridad.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Fondo cibernético -->
+  <canvas id="matrix-canvas"></canvas>
+  <div class="scanlines"></div>
+  <div class="crt-flicker"></div>
+  <div class="deco deco-tl"></div>
+  <div class="deco deco-tr"></div>
+  <div class="deco deco-bl"></div>
+  <div class="deco deco-br"></div>
+
+  <!-- Botones flotantes de utilidad -->
+  <div class="host-floating-controls">
+    <button id="fullscreen-btn" class="btn-util mono" onclick="toggleFullscreen()" title="Pantalla Completa">
+      <span class="btn-icon">⛶</span> PANTALLA COMPLETA
+    </button>
+    <button id="mute-btn" class="btn-util mono" onclick="toggleMute()" title="Silenciar Sonido">
+      <span id="mute-icon">🔊</span> SONIDO
+    </button>
+    <button id="reset-btn" class="btn-util btn-danger mono" onclick="requestResetGame()" title="Reiniciar Partida">
+      <span>↺</span> REINICIAR ESCAPE ROOM
+    </button>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 1. INTRO CINEMATOGRÁFICA DE LA IA                              -->
+  <!-- ============================================================== -->
+  <div class="screen" id="host-intro-screen">
+    <div class="intro-container">
+      <div class="status-bar mono">
+        <span class="status-dot blink-red"></span>
+        <span class="status-text">[!] NODO CENTRAL COMPROMETIDO</span>
+        <div class="status-spacer"></div>
+        <span class="status-text">HOST: PROYECTOR DE AULA</span>
+        <span class="status-sep">//</span>
+        <span class="status-text" id="intro-live-time">--:--:--</span>
+      </div>
+
+      <div class="intro-body">
+        <div class="ai-warning-box">
+          <div class="ai-badge mono">&lt; TRANSMISIÓN FORZADA // PROTOCOLO HOSTIL &gt;</div>
+          <h1 class="ai-threat-title glitch-text" data-text="AMENAZA DE CIFRADO GLOBAL">
+            AMENAZA DE CIFRADO GLOBAL
+          </h1>
+          <div class="ai-quote-container">
+            <div class="quote-symbol">“</div>
+            <p class="ai-message glitch-text" id="ai-voice-text" data-text="Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo.">
+              Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo.
+            </p>
+            <div class="quote-author mono">// ENTIDAD_IA_MASTER_v4</div>
+          </div>
+        </div>
+
+        <div class="intro-meta-grid mono">
+          <div class="meta-item">
+            <span class="meta-label">ESTADO DE ARCHIVOS:</span>
+            <span class="meta-val text-red">CIFRADO INMINENTE</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">EQUIPOS OBJETIVO:</span>
+            <span class="meta-val text-white">5 NODOS DE ALUMNOS</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">DEFENSA REQUERIDA:</span>
+            <span class="meta-val text-green">5 FASES DE CIBERSEGURIDAD</span>
+          </div>
+        </div>
+
+        <div class="intro-actions">
+          <button class="btn-cyber-primary" id="start-defense-btn" onclick="startHostDashboard()">
+            <span class="btn-cyber-text">INICIAR MONITORIZACIÓN Y ACTIVAR DEFENSAS</span>
+            <span class="btn-cyber-arrow">▶</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="intro-bottom-bar mono">
+        <span id="intro-ip-label">RED LOCAL: CONECTADA</span>
+        <span id="intro-port-label">PUERTO: 4000</span>
+        <span class="text-red">NIVEL DE CIFRADO: 100% CRÍTICO</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 2. DASHBOARD DE PROGRESO DE LOS 5 EQUIPOS                      -->
+  <!-- ============================================================== -->
+  <div class="screen hidden" id="host-dashboard-screen">
+    <div class="dashboard-container">
+      <!-- Encabezado HUD superior -->
+      <header class="dashboard-header">
+        <div class="hud-left">
+          <div class="hud-tag mono">// MONITOR CENTRAL DE AULA //</div>
+          <h2 class="hud-title">PANEL DE CONTROL — ESTADO DE LOS EQUIPOS</h2>
+        </div>
+
+        <!-- Indicador de Amenaza Global del Instituto -->
+        <div class="hud-threat-widget">
+          <div class="threat-meta mono">
+            <span class="threat-label">AMENAZA DE CIFRADO DEL INSTITUTO:</span>
+            <span class="threat-pct text-red mono" id="global-threat-pct">100%</span>
+          </div>
+          <div class="threat-track">
+            <div class="threat-fill" id="global-threat-fill"></div>
+          </div>
+        </div>
+
+        <div class="hud-meta mono">
+          <div class="hud-live-clock" id="dash-live-time">--:--:--</div>
+          <div class="hud-status-chip" id="server-status-chip">
+            <span class="chip-dot"></span> <span id="server-status-text">CONECTADO</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Cuadrícula principal de los 5 equipos -->
+      <main class="teams-grid" id="teams-grid">
+        <!-- Generado dinámicamente para los 5 equipos -->
+      </main>
+
+      <!-- Pie de página con terminal de logs en vivo -->
+      <footer class="dashboard-footer">
+        <div class="terminal-panel">
+          <div class="terminal-bar mono">
+            <span class="term-dot red"></span>
+            <span class="term-dot yellow"></span>
+            <span class="term-dot green"></span>
+            <span class="term-title">REGISTRO DE EVENTOS EN RED LOCAL — /var/log/escape_room.log</span>
+            <div class="term-spacer"></div>
+            <span class="term-indicator mono" id="active-teams-counter">EQUIPOS ONLINE: 0 / 5</span>
+          </div>
+          <div class="terminal-logs mono" id="terminal-logs">
+            <div class="log-entry log-sys">[00:00:00] [INICIALIZACIÓN] Servidor de control conectado. Esperando a los 5 equipos...</div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación para reiniciar -->
+  <div id="reset-confirm-modal" class="modal-backdrop hidden">
+    <div class="modal-card tech-frame">
+      <div class="frame-corner top-left"></div>
+      <div class="frame-corner top-right"></div>
+      <div class="frame-corner bottom-left"></div>
+      <div class="frame-corner bottom-right"></div>
+      <div class="modal-tag mono">// ACCIÓN CRÍTICA DE ADMINISTRADOR //</div>
+      <h3 class="modal-title">¿REINICIAR TODA LA PARTIDA?</h3>
+      <p class="modal-desc mono">Esta acción restablecerá el progreso de los 5 equipos a la Fase 1 y notificará a todos los navegadores conectados.</p>
+      <div class="modal-buttons">
+        <button class="btn-modal btn-cancel mono" onclick="closeResetModal()">CANCELAR</button>
+        <button class="btn-modal btn-confirm mono" onclick="confirmResetGame()">SÍ, REINICIAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script cliente de Socket.io provisto por el servidor Express -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

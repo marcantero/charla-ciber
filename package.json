@@ -1,0 +1,26 @@
+{
+  "name": "charla-ciber-escape-room",
+  "version": "2.0.0",
+  "description": "Escape Room Multijugador en Red Local - Sistema Comprometido",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "escape-room",
+    "cybersecurity",
+    "socket.io",
+    "multiplayer",
+    "ciberseguridad"
+  ],
+  "author": "Charla Ciber",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
+  }
+}

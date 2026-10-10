@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SISTEMA COMPROMETIDO — Instituto Hackeado</title>
+  <meta name="description"
+    content="Misión de emergencia: nuestro instituto ha sido hackeado por una IA. Completa los 5 retos para recuperar el control.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <canvas id="matrix-canvas"></canvas>
+  <div class="scanlines"></div>
+  <div class="crt-flicker"></div>
+  <div class="deco deco-tl"></div>
+  <div class="deco deco-tr"></div>
+  <div class="deco deco-bl"></div>
+  <div class="deco deco-br"></div>
+
+  <!-- Mute button -->
+  <button id="mute-btn" onclick="toggleMute()" title="Silenciar">
+    <svg id="mute-icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+    </svg>
+    <svg id="mute-icon-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" style="display:none">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <line x1="23" y1="9" x2="17" y2="15" />
+      <line x1="17" y1="9" x2="23" y2="15" />
+    </svg>
+  </button>
+
+  <!-- INTRO SCREEN -->
+  <div class="screen" id="intro-screen">
+    <div class="intro-container">
+      <div class="status-bar">
+        <span class="status-dot blink-red"></span>
+        <span class="status-text">SISTEMA COMPROMETIDO</span>
+        <div class="status-spacer"></div>
+        <span class="status-text mono">IP: 192.168.1.XXX</span>
+        <span class="status-sep">//</span>
+        <span class="status-text mono" id="live-time">--:--:--</span>
+      </div>
+      <div class="hero-content">
+        <div class="bg-code-text" id="bg-code-text"></div>
+        <div class="title-block">
+          <div class="pre-title mono">[ ALERTA DE SEGURIDAD CRÍTICA ]</div>
+          <h1 class="main-title">
+            <span class="title-white">TE HAN</span><br>
+            <span class="title-red glitch-text" data-text="HACKEADO">HACKEADO</span>
+          </h1>
+        </div>
+        <div class="terminal-box" id="terminal-box">
+          <div class="terminal-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title mono">hack_protocol_v4.2 — bash</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line">
+              <span class="term-prompt">root@0x4A2F:~#</span>
+              <span class="term-cmd" id="term-typing-1"></span>
+            </div>
+            <div class="terminal-progress-wrapper" id="term-progress-wrapper" style="display:none;">
+              <div class="term-file-line">
+                <span class="term-label mono">cifrando</span>
+                <span class="term-filename mono" id="term-filename"
+                  style="transition: opacity 0.18s ease;">notas-examen-final-v7.xlsx</span>
+                <span class="term-cursor">&#9608;</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+              </div>
+              <div class="progress-meta">
+                <span class="term-percent mono" id="progress-pct">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mission-brief">
+          <div class="brief-header mono">// MISIÓN //</div>
+          <p class="brief-text">Una IA ha tomado el control de los sistemas de nuestro instituto.<br>Tienes <strong>5
+              retos</strong> para recuperarlo. Falla y lo pierdes todo.</p>
+        </div>
+        <button class="btn-hack" id="start-btn" onclick="startMission()">
+          <span class="btn-text">ACEPTAR MISIÓN</span>
+          <span class="btn-arrow">&#9654;</span>
+        </button>
+      </div>
+      <div class="bottom-bar">
+        <span class="mono bottom-label">5 FASES ACTIVAS</span>
+        <div class="phases-preview">
+          <span class="phase-dot active" title="Fase 1: Audio"></span>
+          <span class="phase-dot" title="Fase 2: Terminal"></span>
+          <span class="phase-dot" title="Fase 3: Forense"></span>
+          <span class="phase-dot" title="Fase 4: Cripto"></span>
+          <span class="phase-dot" title="Fase 5: Clímax"></span>
+        </div>
+        <span class="mono bottom-label">NIVEL: CRÍTICO</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRIEFING SCREEN -->
+  <div class="screen hidden" id="briefing-screen">
+    <div class="briefing-container">
+      <div class="tech-frame">
+        <div class="frame-corner top-left"></div>
+        <div class="frame-corner top-right"></div>
+        <div class="frame-corner bottom-left"></div>
+        <div class="frame-corner bottom-right"></div>
+      </div>
+      <div class="briefing-tag mono">// MISIÓN DE RECUPERACIÓN DE SISTEMAS //</div>
+      <h2 class="briefing-title glitch-text" data-text="OPERACIÓN FIREWALL">OPERACIÓN FIREWALL</h2>
+      <div class="divider"></div>
+      <p class="briefing-desc">La IA ha cifrado todos los archivos del centro. Para recuperarlos,<br>tendréis que
+        superar <strong>5 fases</strong> de seguridad. Trabajaréis en equipo.<br>Cada fase os acerca a recuperar el
+        control del sistema.</p>
+      <div class="phases-table">
+        <div class="phases-header">
+          <span class="ph-col">FASE</span>
+          <span class="ph-col">MISIÓN</span>
+          <span class="ph-col">HERRAMIENTA</span>
+          <span class="ph-col">ESTADO</span>
+        </div>
+        <div class="phase-row" id="row-1">
+          <span class="ph-col ph-num">01</span>
+          <span class="ph-col ph-name">AUDIO</span>
+          <span class="ph-col ph-tool mono">Audacity</span>
+          <span class="ph-col ph-status status-locked">BLOQUEADO</span>
+        </div>
+        <div class="phase-row" id="row-2">
+          <span class="ph-col ph-num">02</span>
+          <span class="ph-col ph-name">TERMINAL</span>
+          <span class="ph-col ph-tool mono">Linux (ls -la, cat)</span>
+          <span class="ph-col ph-status status-locked">BLOQUEADO</span>
+        </div>
+        <div class="phase-row" id="row-3">
+          <span class="ph-col ph-num">03</span>
+          <span class="ph-col ph-name">FORENSE</span>
+          <span class="ph-col ph-tool mono">exiftool + unzip</span>
+          <span class="ph-col ph-status status-locked">BLOQUEADO</span>
+        </div>
+        <div class="phase-row" id="row-4">
+          <span class="ph-col ph-num">04</span>
+          <span class="ph-col ph-name">CRIPTO</span>
+          <span class="ph-col ph-tool mono">GeoGebra (y=ax+b)</span>
+          <span class="ph-col ph-status status-locked">BLOQUEADO</span>
+        </div>
+        <div class="phase-row" id="row-5">
+          <span class="ph-col ph-num">05</span>
+          <span class="ph-col ph-name">CLÍMAX</span>
+          <span class="ph-col ph-tool mono">Colaboración en el aula</span>
+          <span class="ph-col ph-status status-locked">BLOQUEADO</span>
+        </div>
+      </div>
+      <button class="btn-hack" onclick="startPhase(1)">
+        <span class="btn-text">INICIAR FASE 01</span>
+        <span class="btn-arrow">&#9654;</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- TRANSITION SCREEN -->
+  <div class="screen hidden" id="transition-screen">
+    <div class="transition-content">
+      <div class="trans-tag mono">CARGANDO FASE</div>
+      <div class="trans-num" id="trans-num">01</div>
+      <div class="trans-name" id="trans-name">AUDIO</div>
+      <div class="trans-desc" id="trans-desc">Analiza la señal de audio</div>
+      <div class="trans-bar">
+        <div class="trans-bar-fill" id="trans-bar-fill"></div>
+      </div>
+      <div class="trans-pct mono" id="trans-pct">0%</div>
+    </div>
+  </div>
+
+  <!-- FASE 1: AUDIO -->
+  <div class="screen hidden phase-screen" id="phase-1-screen">
+    <div class="phase-header">
+      <div class="phase-badge mono">// FASE 01 / AUDIO</div>
+      <div class="phase-tool mono">Audacity</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-mission-box">
+        <div class="mission-label mono">MISIÓN</div>
+        <p class="mission-text">La IA ha escondido un mensaje secreto dentro de un archivo de audio.<br>Utilizad
+          <strong>Audacity</strong> para analizar el espectrograma y encontrar el código oculto.
+        </p>
+      </div>
+      <div class="clue-box">
+        <div class="clue-label mono">// ARCHIVO INTERCEPTADO //</div>
+        <div class="clue-content">
+          <span class="clue-file mono">mensaje_secreto.wav</span>
+          <span class="clue-hint mono">[pista: mira el espectrograma]</span>
+        </div>
+      </div>
+      <div class="answer-section">
+        <div class="answer-label mono">INTRODUCE EL CÓDIGO ENCONTRADO:</div>
+        <div class="answer-input-row">
+          <input class="hack-input" id="ans-1" type="text" placeholder="XXXX" maxlength="20" autocomplete="off">
+          <button class="btn-submit" onclick="checkAnswer(1)">VERIFICAR</button>
+        </div>
+        <div class="answer-feedback" id="feedback-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 2: TERMINAL -->
+  <div class="screen hidden phase-screen" id="phase-2-screen">
+    <div class="phase-header">
+      <div class="phase-badge mono">// FASE 02 / TERMINAL</div>
+      <div class="phase-tool mono">Linux (ls -la, cat)</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-mission-box">
+        <div class="mission-label mono">MISIÓN</div>
+        <p class="mission-text">La IA ha dejado pistas en archivos ocultos del servidor.<br>Utiliza <strong>ls
+            -la</strong> para ver archivos ocultos y <strong>cat</strong> para leerlos.</p>
+      </div>
+      <div class="fake-terminal">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title mono">server@instituto-comprometido:~$</span>
+        </div>
+        <div class="fake-term-body mono">
+          <div class="fterm-line"><span class="fterm-prompt">$</span> ls -la</div>
+          <div class="fterm-line fterm-result">total 24</div>
+          <div class="fterm-line fterm-result">drwxr-xr-x jowie staff 768 Oct 6 08:00 .</div>
+          <div class="fterm-line fterm-result">-rw-r--r-- jowie staff 1024 Oct 6 08:00 readme.txt</div>
+          <div class="fterm-line fterm-result fterm-hidden">-rw------- root root 512 Oct 6 08:00 .clave_sistema</div>
+          <div class="fterm-line fterm-result fterm-hidden">-rw------- root root 64 Oct 6 08:00 .pista_final</div>
+          <div class="fterm-line"><span class="fterm-prompt">$</span> cat .pista_final</div>
+          <div class="fterm-line fterm-key">La clave es: ALFA-7743</div>
+          <div class="fterm-line fterm-cursor-line">&#9608;</div>
+        </div>
+      </div>
+      <div class="answer-section">
+        <div class="answer-label mono">INTRODUCE LA CLAVE ENCONTRADA:</div>
+        <div class="answer-input-row">
+          <input class="hack-input" id="ans-2" type="text" placeholder="XXXX-YYYY" maxlength="20" autocomplete="off">
+          <button class="btn-submit" onclick="checkAnswer(2)">VERIFICAR</button>
+        </div>
+        <div class="answer-feedback" id="feedback-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 3: FORENSE -->
+  <div class="screen hidden phase-screen" id="phase-3-screen">
+    <div class="phase-header">
+      <div class="phase-badge mono">// FASE 03 / FORENSE</div>
+      <div class="phase-tool mono">exiftool + unzip</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-mission-box">
+        <div class="mission-label mono">MISIÓN</div>
+        <p class="mission-text">La IA ha escondido datos en los metadatos de una imagen.<br>Utiliza
+          <strong>exiftool</strong> para inspeccionarla y <strong>unzip</strong> si hace falta descomprimir archivos.
+        </p>
+      </div>
+      <div class="clue-box">
+        <div class="clue-label mono">// ARCHIVO SOSPECHOSO //</div>
+        <div class="clue-content">
+          <span class="clue-file mono">foto_instituto.jpg</span>
+          <span class="clue-hint mono">[pista: exiftool foto_instituto.jpg | grep Comment]</span>
+        </div>
+        <div class="exif-output mono">
+          <div class="exif-line"><span class="exif-key">File Name</span> : foto_instituto.jpg</div>
+          <div class="exif-line"><span class="exif-key">File Size</span> : 2.4 MB</div>
+          <div class="exif-line"><span class="exif-key">Camera Model</span> : HACKER_CAM_v2</div>
+          <div class="exif-line highlight-line"><span class="exif-key">Comment</span> : CÓDIGO: BETA-4491</div>
+          <div class="exif-line"><span class="exif-key">GPS Position</span> : [CIFRADO]</div>
+        </div>
+      </div>
+      <div class="answer-section">
+        <div class="answer-label mono">INTRODUCE EL CÓDIGO DE LOS METADATOS:</div>
+        <div class="answer-input-row">
+          <input class="hack-input" id="ans-3" type="text" placeholder="XXXX-YYYY" maxlength="20" autocomplete="off">
+          <button class="btn-submit" onclick="checkAnswer(3)">VERIFICAR</button>
+        </div>
+        <div class="answer-feedback" id="feedback-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 4: CRIPTO -->
+  <div class="screen hidden phase-screen" id="phase-4-screen">
+    <div class="phase-header">
+      <div class="phase-badge mono">// FASE 04 / CRIPTO</div>
+      <div class="phase-tool mono">GeoGebra (y = ax + b)</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-mission-box">
+        <div class="mission-label mono">MISIÓN</div>
+        <p class="mission-text">La IA ha cifrado el código final con una función matemática.<br>Descubre los valores
+          <strong>a</strong> y <strong>b</strong> usando GeoGebra y la recta <strong>y = ax + b</strong>.
+        </p>
+      </div>
+      <div class="clue-box">
+        <div class="clue-label mono">// DATOS INTERCEPTADOS //</div>
+        <div class="crypto-data mono">
+          <div class="crypto-row"><span class="crypto-label">Punto A:</span><span class="crypto-val">(2, 7)</span></div>
+          <div class="crypto-row"><span class="crypto-label">Punto B:</span><span class="crypto-val">(5, 13)</span>
+          </div>
+          <div class="crypto-row"><span class="crypto-label">Incógnita:</span><span class="crypto-val">cuando x = 10, y
+              = ?</span></div>
+        </div>
+        <div class="crypto-hint mono">// La respuesta es el código descifrado //</div>
+      </div>
+      <div class="answer-section">
+        <div class="answer-label mono">INTRODUCE EL VALOR DE y (cuando x=10):</div>
+        <div class="answer-input-row">
+          <input class="hack-input" id="ans-4" type="number" placeholder="y = ?" maxlength="10" autocomplete="off">
+          <button class="btn-submit" onclick="checkAnswer(4)">VERIFICAR</button>
+        </div>
+        <div class="answer-feedback" id="feedback-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 5: CLÍMAX -->
+  <div class="screen hidden phase-screen" id="phase-5-screen">
+    <div class="phase-header">
+      <div class="phase-badge mono">// FASE 05 / CLÍMAX</div>
+      <div class="phase-tool mono">Colaboración en el aula</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-mission-box">
+        <div class="mission-label mono">MISIÓN FINAL</div>
+        <p class="mission-text">Tenéis todos los códigos. Ahora hay que combinarlos para descifrar el
+          sistema.<br><strong>Toda la clase debe ponerse de acuerdo</strong> e introducir la secuencia final.</p>
+      </div>
+      <div class="climax-codes mono">
+        <div class="code-collect">
+          <div class="code-item"><span class="code-phase">FASE 01</span><span class="code-val" id="col-code-1">[ ???
+              ]</span></div>
+          <div class="code-item"><span class="code-phase">FASE 02</span><span class="code-val" id="col-code-2">[ ???
+              ]</span></div>
+          <div class="code-item"><span class="code-phase">FASE 03</span><span class="code-val" id="col-code-3">[ ???
+              ]</span></div>
+          <div class="code-item"><span class="code-phase">FASE 04</span><span class="code-val" id="col-code-4">[ ???
+              ]</span></div>
+        </div>
+      </div>
+      <div class="answer-section">
+        <div class="answer-label mono">SECUENCIA FINAL (combina todos los códigos):</div>
+        <div class="answer-input-row">
+          <input class="hack-input" id="ans-5" type="text" placeholder="FASE1-FASE2-FASE3-FASE4" maxlength="50"
+            autocomplete="off">
+          <button class="btn-submit" onclick="checkAnswer(5)">DESCIFRAR</button>
+        </div>
+        <div class="answer-feedback" id="feedback-5"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VICTORY SCREEN -->
+  <div class="screen hidden" id="victory-screen">
+    <div class="victory-container">
+      <div class="tech-frame">
+        <div class="frame-corner top-left"></div>
+        <div class="frame-corner top-right"></div>
+        <div class="frame-corner bottom-left"></div>
+        <div class="frame-corner bottom-right"></div>
+      </div>
+      <div class="victory-icon">&#128275;</div>
+      <div class="victory-tag mono">// SISTEMA RECUPERADO //</div>
+      <h2 class="victory-title glitch-text" data-text="ACCESO RESTAURADO">ACCESO RESTAURADO</h2>
+      <div class="divider"></div>
+      <p class="victory-text">Habéis superado todos los retos y neutralizado la IA.<br><strong>El sistema del instituto
+          está de nuevo bajo control humano.</strong><br><br>Habéis demostrado que la ciberseguridad es cosa de todos.
+      </p>
+      <div class="victory-stats mono">
+        <span>5 / 5 FASES COMPLETADAS</span>
+        <span class="sep-v">|</span>
+        <span>AMENAZA NEUTRALIZADA</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>
