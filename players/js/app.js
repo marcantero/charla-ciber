@@ -365,11 +365,11 @@ document.addEventListener('keydown', initAudio, { once: true });
 
 
 const PHASES = [
-  { num: '01', name: 'AUDIO',    desc: 'Analiza la señal de audio con Audacity',   tool: 'Audacity'            },
-  { num: '02', name: 'TERMINAL', desc: 'Explora los archivos ocultos del servidor', tool: 'Linux (ls -la, cat)' },
-  { num: '03', name: 'FORENSE',  desc: 'Inspecciona los metadatos de la imagen',   tool: 'exiftool + unzip'    },
-  { num: '04', name: 'CRIPTO',   desc: 'Descifra la función matemática',          tool: 'GeoGebra (y=ax+b)'   },
-  { num: '05', name: 'CLÍMAX',   desc: 'Combina todos los códigos y recupera el sistema', tool: 'Colaboración en el aula' },
+  { num: '01', name: 'RETO 01',  desc: 'Accediendo al subsistema de frecuencias...',   tool: 'Frecuencias'         },
+  { num: '02', name: 'RETO 02',  desc: 'Explorando archivos ocultos del servidor...',  tool: 'Servidor Central'    },
+  { num: '03', name: 'RETO 03',  desc: 'Extrayendo metadatos e información oculta...', tool: 'Análisis Forense'    },
+  { num: '04', name: 'RETO 04',  desc: 'Descifrando función de encriptación...',      tool: 'Criptografía'        },
+  { num: '05', name: 'RETO 05',  desc: 'Combinando secuencias de desbloqueo final...', tool: 'Terminal Principal' },
 ];
 
 // Answers (case-insensitive). Edit these with your real challenge answers!
