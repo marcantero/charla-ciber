@@ -6,6 +6,23 @@
     "saludo": "Hola {nombreInstituto}, me he infiltrado en vuestro instituto jajajajaja (risa malvada).",
     "cuerpo": "Voy a cifrar todos vuestros datos. Pero para que esto sea más divertido voy a dejaros unos retos para que podáis pararme.\nTendréis que hacer {numeroEquipos} grupos, con el objetivo de intentar pararme con todo lo que habéis aprendido en esta charla.\nMucha suerte."
   },
+  "mensajesDebilitamiento": {
+    "hito1": {
+      "umbral": 75,
+      "frase": "Sois más buenos de lo que pensaba, pero esto no ha terminado aún",
+      "audio": "hacker_debil1.mp3"
+    },
+    "hito2": {
+      "umbral": 40,
+      "frase": "Parece que estabais escuchando en la charla. JAJAJA (risa malvada)",
+      "audio": "hacker_debil2.mp3"
+    },
+    "hito3": {
+      "umbral": 0,
+      "frase": "Me habéis derrotado, pero esto no va acabar así, que sepáis que volveré.",
+      "audio": "hacker_derrota.mp3"
+    }
+  },
   "claves": {
     "1": {
       "reto1": "HACK",

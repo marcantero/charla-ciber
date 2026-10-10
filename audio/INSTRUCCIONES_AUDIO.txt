@@ -3,16 +3,20 @@
 ====================================================================
 
 El sistema cuenta con un motor procedural de sonido mediante Web Audio API
-que sintetiza interferencias, sirenas de alarma y voz distorsionada de la IA
-de forma 100% autónoma y sin dependencias.
+y síntesis de voz que reproduce interferencias, sirenas de alarma, efectos
+de debilitamiento y la voz distorsionada del hacker de forma 100% autónoma
+y sin dependencias.
 
 Sin embargo, si quieres utilizar tus propios audios distorsionados grabados
-o efectos de sonido personalizados, simplemente coloca los archivos MP3
-en esta carpeta con los siguientes nombres:
+o efectos de sonido personalizados en formato MP3, simplemente coloca los
+archivos en esta carpeta con los siguientes nombres:
 
+--------------------------------------------------------------------
+A. AUDIO INICIAL DEL HACKEO (Al pulsar la tecla H en la presentación)
+--------------------------------------------------------------------
 1. anon_voice.mp3 (o ai_voice.mp3)
-   -> Voz distorsionada del anónimo/IA cuando hackea la pantalla.
-   -> Mensaje recomendado: "Si nadie me detiene, el instituto será cifrado. Tenéis 5 retos para evitarlo."
+   -> Voz distorsionada del hacker al irrumpir en la pantalla del instituto.
+   -> Mensaje: "Hola [instituto], me he infiltrado en vuestro instituto jajajajaja. Voy a cifrar todos vuestros datos..."
 
 2. hack_glitch.mp3
    -> Efecto de sonido de interferencia eléctrica / corte de señal inicial.
@@ -20,6 +24,34 @@ en esta carpeta con los siguientes nombres:
 3. siren_alarm.mp3
    -> Efecto de sonido de alarma o sirena de intrusión.
 
-El sistema detectará automáticamente si estos archivos existen. Si no los
-encuentra, utilizará los sintetizadores de audio generativo en tiempo real.
+--------------------------------------------------------------------
+B. AUDIOS DE DEBILITAMIENTO Y DERROTA (Durante el escape room)
+--------------------------------------------------------------------
+A medida que los equipos resuelven retos y el porcentaje de amenaza de
+cifrado disminuye, aparecerá una animación central en la pantalla del host
+con la máscara de Anonymous debilitándose y su mensaje de voz:
+
+4. hacker_debil1.mp3
+   -> Se activa cuando la amenaza baja al 75% o menos (Fase 1 de debilidad).
+   -> Frase recomendada:
+      "Sois más buenos de lo que pensaba, pero esto no ha terminado aún"
+
+5. hacker_debil2.mp3
+   -> Se activa cuando la amenaza baja al 40% o menos (Fase 2 de debilidad).
+   -> Frase recomendada:
+      "Parece que estabais escuchando en la charla. JAJAJA (risa malvada)"
+
+6. hacker_derrota.mp3
+   -> Se activa al terminar (0% de amenaza - Victoria de los alumnos).
+   -> Frase recomendada:
+      "Me habéis derrotado, pero esto no va acabar así, que sepáis que volveré."
+
+--------------------------------------------------------------------
+NOTAS:
+- Si estos archivos MP3 no existen en la carpeta, el sistema utilizará
+  automáticamente la síntesis de voz en tiempo real con tono grave de
+  villano y efectos de distorsión electromagnética de fondo.
+- Puedes probar en cualquier momento las 3 animaciones y audios desde
+  el panel de control pulsando el botón "⚡ PROBAR ANIMACIÓN" o usando
+  los atajos de teclado [1], [2] o [3].
 ====================================================================

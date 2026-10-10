@@ -58,6 +58,14 @@ let audioCtx = null;
 let socket = null;
 let sirenInterval = null;
 let isHackingActive = false;
+let hackerMilestones = {
+  m1: false, // <= 75%
+  m2: false, // <= 40%
+  m3: false  // === 0%
+};
+let weakeningTimerId = null;
+let currentWeakeningStage = 0;
+let testStageCounter = 1;
 
 // ═══════════════════════════════════════════════════════════
 //  1. MOTOR DE AUDIO CIBERNÉTICO & SONIDOS DISTORSIONADOS
@@ -262,6 +270,220 @@ function playVictoryFanfare() {
     osc.start(t);
     osc.stop(t + 1.0);
   });
+}
+
+// 1.5 Efectos sonoros y voz de debilitamiento del hacker
+function playWeakeningSoundFX(stage) {
+  initAudio();
+  if (!audioCtx || isMuted) return;
+  const now = audioCtx.currentTime;
+
+  if (stage === 1) {
+    // Ruido eléctrico + zumbido descendente de desestabilización
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(420, now);
+    osc.frequency.exponentialRampToValueAtTime(110, now + 0.8);
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.9);
+  } else if (stage === 2) {
+    // Alarma disonante triple + chispazo de distorsión
+    [320, 480, 240].forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const t = now + idx * 0.12;
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(80, t + 0.5);
+      gain.gain.setValueAtTime(0.18, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(t);
+      osc.stop(t + 0.6);
+    });
+  } else if (stage === 3) {
+    // Fanfarria triunfal de liberación del instituto
+    playVictoryFanfare();
+  }
+}
+
+function playHackerWeakeningAudio(audioFileName, speechText, stage) {
+  if (isMuted) return;
+  initAudio();
+
+  // 1. Efecto sonoro de impacto procedural
+  playWeakeningSoundFX(stage);
+
+  // Activar animación del ecualizador
+  const eqWidget = document.getElementById('weakening-audio-freq');
+  if (eqWidget) eqWidget.classList.add('playing');
+
+  // 2. Intentar cargar MP3 personalizado de la carpeta /audio/
+  const customAudio = new Audio(`/audio/${audioFileName}`);
+  customAudio.play().then(() => {
+    console.log(`[AUDIO] Reproduciendo archivo personalizado: /audio/${audioFileName}`);
+    customAudio.onended = () => {
+      if (eqWidget) eqWidget.classList.remove('playing');
+    };
+  }).catch((err) => {
+    console.log(`[AUDIO] /audio/${audioFileName} no encontrado, usando síntesis de voz procedimental.`);
+    // 3. Fallback a voz sintetizada con tono de villano y risa malvada
+    speakHackerPhrase(speechText, stage, () => {
+      if (eqWidget) eqWidget.classList.remove('playing');
+    });
+  });
+}
+
+function speakHackerPhrase(text, stage, onEndCallback) {
+  if (!('speechSynthesis' in window) || isMuted) {
+    if (onEndCallback) onEndCallback();
+    return;
+  }
+  window.speechSynthesis.cancel();
+
+  // Convertir marcas como "(risa malvada)" en onomatopeyas legibles para el sintetizador
+  let spokenText = text.replace(/\(risa malvada\)/gi, 'jajajajajaja!');
+  const utterance = new SpeechSynthesisUtterance(spokenText);
+  utterance.lang = 'es-ES';
+
+  if (stage === 1) {
+    utterance.pitch = 0.35; // Grave y amenazante
+    utterance.rate = 0.85;
+  } else if (stage === 2) {
+    utterance.pitch = 0.28; // Tono más inestable y burlón
+    utterance.rate = 0.88;
+  } else {
+    utterance.pitch = 0.22; // Debilitado, colapso final
+    utterance.rate = 0.78;
+  }
+  utterance.volume = 1.0;
+
+  const voices = window.speechSynthesis.getVoices();
+  const esVoice = voices.find(v => v.lang.startsWith('es'));
+  if (esVoice) utterance.voice = esVoice;
+
+  utterance.onend = () => {
+    if (onEndCallback) onEndCallback();
+  };
+  utterance.onerror = () => {
+    if (onEndCallback) onEndCallback();
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
+  const overlay = document.getElementById('hacker-weakening-overlay');
+  const card = document.getElementById('weakening-card');
+  const titleEl = document.getElementById('weakening-status-title');
+  const quoteEl = document.getElementById('weakening-dialogue-text');
+  const valEl = document.getElementById('weakening-integrity-val');
+  const fillEl = document.getElementById('weakening-meter-fill');
+  const timerFill = document.getElementById('weakening-timer-fill');
+
+  if (!overlay || !card) return;
+
+  currentWeakeningStage = stage;
+
+  let phrase = customPhrase;
+  let audioFile = customAudioFile;
+  let title = '';
+  let integrityPct = 100;
+
+  if (stage === 1) {
+    phrase = phrase || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito1 && appConfig.mensajesDebilitamiento.hito1.frase) || "Sois más buenos de lo que pensaba, pero esto no ha terminado aún";
+    audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito1 && appConfig.mensajesDebilitamiento.hito1.audio) || "hacker_debil1.mp3";
+    title = "[!] ANOMALÍA EN EL SERVIDOR // CIFRADO AGRIETADO [75%]";
+    integrityPct = 75;
+  } else if (stage === 2) {
+    phrase = phrase || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito2 && appConfig.mensajesDebilitamiento.hito2.frase) || "Parece que estabais escuchando en la charla. JAJAJA (risa malvada)";
+    audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito2 && appConfig.mensajesDebilitamiento.hito2.audio) || "hacker_debil2.mp3";
+    title = "[!!] ALERTA CRÍTICA: FISURA MASIVA EN EL NÚCLEO [40%]";
+    integrityPct = 40;
+  } else if (stage === 3) {
+    phrase = phrase || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.frase) || "Me habéis derrotado, pero esto no va acabar así, que sepáis que volveré.";
+    audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.audio) || "hacker_derrota.mp3";
+    title = "[✓✓] ¡VICTORIA TOTAL! SISTEMA DEL INSTITUTO RESTAURADO [0%]";
+    integrityPct = 0;
+  }
+
+  // Actualizar apariencia
+  card.className = `weakening-card tech-frame stage-weakening-${stage}`;
+  if (titleEl) titleEl.textContent = title;
+  if (quoteEl) quoteEl.textContent = phrase;
+  if (valEl) valEl.textContent = integrityPct === 0 ? '0% (NEUTRALIZADO)' : `${integrityPct}%`;
+  if (fillEl) fillEl.style.width = `${integrityPct}%`;
+
+  overlay.classList.remove('hidden');
+
+  // Reproducir audio personalizado o voz procedimental
+  playHackerWeakeningAudio(audioFile, phrase, stage);
+
+  // Registrar en terminal de eventos
+  logTerminalEvent(`[!] INTERCEPTACIÓN: Anonymous se debilita (Fase ${stage}/3). Mensaje transmitido al aula.`, stage === 3 ? 'log-advance' : 'log-alert');
+
+  // Barra de progreso y auto-cierre tras 7.5 segundos
+  if (weakeningTimerId) clearTimeout(weakeningTimerId);
+  if (timerFill) {
+    timerFill.style.transition = 'none';
+    timerFill.style.transform = 'scaleX(1)';
+    void timerFill.offsetWidth;
+    timerFill.style.transition = 'transform 7.5s linear';
+    timerFill.style.transform = 'scaleX(0)';
+  }
+
+  weakeningTimerId = setTimeout(() => {
+    closeWeakeningOverlay();
+  }, 7500);
+}
+
+function closeWeakeningOverlay() {
+  const overlay = document.getElementById('hacker-weakening-overlay');
+  if (overlay) overlay.classList.add('hidden');
+  if (weakeningTimerId) clearTimeout(weakeningTimerId);
+  const eqWidget = document.getElementById('weakening-audio-freq');
+  if (eqWidget) eqWidget.classList.remove('playing');
+}
+
+function previewWeakeningSequence(specificStage) {
+  const stage = specificStage || testStageCounter;
+  triggerHackerWeakening(stage);
+  testStageCounter = (testStageCounter % 3) + 1;
+}
+
+function checkThreatMilestones(threatRemaining, totalSolved) {
+  // Disparar solo una vez por hito si ya se ha resuelto alguna fase
+  if (totalSolved === 0) return;
+
+  // Hito 1: amenazada reducida a 75% o menos
+  if (threatRemaining <= 75 && threatRemaining > 40 && !hackerMilestones.m1) {
+    hackerMilestones.m1 = true;
+    triggerHackerWeakening(1);
+    return;
+  }
+
+  // Hito 2: amenaza reducida a 40% o menos
+  if (threatRemaining <= 40 && threatRemaining > 0 && !hackerMilestones.m2) {
+    hackerMilestones.m1 = true;
+    hackerMilestones.m2 = true;
+    triggerHackerWeakening(2);
+    return;
+  }
+
+  // Hito 3: amenaza reducida al 0% (victoria total)
+  if (threatRemaining === 0 && !hackerMilestones.m3) {
+    hackerMilestones.m1 = true;
+    hackerMilestones.m2 = true;
+    hackerMilestones.m3 = true;
+    triggerHackerWeakening(3);
+    return;
+  }
 }
 
 function toggleMute() {
@@ -534,6 +756,29 @@ function openHostDashboardFromHack() {
 window.addEventListener('keydown', (e) => {
   const presScreen = document.getElementById('presentation-screen');
   const isPresVisible = presScreen && !presScreen.classList.contains('hidden');
+  const dashScreen = document.getElementById('host-dashboard-screen');
+  const isDashVisible = dashScreen && !dashScreen.classList.contains('hidden');
+
+  if (isDashVisible) {
+    // Tecla Escape para cerrar overlay o modales
+    if (e.key === 'Escape') {
+      closeWeakeningOverlay();
+      closeResetModal();
+      return;
+    }
+
+    // Teclas 1, 2, 3 para probar rápidamente las 3 animaciones y audios de debilitamiento
+    if (e.key === '1') {
+      previewWeakeningSequence(1);
+      return;
+    } else if (e.key === '2') {
+      previewWeakeningSequence(2);
+      return;
+    } else if (e.key === '3') {
+      previewWeakeningSequence(3);
+      return;
+    }
+  }
 
   if (isPresVisible) {
     // Tecla 'H' o 'h': Disparador secreto del hackeo de Anonymous
@@ -720,8 +965,12 @@ function updateTeamsDisplay(teams) {
   }
 
   // 5. Actualizar widget de Amenaza Global del Instituto
-  const maxPossible = 25;
+  const numTeams = parseInt((appConfig && appConfig.numeroEquipos) || Object.keys(teamsState).length || 5, 10);
+  const maxPossible = numTeams * 5;
   const threatRemaining = Math.max(0, Math.round(((maxPossible - totalPhasesSolvedAcrossAll) / maxPossible) * 100));
+
+  // 5.1 Comprobar si el nuevo porcentaje activa hitos de debilitamiento
+  checkThreatMilestones(threatRemaining, totalPhasesSolvedAcrossAll);
   const threatPctEl = document.getElementById('global-threat-pct');
   const threatFillEl = document.getElementById('global-threat-fill');
 
@@ -838,6 +1087,13 @@ function initHostSocket() {
   socket.on('host:team_advanced', (data) => {
     triggerTeamAdvanceAnimation(data);
   });
+
+  socket.on('game:reset', () => {
+    hackerMilestones = { m1: false, m2: false, m3: false };
+    testStageCounter = 1;
+    closeWeakeningOverlay();
+    logTerminalEvent('Partida reiniciada desde el servidor central.', 'log-sys');
+  });
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -855,6 +1111,9 @@ function closeResetModal() {
 
 function confirmResetGame() {
   closeResetModal();
+  closeWeakeningOverlay();
+  hackerMilestones = { m1: false, m2: false, m3: false };
+  testStageCounter = 1;
   if (socket && socket.connected) {
     socket.emit('host:reset_game');
     logTerminalEvent('Se ha emitido la orden de REINICIAR toda la partida.', 'log-alert');

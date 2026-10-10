@@ -334,6 +334,9 @@
 
         <!-- Controles para el profesor en el dashboard (sin spoilers en la presentación) -->
         <div class="hud-host-actions">
+          <button id="test-weakening-btn" class="btn-hud-control" onclick="previewWeakeningSequence()" title="Probar Animación de Debilitamiento (Atajos 1, 2, 3)">
+            <span class="btn-icon">⚡</span> PROBAR ANIMACIÓN
+          </button>
           <button id="fullscreen-btn" class="btn-hud-control" onclick="toggleFullscreen()" title="Pantalla Completa">
             <span class="btn-icon">⛶</span> PANTALLA COMPLETA
           </button>
@@ -368,6 +371,145 @@
           </div>
         </div>
       </footer>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 3. OVERLAY DE DEBILITAMIENTO Y DERROTA DEL HACKER (INTERSTICIAL) -->
+  <!-- ============================================================== -->
+  <div id="hacker-weakening-overlay" class="weakening-overlay hidden" role="dialog" aria-modal="true">
+    <div class="weakening-backdrop" onclick="closeWeakeningOverlay()"></div>
+    <div class="weakening-card tech-frame" id="weakening-card">
+      <div class="frame-corner top-left"></div>
+      <div class="frame-corner top-right"></div>
+      <div class="frame-corner bottom-left"></div>
+      <div class="frame-corner bottom-right"></div>
+
+      <!-- Barra superior de estado HUD -->
+      <div class="weakening-header mono">
+        <div class="weakening-header-left">
+          <span class="weakening-badge-dot"></span>
+          <span id="weakening-status-title" class="weakening-status-title">[!] ANOMALÍA EN EL SERVIDOR // CIFRADO AGRIETADO [75%]</span>
+        </div>
+        <button class="weakening-close-btn" onclick="closeWeakeningOverlay()" title="Cerrar modal (Esc)">✕ CERRAR</button>
+      </div>
+
+      <!-- Cuerpo interactivo -->
+      <div class="weakening-body">
+        <!-- Columna 1: Holograma de la Máscara y Estado de Integridad -->
+        <div class="weakening-avatar-wrapper">
+          <div class="weakening-holo-aura"></div>
+          <div class="weakening-mask-container" id="weakening-mask-box">
+            <!-- Máscara SVG con fisuras y circuitos que reaccionan al daño -->
+            <svg class="weakening-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Capucha negra -->
+              <path class="mask-hood" d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#0c050a" stroke="#ff003c" stroke-width="2.5"/>
+              <!-- Base de máscara ciber -->
+              <path class="mask-face" d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff003c" stroke-width="2.5"/>
+              <!-- Cejas -->
+              <path class="mask-brow" d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+              <!-- Ojos de escaneo láser -->
+              <ellipse cx="92" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+              <circle cx="92" cy="118" r="4" fill="#00ff66" class="mask-eye-laser laser-l"/>
+              <ellipse cx="148" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+              <circle cx="148" cy="118" r="4" fill="#00ff66" class="mask-eye-laser laser-r"/>
+              <!-- Bigote curvado -->
+              <path class="mask-mustache" d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
+              <!-- Sonrisa -->
+              <path class="mask-smile" d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <!-- Perilla -->
+              <path class="mask-beard" d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
+              
+              <!-- Red de grietas que se iluminan al debilitarse -->
+              <g class="mask-cracks-group">
+                <path class="crack-path crack-1" d="M120 20 L112 55 L126 88 L104 125 L92 145" stroke="#ff003c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-2" d="M180 85 L156 108 L165 142 L138 175 L150 205" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-3" d="M60 85 L84 108 L72 150 L102 182 L88 215" stroke="#ffb000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-4" d="M104 125 L125 150 L115 190 L120 240" stroke="#ff003c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+
+              <!-- Fragmentos de código / desintegración -->
+              <g class="shatter-fragments" id="shatter-fragments"></g>
+            </svg>
+            <div class="mask-glitch-scan"></div>
+          </div>
+
+          <!-- Barra de Integridad del Hacker -->
+          <div class="weakening-integrity-box mono">
+            <div class="integrity-labels">
+              <span class="integrity-title">AMENAZA DEL HACKER:</span>
+              <span id="weakening-integrity-val" class="integrity-val text-red">75%</span>
+            </div>
+            <div class="integrity-meter">
+              <div id="weakening-meter-fill" class="integrity-meter-fill" style="width: 75%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna 2: Transmisión de Audio y Diálogo de la IA / Hacker -->
+        <div class="weakening-dialogue-panel">
+          <div class="dialogue-meta-bar mono">
+            <span class="trans-chip"><span class="chip-blink-red"></span> INTERCEPTACIÓN DE FRECUENCIA</span>
+            <span class="trans-id">CANAL: 0xANONYMOUS_BROADCAST</span>
+          </div>
+
+          <!-- Mensaje principal pronunciado por el hacker -->
+          <div class="dialogue-speech-box">
+            <div class="dialogue-quote-mark start">“</div>
+            <h2 id="weakening-dialogue-text" class="weakening-dialogue-text">
+              Sois más buenos de lo que pensaba, pero esto no ha terminado aún
+            </h2>
+            <div class="dialogue-quote-mark end">”</div>
+          </div>
+
+          <!-- Ecualizador de frecuencia en tiempo real (mientras habla) -->
+          <div class="audio-freq-widget mono" id="weakening-audio-freq">
+            <div class="freq-bars" id="freq-bars-container">
+              <span class="f-bar"></span><span class="f-bar"></span><span class="f-bar"></span>
+              <span class="f-bar"></span><span class="f-bar"></span><span class="f-bar"></span>
+              <span class="f-bar"></span><span class="f-bar"></span><span class="f-bar"></span>
+              <span class="f-bar"></span><span class="f-bar"></span><span class="f-bar"></span>
+            </div>
+            <span class="freq-status-text" id="freq-status-text">REPRODUCIENDO MENSAJE DEL HACKER...</span>
+          </div>
+
+          <!-- Barra de temporizador para cierre automático -->
+          <div class="weakening-footer-control">
+            <div class="weakening-timer-bar">
+              <div class="weakening-timer-fill" id="weakening-timer-fill"></div>
+            </div>
+            <div class="weakening-actions">
+              <span class="timer-desc mono">SE CERRARÁ AUTOMÁTICAMENTE</span>
+              <button class="btn-weakening-dismiss mono" onclick="closeWeakeningOverlay()">
+                CONTINUAR PARTIDA [ESC] ▶
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación para reiniciar partida -->
+  <div id="reset-confirm-modal" class="reset-modal-overlay hidden">
+    <div class="reset-modal-card tech-frame">
+      <div class="frame-corner top-left"></div>
+      <div class="frame-corner top-right"></div>
+      <div class="frame-corner bottom-left"></div>
+      <div class="frame-corner bottom-right"></div>
+      <div class="reset-modal-header mono">
+        <span class="text-red">⚠ ADVERTENCIA DE CONTROL CENTRAL</span>
+      </div>
+      <div class="reset-modal-body">
+        <h3>¿REINICIAR TODA LA PARTIDA DEL ESCAPE ROOM?</h3>
+        <p class="mono text-muted" style="margin-top: 8px;">
+          Se reseteará el progreso de todos los equipos al 0% y se reactivará la amenaza inicial al 100%.
+        </p>
+      </div>
+      <div class="reset-modal-actions mono">
+        <button class="btn-hud-control" onclick="closeResetModal()">CANCELAR</button>
+        <button class="btn-hud-control btn-hud-danger" onclick="confirmResetGame()">SÍ, REINICIAR PARTIDA</button>
+      </div>
     </div>
   </div>
 
