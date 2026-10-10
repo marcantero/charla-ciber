@@ -1238,31 +1238,46 @@ body.hacked-mode .deco {
 }
 
 .anon-speech-box {
-  background: rgba(0, 0, 0, 0.7);
-  border-left: 4px solid var(--red);
-  padding: 22px 26px;
+  background: rgba(10, 4, 8, 0.92);
+  border: 1px solid rgba(255, 0, 60, 0.35);
+  border-left: 5px solid #ff003c;
+  padding: 24px 28px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 0 30px rgba(255, 0, 60, 0.15);
+  gap: 14px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 0, 60, 0.15);
+  border-radius: 4px;
 }
 .speech-pre {
-  color: var(--red);
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
+  color: #ff3355;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
 }
 .speech-quote {
-  font-family: var(--font-display);
-  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
-  font-weight: 800;
-  color: #ff3355;
-  line-height: 1.35;
-  text-shadow: 0 0 14px rgba(255, 0, 60, 0.7);
+  font-family: 'Orbitron', 'Inter', -apple-system, sans-serif;
+  font-size: clamp(1.35rem, 2.3vw, 1.95rem);
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+  position: relative;
+}
+.speech-quote .quote-highlight-red {
+  color: #ff2255;
+  text-shadow: 0 0 16px rgba(255, 34, 85, 0.65);
+}
+.speech-quote .quote-highlight-cyan {
+  color: #00ffcc;
+  text-shadow: 0 0 16px rgba(0, 255, 204, 0.65);
 }
 .speech-desc {
-  font-size: 0.85rem;
-  color: var(--white-soft);
-  line-height: 1.5;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  letter-spacing: 0.02em;
 }
 
 .hack-actions {
