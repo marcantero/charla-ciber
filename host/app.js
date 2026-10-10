@@ -591,22 +591,12 @@ function startMissionTimer() {
 }
 
 function pauseMissionTimer() {
-  isMissionTimerRunning = false;
-  const widget = document.getElementById('hud-countdown-widget');
-  const btn = document.getElementById('btn-toggle-timer');
-  if (widget) widget.classList.add('paused');
-  if (btn) btn.textContent = '▶';
+  // El temporizador de la misión no se puede parar
 }
 
 function toggleMissionTimer(e) {
   if (e) e.stopPropagation();
-  if (isMissionTimerRunning) {
-    pauseMissionTimer();
-    logTerminalEvent('Temporizador de misión pausado manualmente.', 'log-sys');
-  } else {
-    startMissionTimer();
-    logTerminalEvent('Temporizador de misión reanudado.', 'log-sys');
-  }
+  // El temporizador es implacable y no se puede pausar
 }
 
 function resetMissionTimer() {
@@ -917,12 +907,6 @@ window.addEventListener('keydown', (e) => {
       return;
     }
 
-    // Tecla Espacio: Pausar/Reanudar cuenta atrás
-    if (e.key === ' ' && !e.target.matches('input, textarea, button')) {
-      e.preventDefault();
-      toggleMissionTimer();
-      return;
-    }
 
     // Tecla F o f: Pantalla completa
     if (e.key === 'f' || e.key === 'F') {
