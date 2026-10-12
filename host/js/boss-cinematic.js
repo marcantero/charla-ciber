@@ -1,13 +1,21 @@
 // ================================================================
 //  HOST - boss-cinematic.js
-//  Cinemática de Derrota Final y Exfiltración (Estilo Película / Widescreen)
+//  Cinemática Épica de Derrota del Boss Final (Estilo Película / Widescreen)
+//  Fases:
+//   1. Aparición imponente del Hacker (Amenaza 100%)
+//   2. Animación de ataque coordinado de todos los equipos del aula
+//   3. Pausa de derrota / aparente victoria (Suspenso)
+//   4. El giro: El hacker renace de entre las cenizas
+//   5. Avatar parlante sincronizado con la locución y el manifiesto
 // ================================================================
 
 let bossCinematicActive = false;
 let bossTypewriterInterval = null;
 let bossCanvasAnimId = null;
 let bossParticles = [];
-let bossLasers = [];
+let bossBeams = [];
+let bossCurrentAudio = null;
+let bossSpeakingTimer = null;
 
 const MANIFESTO_PARAGRAPHS = [
   {
@@ -55,95 +63,366 @@ function triggerBossCinematic() {
   closeWeakeningOverlay();
 
   const cinematic = document.getElementById('boss-defeat-cinematic');
-  const stage1 = document.getElementById('boss-cinematic-stage1');
-  const stage2 = document.getElementById('boss-cinematic-stage2');
+  const stageIntro = document.getElementById('boss-stage-intro');
+  const stageFakeVictory = document.getElementById('boss-stage-fake-victory');
+  const stageReborn = document.getElementById('boss-stage-reborn');
   const flagBox = document.getElementById('boss-flag-reveal-box');
-  const container = document.getElementById('boss-typewriter-container');
-  const avatar = document.getElementById('boss-hologram-avatar');
+  const typewriterContainer = document.getElementById('boss-typewriter-container');
+  const combatAvatar = document.getElementById('boss-combat-avatar');
   const flare = document.getElementById('cinematic-lens-flare');
+  const teamsBar = document.getElementById('boss-teams-attack-bar');
 
   if (!cinematic) return;
 
-  // Reset de estados
+  // Reset total de estados
   cinematic.classList.remove('hidden');
-  if (stage1) {
-    stage1.classList.remove('hidden');
-    stage1.classList.remove('fade-out-down');
+
+  if (stageIntro) {
+    stageIntro.classList.remove('hidden', 'fade-out-down');
   }
-  if (stage2) {
-    stage2.classList.add('hidden');
-    stage2.classList.remove('cinematic-fade-in');
+  if (stageFakeVictory) {
+    stageFakeVictory.classList.add('hidden');
+    stageFakeVictory.classList.remove('fade-out-down');
+  }
+  if (stageReborn) {
+    stageReborn.classList.add('hidden');
+    stageReborn.classList.remove('cinematic-fade-in');
   }
   if (flagBox) flagBox.classList.add('hidden');
-  if (container) container.innerHTML = '';
-  if (avatar) avatar.classList.remove('dissolving');
+  if (typewriterContainer) typewriterContainer.innerHTML = '';
+  if (combatAvatar) combatAvatar.className = 'boss-combat-avatar';
   if (flare) flare.classList.remove('flare-active');
 
-  // Actualizar hora en la cinemática
-  const timeEl = document.getElementById('cinematic-live-time');
-  if (timeEl) timeEl.textContent = new Date().toTimeString().slice(0, 8);
+  const headline = document.getElementById('boss-action-headline');
+  const subtag = document.getElementById('boss-action-subtag');
+  if (headline) headline.textContent = '¡AMENAZA DETECTADA!';
+  if (subtag) subtag.textContent = '[ INTRUSO EN EL SISTEMA // NÚCLEO HOSTIL ]';
 
-  // Iniciar motor de renderizado de partículas y lásers en Canvas
-  initBossCanvasEngine();
+  // Iniciar Canvas Engine
+  initBossBattleCanvas();
 
-  // Iniciar sonido atmosférico de encierro
+  // Poblar la barra de equipos con los equipos del aula
+  populateTeamAttackChips(teamsBar);
+
+  // Sonido de alerta del Boss
   playLaserLockSound();
+  logTerminalEvent('⚔️ ASALTO FINAL: Bloqueo de perímetro y contraataque coordinado de todos los equipos.', 'log-alert');
 
-  // Registrar en terminal de eventos
-  logTerminalEvent('⚡ AISLAMIENTO DE NÚCLEO HOSTIL: Protocolo de expulsión forzada activado (0% amenaza).', 'log-alert');
+  // ==============================================================
+  // SECUENCIA CINEMATOGRÁFICA
+  // ==============================================================
 
-  // Momento Clímax 1 (a los 2.0s): Disolución del Avatar y Onda de Choque Anamórfica
+  // A los 1.8s: Comienza el contraataque coordinado de los equipos
+  setTimeout(() => {
+    if (!bossCinematicActive) return;
+    executeTeamsCounterattackSequence();
+  }, 1800);
+}
+
+// ----------------------------------------------------------------
+//  POBLAR NODOS DE EQUIPOS EN LA PANTALLA
+// ----------------------------------------------------------------
+function populateTeamAttackChips(container) {
+  if (!container) return;
+  container.innerHTML = '';
+
+  const numTeams = parseInt((appConfig && appConfig.numeroEquipos) || 5, 10);
+  for (let id = 1; id <= numTeams; id++) {
+    const chip = document.createElement('div');
+    chip.className = 'team-attack-chip';
+    chip.id = `attack-chip-team-${id}`;
+    const name = (appConfig && appConfig.equipos && appConfig.equipos[id] && appConfig.equipos[id].nombre) || `EQUIPO ${id}`;
+    chip.innerHTML = `
+      <span class="chip-dot"></span>
+      <span>${name}</span>
+    `;
+    container.appendChild(chip);
+  }
+}
+
+// ----------------------------------------------------------------
+//  SECUENCIA DE ATAQUE DE LOS EQUIPOS AL HACKER
+// ----------------------------------------------------------------
+function executeTeamsCounterattackSequence() {
+  const numTeams = parseInt((appConfig && appConfig.numeroEquipos) || 5, 10);
+  const headline = document.getElementById('boss-action-headline');
+  const subtag = document.getElementById('boss-action-subtag');
+  const avatar = document.getElementById('boss-combat-avatar');
+
+  if (headline) headline.textContent = '¡EQUIPOS ATACANDO!';
+  if (subtag) subtag.textContent = '[ DESCARGA DE FIREWALLS // SOBRECARGA DEL NÚCLEO ]';
+
+  // Disparar rayos desde cada equipo secuencialmente hacia el hacker
+  const attackDuration = 3200;
+  const intervalPerTeam = attackDuration / numTeams;
+
+  for (let i = 1; i <= numTeams; i++) {
+    setTimeout(() => {
+      if (!bossCinematicActive) return;
+
+      const chip = document.getElementById(`attack-chip-team-${i}`);
+      if (chip) {
+        chip.classList.add('firing');
+      }
+
+      // Disparar rayo visual y sacudida en el avatar
+      launchTeamLaserAttack(i, numTeams);
+      playKeyClick();
+
+      if (avatar) {
+        avatar.classList.add('hit-glitch');
+        setTimeout(() => avatar.classList.remove('hit-glitch'), 220);
+      }
+
+      triggerCinematicCameraShake();
+    }, (i - 1) * intervalPerTeam);
+  }
+
+  // Clímax del ataque: Impacto masivo conjunto y desintegración del Hacker
   setTimeout(() => {
     if (!bossCinematicActive) return;
 
-    // Disolución visual del avatar en pantalla
-    if (avatar) avatar.classList.add('dissolving');
+    if (headline) headline.textContent = '¡IMPACTO CRÍTICO!';
+    if (subtag) subtag.textContent = '[ NÚCLEO HOSTIL SOBRECARGADO // COLAPSO TOTAL ]';
 
-    // Desatar ráfaga masiva de partículas digitales cuánticas
+    // Todos los chips en estado impacted
+    for (let i = 1; i <= numTeams; i++) {
+      const chip = document.getElementById(`attack-chip-team-${i}`);
+      if (chip) chip.classList.add('impacted');
+    }
+
+    // Flash blanco y sacudida sísmica
+    triggerImpactFlash();
+    triggerCinematicCameraHeavyShake();
+    playCinematicBassBraam();
+
+    // El avatar estalla y se desmorona
+    if (avatar) {
+      avatar.classList.add('critical-shatter');
+    }
+
+    // Explosión de partículas cuánticas en el Canvas
     burstDissolutionParticles();
 
-    // Destello de lente anamórfica horizontal (estilo cinematográfico JJ Abrams / Blade Runner)
+    // Destello anamórfico horizontal
+    const flare = document.getElementById('cinematic-lens-flare');
     if (flare) {
       flare.classList.add('flare-active');
       setTimeout(() => flare.classList.remove('flare-active'), 1200);
     }
 
-    // Impacto subgrave masivo y chisporroteo eléctrico
-    playCinematicBassBraam();
+    // A los 3.2s del impacto: Transición a la PAUSA DE VICTORIA APARENTE
+    setTimeout(() => {
+      if (!bossCinematicActive) return;
+      transitionToFakeVictory();
+    }, 3200);
 
-    // Sacudida física controlada de la cámara
-    triggerCinematicCameraShake();
-  }, 2000);
+  }, attackDuration + 400);
+}
 
-  // Momento Clímax 2 (a los 4.8s): Transición fluida al Acto 2 (Terminal Tor & Manifiesto)
+// ----------------------------------------------------------------
+//  PAUSA DE VICTORIA APARENTE (CELEBRACIÓN Y SUSPENSO)
+// ----------------------------------------------------------------
+function transitionToFakeVictory() {
+  const stageIntro = document.getElementById('boss-stage-intro');
+  const stageFake = document.getElementById('boss-stage-fake-victory');
+
+  if (stageIntro) {
+    stageIntro.classList.add('fade-out-down');
+    setTimeout(() => stageIntro.classList.add('hidden'), 500);
+  }
+
+  if (stageFake) {
+    stageFake.classList.remove('hidden');
+    stageFake.classList.add('cinematic-fade-in');
+  }
+
+  // Breve fanfarria suave de alivio
+  playVictoryFanfare();
+  logTerminalEvent('🛡️ INFORMES: El servidor no detecta intrusos activos. Amenaza: 0%.', 'log-advance');
+
+  // Pausa dramática de 4.8 segundos creyendo que todo ha terminado...
+  // ¡PERO NO! El hacker renace de las cenizas.
   setTimeout(() => {
     if (!bossCinematicActive) return;
-
-    if (stage1) {
-      stage1.classList.add('fade-out-down');
-      setTimeout(() => {
-        stage1.classList.add('hidden');
-      }, 600);
-    }
-
-    if (stage2) {
-      stage2.classList.remove('hidden');
-      stage2.classList.add('cinematic-fade-in');
-    }
-
-    // Sonido de conexión a proxy Tor
-    playTerminalConnectSound();
-
-    // Iniciar el efecto de mecanografía del manifiesto
-    typewriterManifesto();
+    transitionToHackerReborn();
   }, 4800);
 }
 
-// ================================================================
-//  MOTOR DE CANVAS DE DESINTEGRACIÓN Y LÁSERES DE CONFINAMIENTO
-// ================================================================
+// ----------------------------------------------------------------
+//  EL GIRO: EL HACKER RENACE DE ENTRE LAS CENIZAS Y HABLA
+// ----------------------------------------------------------------
+function transitionToHackerReborn() {
+  const stageFake = document.getElementById('boss-stage-fake-victory');
+  const stageReborn = document.getElementById('boss-stage-reborn');
 
-function initBossCanvasEngine() {
+  // Sonido de interferencia/glitch eléctrico repentino
+  playHackGlitchSound();
+  triggerCinematicCameraShake();
+  triggerImpactFlash();
+
+  if (stageFake) {
+    stageFake.classList.add('fade-out-down');
+    setTimeout(() => stageFake.classList.add('hidden'), 500);
+  }
+
+  if (stageReborn) {
+    stageReborn.classList.remove('hidden');
+    stageReborn.classList.add('cinematic-fade-in');
+  }
+
+  // Actualizar hora en la cinemática
+  const timeEl = document.getElementById('cinematic-live-time');
+  if (timeEl) timeEl.textContent = new Date().toTimeString().slice(0, 8);
+
+  // Sonido de conexión Darknet Tor
+  playTerminalConnectSound();
+  logTerminalEvent('☠️ ALERTA ROJA: Señal fantasma detectada. El atacante sigue en el canal Tor.', 'log-alert');
+
+  // Iniciar mecanografía sincronizada con el audio y animación de boca parlante
+  typewriterManifestoWithSpeakingAvatar();
+}
+
+// ----------------------------------------------------------------
+//  MECANOGRAFÍA ADAPTADA AL AUDIO Y ANIMACIÓN DEL HACKER HABLANDO
+// ----------------------------------------------------------------
+function typewriterManifestoWithSpeakingAvatar() {
+  const container = document.getElementById('boss-typewriter-container');
+  const hackerCard = document.querySelector('.reborn-hacker-card');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const phrase = (appConfig && appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.frase) ||
+    "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Vuestros datos ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso.";
+
+  const audioCfg = (appConfig && appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.audio) || 'audio-hacker-3.mp3';
+  const candidates = [
+    `/audio/hacker/${audioCfg}`,
+    `/audio/${audioCfg}`,
+    '/audio/hacker/audio-hacker-3.mp3',
+    '/audio/audio-hacker-3.mp3',
+    '/audio/hacker/hacker_derrota.mp3',
+    '/audio/hacker_derrota.mp3'
+  ];
+
+  let typewritingStarted = false;
+
+  function onAudioStarted(soundInstance) {
+    bossCurrentAudio = soundInstance;
+
+    // Activar animación de que el hacker está hablando
+    if (hackerCard) hackerCard.classList.add('speaking');
+
+    if (soundInstance.duration && !isNaN(soundInstance.duration) && soundInstance.duration > 5) {
+      startSyncTyping(soundInstance.duration);
+    } else {
+      soundInstance.addEventListener('loadedmetadata', () => {
+        const dur = (soundInstance.duration && !isNaN(soundInstance.duration)) ? soundInstance.duration : 82;
+        startSyncTyping(dur);
+      }, { once: true });
+
+      setTimeout(() => {
+        if (!typewritingStarted) {
+          const dur = (soundInstance.duration && !isNaN(soundInstance.duration)) ? soundInstance.duration : 82;
+          startSyncTyping(dur);
+        }
+      }, 400);
+    }
+  }
+
+  function onAudioFailed() {
+    console.warn('[BOSS SYNC] Audio no disponible o bloqueado. Usando síntesis de voz / temporización estimada.');
+    if (hackerCard) hackerCard.classList.add('speaking');
+    startSyncTyping(45);
+    speakHackerPhrase(phrase, 3, () => {
+      if (hackerCard) hackerCard.classList.remove('speaking');
+    });
+  }
+
+  function startSyncTyping(totalAudioDurationSeconds) {
+    if (typewritingStarted || !bossCinematicActive) return;
+    typewritingStarted = true;
+
+    const totalChars = MANIFESTO_PARAGRAPHS.reduce((sum, p) => sum + p.text.length, 0);
+    const availableTypingDurationMs = Math.max((totalAudioDurationSeconds - 3.5) * 1000, 20000);
+    const msPerChar = Math.max(availableTypingDurationMs / totalChars, 14);
+
+    let pIndex = 0;
+
+    function typeNextParagraph() {
+      if (!bossCinematicActive) return;
+
+      if (pIndex >= MANIFESTO_PARAGRAPHS.length) {
+        // Al terminar de hablar, detener la animación de la boca
+        if (hackerCard) hackerCard.classList.remove('speaking');
+        setTimeout(revealEpicFlag, 800);
+        return;
+      }
+
+      const item = MANIFESTO_PARAGRAPHS[pIndex];
+      pIndex++;
+
+      const p = document.createElement('div');
+      p.className = `cinematic-type-line ${item.cls}`;
+
+      const prefixSpan = document.createElement('span');
+      prefixSpan.className = 'type-prefix';
+      prefixSpan.textContent = item.prefix;
+      p.appendChild(prefixSpan);
+
+      const textSpan = document.createElement('span');
+      textSpan.className = 'type-body';
+      p.appendChild(textSpan);
+
+      container.appendChild(p);
+      container.scrollTop = container.scrollHeight;
+
+      let charIndex = 0;
+      const text = item.text;
+      const pInterval = setInterval(() => {
+        if (!bossCinematicActive) {
+          clearInterval(pInterval);
+          return;
+        }
+
+        if (charIndex < text.length) {
+          textSpan.textContent += text[charIndex++];
+          if (charIndex % 4 === 0 && !isMuted) {
+            playKeyClick();
+          }
+        } else {
+          clearInterval(pInterval);
+          const pauseBetween = item.cls.includes('alert-highlight') ? Math.max(msPerChar * 14, 700) : Math.max(msPerChar * 8, 400);
+          setTimeout(typeNextParagraph, pauseBetween);
+        }
+        container.scrollTop = container.scrollHeight;
+      }, msPerChar);
+    }
+
+    typeNextParagraph();
+  }
+
+  // Reproducir con helper sincronizado
+  if (typeof tryPlayAudioWithSync === 'function') {
+    tryPlayAudioWithSync(candidates, onAudioStarted, onAudioFailed, () => {
+      if (hackerCard) hackerCard.classList.remove('speaking');
+      revealEpicFlag();
+    });
+  } else if (typeof tryPlayCandidates === 'function') {
+    tryPlayCandidates(candidates, onAudioFailed, () => {
+      if (hackerCard) hackerCard.classList.remove('speaking');
+      revealEpicFlag();
+    });
+    startSyncTyping(82);
+  } else {
+    onAudioFailed();
+  }
+}
+
+// ----------------------------------------------------------------
+//  CANVAS ENGINE DE BATALLA DIGITAL, LÁSERES Y CENIZAS
+// ----------------------------------------------------------------
+function initBossBattleCanvas() {
   const canvas = document.getElementById('boss-defeat-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -156,73 +435,52 @@ function initBossCanvasEngine() {
   window.addEventListener('resize', resizeCanvas);
 
   bossParticles = [];
-  bossLasers = [];
-
-  const cx = window.innerWidth / 2;
-  const cy = window.innerHeight * 0.46;
-
-  // Inicializar rayos láser de contención apuntando al avatar
-  const corners = [
-    { x: 0, y: 0 },
-    { x: window.innerWidth, y: 0 },
-    { x: 0, y: window.innerHeight },
-    { x: window.innerWidth, y: window.innerHeight }
-  ];
-
-  corners.forEach(c => {
-    bossLasers.push({
-      x1: c.x,
-      y1: c.y,
-      x2: cx,
-      y2: cy,
-      alpha: 0.1,
-      targetAlpha: 0.75,
-      width: 1.5,
-      pulse: Math.random() * Math.PI
-    });
-  });
+  bossBeams = [];
 
   if (bossCanvasAnimId) cancelAnimationFrame(bossCanvasAnimId);
-
-  let frameCount = 0;
 
   function renderLoop() {
     if (!bossCinematicActive) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    frameCount++;
 
-    // 1. Dibujar rayos láser de contención hacia el núcleo
-    const currentCx = canvas.width / 2;
-    const currentCy = canvas.height * 0.44;
+    // 1. Rayos láser de los equipos hacia el centro
+    const cx = canvas.width / 2;
+    const cy = canvas.height * 0.44;
 
-    bossLasers.forEach(l => {
-      l.pulse += 0.08;
-      l.alpha += (l.targetAlpha - l.alpha) * 0.05;
+    for (let i = bossBeams.length - 1; i >= 0; i--) {
+      const b = bossBeams[i];
+      b.progress += b.speed;
+      b.alpha -= b.fade;
 
-      const glow = Math.sin(l.pulse) * 0.3 + 0.7;
+      if (b.alpha <= 0) {
+        bossBeams.splice(i, 1);
+        continue;
+      }
 
       ctx.save();
       ctx.beginPath();
-      ctx.moveTo(l.x1, l.y1);
-      ctx.lineTo(currentCx, currentCy);
-      ctx.strokeStyle = `rgba(0, 229, 255, ${l.alpha * glow})`;
-      ctx.lineWidth = l.width;
+      ctx.moveTo(b.x1, b.y1);
+      const curX = b.x1 + (cx - b.x1) * Math.min(b.progress, 1);
+      const curY = b.y1 + (cy - b.y1) * Math.min(b.progress, 1);
+      ctx.lineTo(curX, curY);
+      ctx.strokeStyle = `rgba(0, 229, 255, ${b.alpha})`;
+      ctx.lineWidth = b.width;
       ctx.shadowColor = '#00e5ff';
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 15;
       ctx.stroke();
 
-      // Haz interior fino blanco
+      // Haz blanco central
       ctx.beginPath();
-      ctx.moveTo(l.x1, l.y1);
-      ctx.lineTo(currentCx, currentCy);
-      ctx.strokeStyle = `rgba(255, 255, 255, ${l.alpha * glow * 0.8})`;
-      ctx.lineWidth = 0.8;
+      ctx.moveTo(b.x1, b.y1);
+      ctx.lineTo(curX, curY);
+      ctx.strokeStyle = `rgba(255, 255, 255, ${b.alpha * 0.9})`;
+      ctx.lineWidth = b.width * 0.4;
       ctx.stroke();
       ctx.restore();
-    });
+    }
 
-    // 2. Animar partículas cuánticas de desintegración
+    // 2. Partículas y cenizas cuánticas flotantes
     for (let i = bossParticles.length - 1; i >= 0; i--) {
       const p = bossParticles[i];
       p.x += p.vx;
@@ -260,6 +518,53 @@ function initBossCanvasEngine() {
   bossCanvasAnimId = requestAnimationFrame(renderLoop);
 }
 
+function launchTeamLaserAttack(teamIndex, totalTeams) {
+  const canvas = document.getElementById('boss-defeat-canvas');
+  if (!canvas) return;
+
+  // Calcular origen del rayo en la parte inferior repartido según el número de equipos
+  const step = canvas.width / (totalTeams + 1);
+  const startX = step * teamIndex;
+  const startY = canvas.height * 0.88;
+
+  // Añadir 3 haces concurrentes para efecto de descarga
+  for (let j = 0; j < 3; j++) {
+    bossBeams.push({
+      x1: startX + (Math.random() - 0.5) * 40,
+      y1: startY + (Math.random() - 0.5) * 20,
+      progress: 0,
+      speed: 0.12 + Math.random() * 0.08,
+      alpha: 1,
+      fade: 0.035,
+      width: 2.5 + Math.random() * 2
+    });
+  }
+
+  // Chispas en el punto de impacto
+  const cx = canvas.width / 2;
+  const cy = canvas.height * 0.44;
+  for (let k = 0; k < 12; k++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 6;
+    bossParticles.push({
+      x: cx + (Math.random() - 0.5) * 60,
+      y: cy + (Math.random() - 0.5) * 60,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      gravity: 0.05,
+      size: 2 + Math.random() * 3,
+      color: '#00e5ff',
+      glowColor: '#00e5ff',
+      glowBlur: 10,
+      alpha: 0.9,
+      fadeRate: 0.03 + Math.random() * 0.02,
+      rotation: 0,
+      vRot: 0.1,
+      shape: 'circle'
+    });
+  }
+}
+
 function burstDissolutionParticles() {
   const canvas = document.getElementById('boss-defeat-canvas');
   if (!canvas) return;
@@ -268,40 +573,42 @@ function burstDissolutionParticles() {
   const cy = canvas.height * 0.44;
 
   const colors = [
-    { fill: '#00e5ff', glow: '#00e5ff' }, // Cyan digital
-    { fill: '#00ff66', glow: '#00ff66' }, // Verde matrix
     { fill: '#ff0055', glow: '#ff0055' }, // Rojo alarma
-    { fill: '#ffffff', glow: '#ffffff' }  // Núcleo blanco
+    { fill: '#ff4500', glow: '#ff4500' }, // Naranja fuego / ceniza
+    { fill: '#00e5ff', glow: '#00e5ff' }, // Cyan digital
+    { fill: '#ffffff', glow: '#ffffff' }, // Blanco puro
+    { fill: '#1a1016', glow: '#ff0055' }  // Ceniza oscura
   ];
 
-  // Desvanecer láseres de contención
-  bossLasers.forEach(l => {
-    l.targetAlpha = 0;
-  });
-
-  // Generar 280 partículas digitales que se dispersan en abanico
-  for (let i = 0; i < 280; i++) {
+  for (let i = 0; i < 320; i++) {
     const col = colors[Math.floor(Math.random() * colors.length)];
     const angle = Math.random() * Math.PI * 2;
-    const speed = 1.8 + Math.random() * 9.5;
+    const speed = 1.5 + Math.random() * 10;
 
     bossParticles.push({
       x: cx + (Math.random() - 0.5) * 140,
       y: cy + (Math.random() - 0.5) * 160,
       vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - 2.5, // Impulso ascendente
-      gravity: -0.06, // Flotan hacia arriba como cenizas cuánticas
-      size: 2.5 + Math.random() * 5.5,
+      vy: Math.sin(angle) * speed - 2.8, // Ascenso como humo/cenizas
+      gravity: -0.05,
+      size: 2.5 + Math.random() * 6,
       color: col.fill,
       glowColor: col.glow,
       glowBlur: 10 + Math.random() * 15,
-      alpha: 0.9 + Math.random() * 0.1,
-      fadeRate: 0.006 + Math.random() * 0.012,
+      alpha: 0.95,
+      fadeRate: 0.005 + Math.random() * 0.01,
       rotation: Math.random() * Math.PI,
       vRot: (Math.random() - 0.5) * 0.15,
       shape: Math.random() > 0.4 ? 'rect' : 'circle'
     });
   }
+}
+
+function triggerImpactFlash() {
+  const flash = document.getElementById('cinematic-impact-flash');
+  if (!flash) return;
+  flash.classList.add('flash-active');
+  setTimeout(() => flash.classList.remove('flash-active'), 180);
 }
 
 function triggerCinematicCameraShake() {
@@ -310,172 +617,32 @@ function triggerCinematicCameraShake() {
   viewport.classList.remove('cinematic-camera-shake');
   void viewport.offsetWidth;
   viewport.classList.add('cinematic-camera-shake');
-  setTimeout(() => viewport.classList.remove('cinematic-camera-shake'), 900);
+  setTimeout(() => viewport.classList.remove('cinematic-camera-shake'), 650);
 }
 
-// ================================================================
-//  MECANOGRAFÍA DEL MANIFIESTO ENCRIPTADO Y REVELACIÓN DE FLAG
-//  Sincronización milimétrica con la duración real del audio del hacker
-// ================================================================
-
-let bossCurrentAudio = null;
-
-function typewriterManifesto() {
-  const container = document.getElementById('boss-typewriter-container');
-  if (!container) return;
-  container.innerHTML = '';
-
-  const phrase = (appConfig && appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.frase) ||
-    "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Vuestros datos ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso.";
-
-  const audioCfg = (appConfig && appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.audio) || 'audio-hacker-3.mp3';
-  const candidates = [
-    `/audio/hacker/${audioCfg}`,
-    `/audio/${audioCfg}`,
-    '/audio/hacker/audio-hacker-3.mp3',
-    '/audio/audio-hacker-3.mp3',
-    '/audio/hacker/hacker_derrota.mp3',
-    '/audio/hacker_derrota.mp3'
-  ];
-
-  // Iniciar audio con helper sincronizado
-  let audioStarted = false;
-
-  function onAudioStarted(soundInstance) {
-    audioStarted = true;
-    bossCurrentAudio = soundInstance;
-
-    // Obtener duración (o esperar evento loadedmetadata si aún no está lista)
-    if (soundInstance.duration && !isNaN(soundInstance.duration) && soundInstance.duration > 5) {
-      startSynchronizedTypewriting(soundInstance.duration);
-    } else {
-      soundInstance.addEventListener('loadedmetadata', () => {
-        const dur = (soundInstance.duration && !isNaN(soundInstance.duration)) ? soundInstance.duration : 82;
-        startSynchronizedTypewriting(dur);
-      }, { once: true });
-
-      // Fallback de seguridad si loadedmetadata tarda
-      setTimeout(() => {
-        if (!typewritingStarted) {
-          const dur = (soundInstance.duration && !isNaN(soundInstance.duration)) ? soundInstance.duration : 82;
-          startSynchronizedTypewriting(dur);
-        }
-      }, 400);
-    }
-  }
-
-  function onAudioFailed() {
-    console.warn('[BOSS SYNC] Audio no disponible o bloqueado. Usando síntesis de voz / temporización estimada.');
-    // Duración estimada para locución hablada (~45 segundos para el manifiesto completo)
-    startSynchronizedTypewriting(45);
-    speakHackerPhrase(phrase, 3);
-  }
-
-  let typewritingStarted = false;
-
-  function startSynchronizedTypewriting(totalAudioDurationSeconds) {
-    if (typewritingStarted || !bossCinematicActive) return;
-    typewritingStarted = true;
-
-    // Calcular distribución de tiempo proporcional a los caracteres de cada párrafo
-    const totalChars = MANIFESTO_PARAGRAPHS.reduce((sum, p) => sum + p.text.length, 0);
-    // Reservamos 3.5s antes del final del audio para la revelación y pausa final
-    const availableTypingDurationMs = Math.max((totalAudioDurationSeconds - 3.5) * 1000, 20000);
-
-    // Tiempo promedio por caracter adaptado dinámicamente al audio
-    const msPerChar = Math.max(availableTypingDurationMs / totalChars, 14);
-
-    console.log(`[BOSS SYNC] Duración audio: ${totalAudioDurationSeconds.toFixed(1)}s. ms/carácter calculado: ${msPerChar.toFixed(2)}ms`);
-
-    let pIndex = 0;
-
-    function typeNextParagraph() {
-      if (!bossCinematicActive) return;
-
-      if (pIndex >= MANIFESTO_PARAGRAPHS.length) {
-        // Al terminar el manifiesto, revelar la FLAG de forma épica
-        setTimeout(revealEpicFlag, 800);
-        return;
-      }
-
-      const item = MANIFESTO_PARAGRAPHS[pIndex];
-      pIndex++;
-
-      const p = document.createElement('div');
-      p.className = `cinematic-type-line ${item.cls}`;
-
-      const prefixSpan = document.createElement('span');
-      prefixSpan.className = 'type-prefix';
-      prefixSpan.textContent = item.prefix;
-      p.appendChild(prefixSpan);
-
-      const textSpan = document.createElement('span');
-      textSpan.className = 'type-body';
-      p.appendChild(textSpan);
-
-      container.appendChild(p);
-      container.scrollTop = container.scrollHeight;
-
-      // Mecanografiar caracter por caracter adaptado
-      let charIndex = 0;
-      const text = item.text;
-      const pInterval = setInterval(() => {
-        if (!bossCinematicActive) {
-          clearInterval(pInterval);
-          return;
-        }
-
-        if (charIndex < text.length) {
-          textSpan.textContent += text[charIndex++];
-          if (charIndex % 4 === 0 && !isMuted) {
-            playKeyClick();
-          }
-        } else {
-          clearInterval(pInterval);
-          // Pausa proporcional entre párrafos
-          const pauseBetween = item.cls.includes('alert-highlight') ? Math.max(msPerChar * 14, 700) : Math.max(msPerChar * 8, 400);
-          setTimeout(typeNextParagraph, pauseBetween);
-        }
-        container.scrollTop = container.scrollHeight;
-      }, msPerChar);
-    }
-
-    typeNextParagraph();
-  }
-
-  // Ejecutar reproductor con callbacks sincronizados
-  if (typeof tryPlayAudioWithSync === 'function') {
-    tryPlayAudioWithSync(candidates, onAudioStarted, onAudioFailed, () => {
-      // Al terminar el audio, asegurar que la flag esté revelada
-      revealEpicFlag();
-    });
-  } else if (typeof tryPlayCandidates === 'function') {
-    tryPlayCandidates(candidates, onAudioFailed, () => {
-      revealEpicFlag();
-    });
-    startSynchronizedTypewriting(82);
-  } else {
-    onAudioFailed();
-  }
+function triggerCinematicCameraHeavyShake() {
+  const viewport = document.getElementById('boss-cinematic-viewport');
+  if (!viewport) return;
+  viewport.classList.remove('cinematic-camera-shake-heavy');
+  void viewport.offsetWidth;
+  viewport.classList.add('cinematic-camera-shake-heavy');
+  setTimeout(() => viewport.classList.remove('cinematic-camera-shake-heavy'), 1200);
 }
 
 function revealEpicFlag() {
   const flagBox = document.getElementById('boss-flag-reveal-box');
   if (!flagBox) return;
 
-  // Si ya está visible, no duplicar efectos
   if (!flagBox.classList.contains('hidden')) return;
 
   flagBox.classList.remove('hidden');
   flagBox.classList.add('flag-card-materialize');
 
-  // Auto-scroll para que el contenedor siempre muestre la flag completa
   const viewport = document.getElementById('boss-cinematic-viewport');
   if (viewport) {
     viewport.scrollTop = viewport.scrollHeight;
   }
 
-  // Fanfarria triunfal sintética
   if (typeof playVictoryFanfare === 'function') {
     playVictoryFanfare();
   }
@@ -522,7 +689,6 @@ function playLaserLockSound() {
   if (!audioCtx || isMuted) return;
   const now = audioCtx.currentTime;
 
-  // Tono de bloqueo láser electromagnético
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   osc.type = 'sine';
@@ -542,7 +708,6 @@ function playCinematicBassBraam() {
   if (!audioCtx || isMuted) return;
   const now = audioCtx.currentTime;
 
-  // 1. Subgrave masivo de película (130Hz -> 28Hz)
   const subOsc = audioCtx.createOscillator();
   const subGain = audioCtx.createGain();
   subOsc.type = 'sawtooth';
@@ -563,7 +728,6 @@ function playCinematicBassBraam() {
   subOsc.start(now);
   subOsc.stop(now + 2.85);
 
-  // 2. Ruido blanco de disipación de alta frecuencia
   const bufferSize = Math.floor(audioCtx.sampleRate * 1.5);
   const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
   const data = buffer.getChannelData(0);
@@ -590,7 +754,6 @@ function playTerminalConnectSound() {
   if (!audioCtx || isMuted) return;
   const now = audioCtx.currentTime;
 
-  // Doble pitido de sincronización de módem cuántico
   [0, 0.12].forEach((offset, idx) => {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();

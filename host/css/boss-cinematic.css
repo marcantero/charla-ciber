@@ -78,7 +78,22 @@
   transform: translateY(-50%) scaleX(1.4);
 }
 
-/* Canvas de Desintegración y Partículas */
+/* Flash de impacto blanco / glitch */
+.cinematic-impact-flash {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 28;
+  transition: opacity 0.1s ease;
+}
+
+.cinematic-impact-flash.flash-active {
+  opacity: 0.95;
+}
+
+/* Canvas de Batalla y Partículas */
 .boss-defeat-canvas {
   position: absolute;
   inset: 0;
@@ -109,9 +124,9 @@
 .boss-cinematic-viewport {
   position: relative;
   z-index: 15;
-  width: 92%;
-  max-width: 1100px;
-  height: 82vh;
+  width: 94%;
+  max-width: 1140px;
+  height: 84vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,14 +145,28 @@
 }
 
 @keyframes cameraImpactHit {
-  10%, 90% { transform: translate3d(-3px, 2px, 0) scale(1.01); }
-  20%, 80% { transform: translate3d(5px, -4px, 0) scale(0.99); }
-  30%, 50%, 70% { transform: translate3d(-6px, 3px, 0) scale(1.01); }
-  40%, 60% { transform: translate3d(4px, -2px, 0) scale(1.0); }
+  10%, 90% { transform: translate3d(-4px, 3px, 0) scale(1.02); }
+  20%, 80% { transform: translate3d(6px, -5px, 0) scale(0.99); }
+  30%, 50%, 70% { transform: translate3d(-7px, 4px, 0) scale(1.02); }
+  40%, 60% { transform: translate3d(5px, -3px, 0) scale(1.0); }
+}
+
+.cinematic-camera-shake-heavy {
+  animation: cameraHeavyQuake 1.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes cameraHeavyQuake {
+  0% { transform: scale(1); filter: contrast(100%); }
+  15% { transform: translate(-10px, 8px) scale(1.04); filter: contrast(200%) hue-rotate(90deg); }
+  30% { transform: translate(12px, -8px) scale(0.98); filter: invert(40%); }
+  45% { transform: translate(-8px, -6px) scale(1.03); filter: contrast(180%); }
+  60% { transform: translate(8px, 6px) scale(0.99); }
+  75% { transform: translate(-4px, 2px); }
+  100% { transform: scale(1); filter: none; }
 }
 
 /* ================================================================
-   ACTO 1: EL ENCIERRO Y LA DESINTEGRACIÓN
+   ETAPAS DE LA CINEMÁTICA
    ================================================================ */
 
 .boss-cinematic-stage {
@@ -155,7 +184,7 @@
 
 .boss-cinematic-stage.fade-out-down {
   opacity: 0;
-  transform: translateY(20px) scale(0.96);
+  transform: translateY(24px) scale(0.96);
   pointer-events: none;
 }
 
@@ -168,45 +197,62 @@
   100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
 
-/* HUD de Bloqueo Superior */
-.boss-lockdown-hud {
+/* ================================================================
+   FASE A: COMBATE Y ASALTO DE LOS EQUIPOS
+   ================================================================ */
+
+.boss-threat-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
-.lockdown-badge {
+.threat-status-badge {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(0, 229, 255, 0.08);
-  border: 1px solid rgba(0, 229, 255, 0.4);
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15), inset 0 0 10px rgba(0, 229, 255, 0.05);
-  padding: 8px 22px;
-  font-size: 0.88rem;
+  background: rgba(255, 0, 85, 0.12);
+  border: 1px solid var(--red);
+  box-shadow: 0 0 20px rgba(255, 0, 60, 0.25);
+  padding: 8px 24px;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #00e5ff;
+  color: #ff3355;
   border-radius: 2px;
 }
 
-.lockdown-pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #00e5ff;
-  box-shadow: 0 0 10px #00e5ff;
-  animation: pulseCyan 1.2s infinite ease-in-out;
+.threat-status-badge.recovering {
+  border-color: #00e5ff;
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
 }
 
-@keyframes pulseCyan {
-  0%, 100% { transform: scale(0.85); opacity: 0.6; }
+.threat-pulse-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.threat-pulse-dot.red {
+  background: var(--red);
+  box-shadow: 0 0 10px var(--red);
+  animation: pulseRedDot 0.8s infinite ease-in-out;
+}
+.threat-pulse-dot.cyan {
+  background: #00e5ff;
+  box-shadow: 0 0 10px #00e5ff;
+  animation: pulseCyan 0.8s infinite ease-in-out;
+}
+
+@keyframes pulseRedDot {
+  0%, 100% { transform: scale(0.8); opacity: 0.6; }
   50% { transform: scale(1.3); opacity: 1; }
 }
 
-.lockdown-meta {
+.threat-meta-coords {
   font-size: 0.76rem;
   letter-spacing: 1.5px;
   color: #a0aec0;
@@ -214,22 +260,22 @@
   gap: 12px;
 }
 
-.meta-separator {
+.meta-sep {
   color: #4a5568;
 }
 
-/* Zona de Confinamiento del Avatar */
-.boss-avatar-containment-zone {
+/* Zona de Combate del Avatar */
+.boss-avatar-battle-zone {
   position: relative;
-  width: 310px;
-  height: 310px;
+  width: 320px;
+  height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 10px 0 24px;
+  margin: 6px 0 16px;
 }
 
-.containment-reticle {
+.battle-target-reticle {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -244,17 +290,17 @@
 }
 
 .ring-outer {
-  width: 290px;
-  height: 290px;
-  border: 1px dashed rgba(0, 229, 255, 0.4);
-  box-shadow: 0 0 25px rgba(0, 229, 255, 0.1);
-  animation: rotateClockwise 28s linear infinite;
+  width: 300px;
+  height: 300px;
+  border: 1px dashed rgba(255, 0, 85, 0.45);
+  box-shadow: 0 0 25px rgba(255, 0, 85, 0.15);
+  animation: rotateClockwise 25s linear infinite;
 }
 
 .ring-mid {
-  width: 240px;
-  height: 240px;
-  border: 1px dashed rgba(255, 0, 85, 0.35);
+  width: 250px;
+  height: 250px;
+  border: 1px dashed rgba(0, 229, 255, 0.4);
   animation: rotateCounter 18s linear infinite;
 }
 
@@ -270,9 +316,9 @@
 
 .reticle-bracket {
   position: absolute;
-  width: 18px;
-  height: 18px;
-  border-color: #00e5ff;
+  width: 20px;
+  height: 20px;
+  border-color: #ff0055;
   border-style: solid;
 }
 .bracket-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
@@ -280,124 +326,265 @@
 .bracket-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
 .bracket-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
 
-/* Avatar Holográfico */
-.boss-hologram-avatar {
+/* Avatar de Combate */
+.boss-combat-avatar {
   position: relative;
-  width: 190px;
-  height: 220px;
+  width: 200px;
+  height: 235px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s ease;
 }
 
-.boss-hologram-svg {
+.combat-avatar-aura {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 0, 85, 0.35) 0%, transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
+  animation: combatAuraPulse 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes combatAuraPulse {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  100% { transform: scale(1.2); opacity: 0.9; }
+}
+
+.boss-combat-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.5));
+  filter: drop-shadow(0 0 20px rgba(255, 0, 85, 0.6));
+  transition: all 0.2s ease;
 }
 
-.holo-eye-left,
-.holo-eye-right {
-  animation: eyeBlinkGlow 2.5s infinite alternate;
+.combat-eye-laser {
+  animation: combatEyeGlow 1.5s infinite alternate;
 }
 
-@keyframes eyeBlinkGlow {
-  0%, 80% { fill: #00e5ff; filter: drop-shadow(0 0 6px #00e5ff); }
-  85%, 90% { fill: #ffffff; filter: drop-shadow(0 0 12px #ffffff); }
-  95%, 100% { fill: #00e5ff; filter: drop-shadow(0 0 6px #00e5ff); }
+@keyframes combatEyeGlow {
+  0% { fill: #00ff66; filter: drop-shadow(0 0 5px #00ff66); }
+  100% { fill: #ffffff; filter: drop-shadow(0 0 12px #ffffff); }
 }
 
-.hologram-scanline-beam {
+.combat-scanline {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 12px;
-  background: linear-gradient(180deg, transparent, rgba(0, 229, 255, 0.3), transparent);
-  animation: holoScanSweep 2.2s infinite ease-in-out;
+  background: linear-gradient(180deg, transparent, rgba(255, 0, 85, 0.35), transparent);
+  animation: combatScanSweep 1.8s infinite ease-in-out;
   pointer-events: none;
 }
 
-@keyframes holoScanSweep {
+@keyframes combatScanSweep {
   0% { transform: translateY(0); opacity: 0; }
   50% { opacity: 0.9; }
-  100% { transform: translateY(220px); opacity: 0; }
+  100% { transform: translateY(235px); opacity: 0; }
 }
 
-/* Efecto de disolución y desintegración del Avatar */
-.boss-hologram-avatar.dissolving {
-  opacity: 0;
-  transform: scale(1.18);
-  filter: brightness(3.5) contrast(2) drop-shadow(0 0 40px #00e5ff) blur(6px);
-  pointer-events: none;
+/* Estados de impacto del Avatar durante los ataques de los equipos */
+.boss-combat-avatar.hit-glitch {
+  animation: avatarHitGlitch 0.25s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  filter: contrast(250%) brightness(180%) drop-shadow(0 0 35px #00e5ff);
 }
 
-/* Banner de Titular del Acto 1 */
-.boss-defeat-headline-box {
+@keyframes avatarHitGlitch {
+  0% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-8px, 4px) skewX(6deg) scale(1.05); }
+  50% { transform: translate(8px, -6px) skewX(-6deg) scale(0.95); }
+  75% { transform: translate(-4px, -2px) skewX(3deg); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.boss-combat-avatar.critical-shatter {
+  animation: avatarCriticalShatter 2.2s forwards cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes avatarCriticalShatter {
+  0% { transform: scale(1); filter: brightness(1) drop-shadow(0 0 25px #ff0055); }
+  20% { transform: scale(1.2) rotate(4deg); filter: brightness(3.5) contrast(300%) drop-shadow(0 0 60px #ffffff); }
+  45% { transform: scale(1.1) rotate(-5deg); filter: hue-rotate(180deg) blur(2px); }
+  70% { transform: scale(0.9) translateY(10px); opacity: 0.6; filter: blur(4px); }
+  100% { transform: scale(0.65) translateY(30px); opacity: 0; filter: blur(8px) grayscale(100%); }
+}
+
+/* Banner de Titular de Batalla */
+.boss-battle-banner {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.defeat-phase-tag {
+.banner-subtag {
   color: #00e5ff;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   letter-spacing: 2px;
   font-weight: 700;
   text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
 }
 
-.defeat-hero-title {
+.banner-headline {
   font-family: var(--font-display);
-  font-size: 3.2rem;
+  font-size: 2.8rem;
   font-weight: 900;
-  letter-spacing: 4px;
+  letter-spacing: 3.5px;
   color: #ffffff;
-  text-shadow: 0 0 25px rgba(0, 229, 255, 0.8), 0 0 50px rgba(0, 229, 255, 0.4);
+  text-shadow: 0 0 25px rgba(255, 0, 85, 0.8), 0 0 50px rgba(255, 0, 85, 0.4);
   margin: 0;
   line-height: 1.1;
   text-transform: uppercase;
+  transition: all 0.3s ease;
 }
 
-.defeat-hud-telemetry {
+/* Barra de ataques de los equipos */
+.boss-teams-attack-bar {
   display: flex;
-  gap: 24px;
-  margin-top: 12px;
-  background: rgba(10, 16, 24, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 8px 24px;
-  border-radius: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  max-width: 900px;
+  margin-top: 6px;
 }
 
-.telemetry-item {
+.team-attack-chip {
   display: flex;
   align-items: center;
   gap: 8px;
+  background: rgba(14, 20, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 14px;
+  border-radius: 2px;
   font-size: 0.78rem;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
+  color: #cbd5e0;
+  transition: all 0.3s ease;
 }
 
-.dot-green {
+.team-attack-chip .chip-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #00ff66;
-  box-shadow: 0 0 8px #00ff66;
+  background: #4a5568;
 }
 
-.dot-cyan {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+.team-attack-chip.firing {
+  background: rgba(0, 229, 255, 0.2);
+  border-color: #00e5ff;
+  color: #ffffff;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.6);
+  transform: translateY(-2px) scale(1.06);
+}
+
+.team-attack-chip.firing .chip-dot {
   background: #00e5ff;
   box-shadow: 0 0 8px #00e5ff;
+  animation: pulseCyan 0.4s infinite alternate;
+}
+
+.team-attack-chip.impacted {
+  border-color: #00ff66;
+  color: #00ff66;
+  background: rgba(0, 255, 102, 0.15);
+}
+
+.team-attack-chip.impacted .chip-dot {
+  background: #00ff66;
 }
 
 /* ================================================================
-   ACTO 2: EL GIRO DE GUIÓN // MANIFIESTO ENCRIPTADO Y ROBO DE DATOS
+   FASE B: PAUSA DE VICTORIA APARENTE (CELEBRACIÓN Y SUSPENSE)
+   ================================================================ */
+
+.fake-victory-box {
+  background: radial-gradient(circle at center, rgba(0, 255, 102, 0.08) 0%, rgba(6, 12, 10, 0.95) 75%);
+  border: 2px solid #00ff66;
+  box-shadow: 0 0 60px rgba(0, 255, 102, 0.35), inset 0 0 35px rgba(0, 255, 102, 0.15);
+  padding: 38px 48px;
+  max-width: 720px;
+  width: 90%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  border-radius: 4px;
+  animation: fakeVictoryPop 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fakeVictoryPop {
+  0% { transform: scale(0.85); opacity: 0; filter: blur(10px); }
+  100% { transform: scale(1); opacity: 1; filter: blur(0); }
+}
+
+.fake-tag {
+  font-size: 0.82rem;
+  letter-spacing: 2px;
+  color: #00ff66;
+  font-weight: 700;
+}
+
+.fake-icon {
+  font-size: 3.2rem;
+  filter: drop-shadow(0 0 20px #00ff66);
+  animation: fakeIconBob 2s infinite ease-in-out;
+}
+
+@keyframes fakeIconBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.fake-title {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-shadow: 0 0 25px rgba(0, 255, 102, 0.8);
+  margin: 0;
+}
+
+.fake-sub {
+  font-size: 0.95rem;
+  color: #00e5ff;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.fake-desc {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #cbd5e0;
+  max-width: 580px;
+  margin: 0;
+}
+
+.fake-loader-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: #718096;
+  letter-spacing: 1.5px;
+}
+
+.loader-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ff66;
+  animation: pulseCyan 1s infinite alternate;
+}
+
+/* ================================================================
+   FASE C: EL GIRO DE GUIÓN // RENACER DE ENTRE LAS CENIZAS
    ================================================================ */
 
 .darknet-session-bar {
@@ -405,33 +592,226 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(8, 12, 18, 0.85);
-  border: 1px solid rgba(0, 229, 255, 0.3);
+  background: rgba(18, 6, 12, 0.92);
+  border: 1px solid var(--red);
   padding: 8px 20px;
   font-size: 0.8rem;
   letter-spacing: 1.5px;
   margin-bottom: 12px;
+  box-shadow: 0 0 20px rgba(255, 0, 60, 0.25);
 }
 
 .darknet-indicator {
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #00e5ff;
+  color: #ff3355;
   font-weight: 700;
 }
 
-.darknet-dot {
+.darknet-dot.warning {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #00e5ff;
-  box-shadow: 0 0 10px #00e5ff;
-  animation: pulseCyan 1s infinite alternate;
+  background: var(--red);
+  box-shadow: 0 0 10px var(--red);
+  animation: pulseRedDot 0.6s infinite alternate;
 }
 
 .darknet-timestamp {
-  color: #718096;
+  color: #a0aec0;
+}
+
+/* Layout dividido: Hacker a la izquierda + Terminal a la derecha */
+.hacker-reborn-container {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 24px;
+  width: 100%;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+/* Tarjeta del Hacker renacido */
+.reborn-hacker-card {
+  background: rgba(10, 5, 14, 0.92);
+  border: 1px solid rgba(255, 0, 85, 0.4);
+  box-shadow: 0 0 35px rgba(255, 0, 60, 0.25), inset 0 0 20px rgba(0, 0, 0, 0.8);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  animation: rebornCardRise 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes rebornCardRise {
+  0% { transform: translateY(40px) scale(0.9); opacity: 0; filter: blur(12px); }
+  100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+}
+
+.reborn-card-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  color: #ff3355;
+  border-bottom: 1px dashed rgba(255, 0, 85, 0.25);
+  padding-bottom: 8px;
+}
+
+.reborn-avatar-wrapper {
+  position: relative;
+  width: 180px;
+  height: 215px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+/* Efecto de humo / bruma de cenizas */
+.reborn-smoke-fx {
+  position: absolute;
+  inset: -25px;
+  background: radial-gradient(circle, rgba(255, 0, 85, 0.3) 0%, rgba(255, 69, 0, 0.15) 45%, transparent 70%);
+  filter: blur(25px);
+  pointer-events: none;
+  animation: smokeAura 3s infinite alternate ease-in-out;
+}
+
+@keyframes smokeAura {
+  0% { transform: scale(0.9) rotate(-3deg); opacity: 0.4; }
+  100% { transform: scale(1.2) rotate(3deg); opacity: 0.85; }
+}
+
+.reborn-mask-box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  animation: rebornBreathing 2.8s infinite alternate ease-in-out;
+}
+
+@keyframes rebornBreathing {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-4px) scale(1.02); }
+}
+
+.reborn-mask-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(255, 0, 85, 0.65));
+}
+
+.reborn-eye-glow {
+  animation: eyeLaserHostile 1.2s infinite alternate;
+}
+
+@keyframes eyeLaserHostile {
+  0% { fill: #00ff66; filter: drop-shadow(0 0 6px #00ff66); }
+  100% { fill: #ff0055; filter: drop-shadow(0 0 12px #ff0055); }
+}
+
+/* Boca animada cuando el hacker habla */
+.reborn-talking-mouth {
+  transform-origin: 120px 182px;
+  transition: transform 0.08s ease;
+}
+
+.reborn-hacker-card.speaking .reborn-talking-mouth {
+  animation: hackerMouthMove 0.22s infinite alternate ease-in-out;
+}
+
+@keyframes hackerMouthMove {
+  0% { transform: scaleY(0.7) scaleX(1); }
+  50% { transform: scaleY(1.4) scaleX(1.05) translateY(2px); }
+  100% { transform: scaleY(1.0) scaleX(0.95); }
+}
+
+.reborn-hacker-card.speaking .reborn-mask-box {
+  animation: hackerHeadBob 0.35s infinite alternate ease-in-out;
+}
+
+@keyframes hackerHeadBob {
+  0% { transform: translateY(0) rotate(-0.5deg); }
+  100% { transform: translateY(-3px) rotate(0.8deg); }
+}
+
+/* Ecualizador de voz */
+.reborn-voice-eq {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 10px;
+  border-radius: 2px;
+  margin: 6px 0;
+}
+
+.voice-eq-label {
+  font-size: 0.68rem;
+  color: #a0aec0;
+  letter-spacing: 1px;
+}
+
+.voice-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+}
+
+.v-bar {
+  width: 3px;
+  height: 3px;
+  background: #ff0055;
+  border-radius: 1px;
+  transition: height 0.08s ease;
+}
+
+.reborn-hacker-card.speaking .v-bar {
+  animation: vBarDance 0.35s infinite alternate ease-in-out;
+}
+
+.reborn-hacker-card.speaking .v-bar:nth-child(1) { animation-delay: 0.05s; }
+.reborn-hacker-card.speaking .v-bar:nth-child(2) { animation-delay: 0.12s; }
+.reborn-hacker-card.speaking .v-bar:nth-child(3) { animation-delay: 0.20s; }
+.reborn-hacker-card.speaking .v-bar:nth-child(4) { animation-delay: 0.28s; }
+.reborn-hacker-card.speaking .v-bar:nth-child(5) { animation-delay: 0.08s; }
+.reborn-hacker-card.speaking .v-bar:nth-child(6) { animation-delay: 0.16s; }
+.reborn-hacker-card.speaking .v-bar:nth-child(7) { animation-delay: 0.24s; }
+.reborn-hacker-card.speaking .v-bar:nth-child(8) { animation-delay: 0.10s; }
+.reborn-hacker-card.speaking .v-bar:nth-child(9) { animation-delay: 0.18s; }
+
+@keyframes vBarDance {
+  0% { height: 3px; }
+  100% { height: 16px; background: #00e5ff; }
+}
+
+.reborn-twist-badge {
+  width: 100%;
+  text-align: center;
+  background: rgba(255, 0, 85, 0.15);
+  border: 1px solid var(--red);
+  color: #ff3355;
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  padding: 5px;
+}
+
+/* Columna de la Terminal */
+.reborn-terminal-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 /* Ventana de Terminal Tech-Noir */
@@ -444,7 +824,7 @@
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 229, 255, 0.12);
   display: flex;
   flex-direction: column;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .terminal-chrome {
@@ -483,9 +863,9 @@
 }
 
 .darknet-terminal-body {
-  padding: 18px 24px;
+  padding: 16px 22px;
   min-height: 220px;
-  max-height: 280px;
+  max-height: 270px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -550,7 +930,7 @@
 }
 
 /* ================================================================
-   ACTO 3: REVELACIÓN DE LA FLAG DE SEGURIDAD
+   FASE D: REVELACIÓN DE LA FLAG DE SEGURIDAD
    ================================================================ */
 
 .boss-flag-card {
@@ -558,11 +938,11 @@
   background: linear-gradient(135deg, rgba(16, 24, 18, 0.95), rgba(8, 16, 24, 0.95));
   border: 1px solid #00ff66;
   box-shadow: 0 0 45px rgba(0, 255, 102, 0.35), 0 0 75px rgba(0, 229, 255, 0.2), inset 0 0 25px rgba(0, 255, 102, 0.1);
-  padding: 16px 24px;
+  padding: 14px 22px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-top: 4px;
 }
 
 .boss-flag-card.hidden {
@@ -579,12 +959,12 @@
 }
 
 .flag-card-header {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: #ecc94b;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   text-shadow: 0 0 10px rgba(236, 201, 75, 0.6);
   display: flex;
   align-items: center;
@@ -602,17 +982,17 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin: 6px 0;
+  margin: 4px 0;
 }
 
 .flag-token-display {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 1.85rem;
+  font-size: 1.65rem;
   font-weight: 900;
-  letter-spacing: 3px;
+  letter-spacing: 2.5px;
   color: #ffffff;
-  padding: 8px 24px;
+  padding: 6px 20px;
   background: rgba(0, 0, 0, 0.7);
   border: 1.5px dashed #00ff66;
   box-shadow: 0 0 25px rgba(0, 255, 102, 0.5), inset 0 0 15px rgba(0, 255, 102, 0.25);
@@ -626,8 +1006,8 @@
   border: 1px solid #00ff66;
   color: #00ff66;
   font-weight: 700;
-  font-size: 0.82rem;
-  padding: 10px 18px;
+  font-size: 0.8rem;
+  padding: 8px 16px;
   letter-spacing: 1.5px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -650,9 +1030,9 @@
 }
 
 .flag-card-footer {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: #00e5ff;
-  letter-spacing: 1.8px;
+  letter-spacing: 1.5px;
   margin-top: 6px;
   opacity: 0.9;
 }
@@ -669,8 +1049,8 @@
   background: rgba(12, 16, 24, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #cbd5e0;
-  padding: 9px 24px;
-  font-size: 0.82rem;
+  padding: 8px 22px;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
@@ -685,7 +1065,3 @@
   box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
   transform: translateY(-2px);
 }
-
-
-
-

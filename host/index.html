@@ -450,34 +450,35 @@
     <!-- Destello Anamórfico & Halos de Luz Cinematográficos -->
     <div class="cinematic-anamorphic-flare" id="cinematic-lens-flare"></div>
 
-    <!-- Canvas de Desintegración Digital y Partículas Cuánticas -->
+    <!-- Canvas de Batalla Digital, Ataques de Equipos y Partículas -->
     <canvas id="boss-defeat-canvas" class="boss-defeat-canvas"></canvas>
 
     <!-- Post-procesado fílmico: Grano sutil y Vignette cinematográfico -->
     <div class="boss-defeat-vignette"></div>
     <div class="boss-defeat-crt"></div>
 
+    <!-- Flash blanco / distorsión de impacto -->
+    <div class="cinematic-impact-flash" id="cinematic-impact-flash"></div>
+
     <!-- Contenedor con Cámara Cinematográfica (Zoom suave y Depth of field) -->
     <div class="boss-cinematic-viewport" id="boss-cinematic-viewport">
       
-      <!-- ACTO 1: EL ENCIERRO Y LA DESINTEGRACIÓN DEL HACKER -->
-      <div id="boss-cinematic-stage1" class="boss-cinematic-stage">
-        <!-- Retícula de Bloqueo de Perímetro y Tracing -->
-        <div class="boss-lockdown-hud mono">
-          <div class="lockdown-badge">
-            <span class="lockdown-pulse-dot"></span>
-            <span>BLOQUEO DE PERÍMETRO: NÚCLEO HOSTIL LOCALIZADO</span>
+      <!-- FASE A: APARICIÓN IMPONENTE DEL HACKER (100% AMENAZA / DESAFÍO) -->
+      <div id="boss-stage-intro" class="boss-cinematic-stage">
+        <div class="boss-threat-header mono">
+          <div class="threat-status-badge">
+            <span class="threat-pulse-dot red"></span>
+            <span id="boss-intro-status-text">OBJETIVO HOSTIL LOCALIZADO // AMENAZA 100%</span>
           </div>
-          <div class="lockdown-meta">
-            <span>OBJETIVO: 0xANONYMOUS_PROXY</span>
-            <span class="meta-separator">//</span>
-            <span class="text-green">FIREWALLS ESCOLARES: 100% CERRADOS</span>
+          <div class="threat-meta-coords">
+            <span>PROXY: 0xANONYMOUS_CORE</span>
+            <span class="meta-sep">//</span>
+            <span>MODO: DEFENSA TOTAL DEL SISTEMA</span>
           </div>
         </div>
 
-        <!-- Escenario de la Derrota: Avatar Holográfico y Anillo de Confinamiento -->
-        <div class="boss-avatar-containment-zone" id="boss-avatar-containment">
-          <div class="containment-reticle">
+        <div class="boss-avatar-battle-zone" id="boss-avatar-battle-zone">
+          <div class="battle-target-reticle" id="battle-target-reticle">
             <div class="reticle-ring ring-outer"></div>
             <div class="reticle-ring ring-mid"></div>
             <div class="reticle-bracket bracket-tl"></div>
@@ -486,91 +487,158 @@
             <div class="reticle-bracket bracket-br"></div>
           </div>
 
-          <!-- Máscara Holográfica que se descompila -->
-          <div class="boss-hologram-avatar" id="boss-hologram-avatar">
-            <svg class="boss-hologram-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Avatar del Hacker en combate -->
+          <div class="boss-combat-avatar" id="boss-combat-avatar">
+            <div class="combat-avatar-aura" id="combat-avatar-aura"></div>
+            <svg class="boss-combat-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path class="holo-piece holo-hood" d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#08040a" stroke="#ff0055" stroke-width="2.5"/>
               <path class="holo-piece holo-face" d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#100812" stroke="#ff0055" stroke-width="2"/>
               <path class="holo-piece holo-brow" d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
               <ellipse cx="92" cy="118" rx="14" ry="6" fill="#000000" stroke="#00e5ff" stroke-width="2"/>
-              <circle cx="92" cy="118" r="3.5" fill="#00e5ff" class="holo-eye-left"/>
+              <circle cx="92" cy="118" r="3.5" fill="#00e5ff" class="combat-eye-laser eye-l"/>
               <ellipse cx="148" cy="118" rx="14" ry="6" fill="#000000" stroke="#00e5ff" stroke-width="2"/>
-              <circle cx="148" cy="118" r="3.5" fill="#00e5ff" class="holo-eye-right"/>
+              <circle cx="148" cy="118" r="3.5" fill="#00e5ff" class="combat-eye-laser eye-r"/>
               <path class="holo-piece holo-mustache" d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff0055"/>
               <path class="holo-piece holo-smile" d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
               <path class="holo-piece holo-beard" d="M114 202 L126 202 L120 226 Z" fill="#ff0055"/>
             </svg>
-            <div class="hologram-scanline-beam"></div>
+            <div class="combat-scanline"></div>
           </div>
-
-          <!-- Rayos de contención láser convergentes -->
-          <div class="laser-beam laser-top-left"></div>
-          <div class="laser-beam laser-top-right"></div>
-          <div class="laser-beam laser-bottom-left"></div>
-          <div class="laser-beam laser-bottom-right"></div>
         </div>
 
-        <!-- Banner inferior del Acto 1: Estado del Sistema -->
-        <div class="boss-defeat-headline-box">
-          <div class="defeat-phase-tag mono">[ EXPULSIÓN DE AMENAZA // CERO ACCESO ]</div>
-          <h1 class="defeat-hero-title glitch-text" data-text="¡INTRUSO DERROTADO!">¡INTRUSO DERROTADO!</h1>
-          <div class="defeat-hud-telemetry mono">
-            <span class="telemetry-item"><i class="dot-green"></i> SERVIDORES: RESTAURADOS</span>
-            <span class="telemetry-item"><i class="dot-green"></i> EXPULSIÓN: COMPLETADA</span>
-            <span class="telemetry-item"><i class="dot-cyan"></i> AMENAZA RESTANTE: 0.00%</span>
+        <div class="boss-battle-banner">
+          <div class="banner-subtag mono" id="boss-action-subtag">[ INTRUSO EN EL SISTEMA // NÚCLEO HOSTIL ]</div>
+          <h1 class="banner-headline glitch-text" id="boss-action-headline" data-text="¡AMENAZA DETECTADA!">¡AMENAZA DETECTADA!</h1>
+        </div>
+
+        <!-- Hud de nodos de equipos disparando ataques -->
+        <div class="boss-teams-attack-bar mono" id="boss-teams-attack-bar">
+          <!-- Inyectado dinámicamente con los equipos del aula -->
+        </div>
+      </div>
+
+      <!-- FASE B: PAUSA DE VICTORIA APARENTE (CELEBRACIÓN Y SUSPENSE) -->
+      <div id="boss-stage-fake-victory" class="boss-cinematic-stage hidden">
+        <div class="fake-victory-box">
+          <div class="fake-tag mono">✓ CONTRAATAQUE COORDINADO FINALIZADO</div>
+          <div class="fake-icon">🛡️</div>
+          <h1 class="fake-title glitch-text" data-text="¡SISTEMA RECUPERADO!">¡SISTEMA RECUPERADO!</h1>
+          <div class="fake-sub mono">HACKER NEUTRALIZADO // AMENAZA: 0.00%</div>
+          <p class="fake-desc">
+            Todos los cortafuegos han sido restaurados. El intruso ha sido expulsado del servidor del instituto.
+          </p>
+          <div class="fake-loader-strip mono">
+            <span class="loader-pulse"></span> VERIFICANDO INTEGRIDAD DE LOS DATOS...
           </div>
         </div>
       </div>
 
-      <!-- ACTO 2: EL GIRO DE GUIÓN // MANIFIESTO ENCRIPTADO Y ROBO DE DATOS -->
-      <div id="boss-cinematic-stage2" class="boss-cinematic-stage hidden">
-        <!-- Barra de conexión anónima superior -->
+      <!-- FASE C: EL GIRO DE GUIÓN // RENACER DE ENTRE LAS CENIZAS Y MANIFIESTO -->
+      <div id="boss-stage-reborn" class="boss-cinematic-stage hidden">
+        <!-- Barra de sesión Tor Darknet -->
         <div class="darknet-session-bar mono">
           <div class="darknet-indicator">
-            <span class="darknet-dot"></span>
-            <span>TRANSMISIÓN RESIDUAL ENCRIPTADA // PROTOCOLO TOR DARKNET</span>
+            <span class="darknet-dot warning"></span>
+            <span class="darknet-warning-text">⚠ CONEXIÓN NO AUTORIZADA DETECTADA // PROTOCOLO TOR DARKNET</span>
           </div>
           <div class="darknet-timestamp">
             HORA LOCAL: <span id="cinematic-live-time">--:--:--</span>
           </div>
         </div>
 
-        <!-- Terminal Tech-Noir pulido con Glassmorphism -->
-        <div class="darknet-terminal-window">
-          <div class="terminal-chrome mono">
-            <div class="chrome-controls">
-              <span class="ctrl-dot dot-red"></span>
-              <span class="ctrl-dot dot-yellow"></span>
-              <span class="ctrl-dot dot-green"></span>
+        <!-- Contenedor del Hacker que habla + Terminal interactivo -->
+        <div class="hacker-reborn-container">
+          
+          <!-- Avatar del Hacker hablando (animado en tiempo real con la voz) -->
+          <div class="reborn-hacker-card">
+            <div class="reborn-card-header mono">
+              <span class="status-dot blink-red"></span>
+              <span>ORIGEN: TOR_NODE_0x7F</span>
             </div>
-            <div class="chrome-title">anonymous@tor-hidden-relay:~# cat /exfil/AVISO_FINAL.md</div>
-            <div class="chrome-status text-cyan">STATUS: ENCRIPTADO</div>
+            
+            <div class="reborn-avatar-wrapper" id="reborn-avatar-wrapper">
+              <div class="reborn-smoke-fx" id="reborn-smoke-fx"></div>
+              <div class="reborn-mask-box" id="reborn-mask-box">
+                <svg class="reborn-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Capucha negra -->
+                  <path class="reborn-piece r-hood" d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#08040a" stroke="#ff0055" stroke-width="2.5"/>
+                  <!-- Base de máscara ciber -->
+                  <path class="reborn-piece r-face" d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff0055" stroke-width="2"/>
+                  <!-- Cejas -->
+                  <path class="reborn-piece r-brow" d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Ojos láser hostiles -->
+                  <ellipse cx="92" cy="118" rx="14" ry="6" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+                  <circle cx="92" cy="118" r="4" fill="#00ff66" class="reborn-eye-glow eye-l"/>
+                  <ellipse cx="148" cy="118" rx="14" ry="6" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+                  <circle cx="148" cy="118" r="4" fill="#00ff66" class="reborn-eye-glow eye-r"/>
+                  <!-- Bigote -->
+                  <path class="reborn-piece r-mustache" d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
+                  <!-- Boca / Sonrisa parlante animada -->
+                  <g id="reborn-talking-mouth" class="reborn-talking-mouth">
+                    <path class="reborn-smile-path" d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    <ellipse cx="120" cy="182" rx="16" ry="6" fill="#ff003c" class="reborn-mouth-cavity"/>
+                  </g>
+                  <!-- Perilla -->
+                  <path class="reborn-piece r-beard" d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Ecualizador de voz del hacker en tiempo real -->
+            <div class="reborn-voice-eq mono" id="reborn-voice-eq">
+              <span class="voice-eq-label">VOZ INTERCEPTADA</span>
+              <div class="voice-bars">
+                <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+                <span class="v-bar"></span><span class="v-bar"></span><span class="v-bar"></span>
+              </div>
+            </div>
+
+            <!-- Banner del giro -->
+            <div class="reborn-twist-badge mono">
+              <span>⚠ EXFILTRACIÓN: CONSUMADA</span>
+            </div>
           </div>
 
-          <!-- Contenido mecanografiado dinámico -->
-          <div class="darknet-terminal-body mono" id="boss-typewriter-container">
-            <!-- Párrafos inyectados con efecto máquina de escribir -->
-          </div>
-        </div>
+          <!-- Terminal Tech-Noir mecanografiado -->
+          <div class="reborn-terminal-col">
+            <div class="darknet-terminal-window">
+              <div class="terminal-chrome mono">
+                <div class="chrome-controls">
+                  <span class="ctrl-dot dot-red"></span>
+                  <span class="ctrl-dot dot-yellow"></span>
+                  <span class="ctrl-dot dot-green"></span>
+                </div>
+                <div class="chrome-title">anonymous@tor-hidden-relay:~# cat /exfil/AVISO_FINAL.md</div>
+                <div class="chrome-status text-red">ESTADO: TRANSMITIENDO</div>
+              </div>
 
-        <!-- ACTO 3: REVELACIÓN DE LA FLAG DE SEGURIDAD -->
-        <div id="boss-flag-reveal-box" class="boss-flag-card mono hidden">
-          <div class="flag-card-header">
-            <span class="flag-star">★</span>
-            <span>RECOMPENSA FINAL // FLAG DE CAPTURA DEL ESCAPE ROOM</span>
-            <span class="flag-star">★</span>
-          </div>
-          <div class="flag-token-container">
-            <div class="flag-token-display glitch-text" id="boss-flag-token" data-text="FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}">
-              FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}
+              <!-- Párrafos mecanografiados adaptados al audio -->
+              <div class="darknet-terminal-body mono" id="boss-typewriter-container">
+              </div>
             </div>
-            <button class="btn-copy-flag mono" onclick="copyBossFlag(this)">
-              <span class="copy-icon">📋</span> COPIAR FLAG
-            </button>
+
+            <!-- FASE D: REVELACIÓN DE LA FLAG DE SEGURIDAD -->
+            <div id="boss-flag-reveal-box" class="boss-flag-card mono hidden">
+              <div class="flag-card-header">
+                <span class="flag-star">★</span>
+                <span>RECOMPENSA FINAL // FLAG DE CAPTURA DEL ESCAPE ROOM</span>
+                <span class="flag-star">★</span>
+              </div>
+              <div class="flag-token-container">
+                <div class="flag-token-display glitch-text" id="boss-flag-token" data-text="FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}">
+                  FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}
+                </div>
+                <button class="btn-copy-flag mono" onclick="copyBossFlag(this)">
+                  <span class="copy-icon">📋</span> COPIAR FLAG
+                </button>
+              </div>
+              <div class="flag-card-footer">
+                <span>🛡️ LECCIÓN APRENDIDA: LA CIBERSEGURIDAD EMPIEZA POR LA PREVENCIÓN Y NUNCA CONFIAR A CIEGAS 🛡️</span>
+              </div>
+            </div>
           </div>
-          <div class="flag-card-footer">
-            <span>🛡️ LECCIÓN APRENDIDA: LA CIBERSEGURIDAD EMPIEZA POR LA PREVENCIÓN Y NUNCA CONFIAR A CIEGAS 🛡️</span>
-          </div>
+
         </div>
 
         <!-- Pie de página con control para el ponente -->
