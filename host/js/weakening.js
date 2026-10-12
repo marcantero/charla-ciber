@@ -37,12 +37,12 @@ function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
 
   if (stage === 1) {
     phrase = phrase || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito1 && appConfig.mensajesDebilitamiento.hito1.frase) || "Sois más buenos de lo que pensaba, pero esto no ha terminado aún";
-    audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito1 && appConfig.mensajesDebilitamiento.hito1.audio) || "hacker_debil1.mp3";
+    audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito1 && appConfig.mensajesDebilitamiento.hito1.audio) || "audio-hacker-1.mp3";
     title = "[!] ANOMALÍA EN EL SERVIDOR // CIFRADO AGRIETADO [75%]";
     integrityPct = 75;
   } else if (stage === 2) {
     phrase = phrase || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito2 && appConfig.mensajesDebilitamiento.hito2.frase) || "Parece que estabais escuchando en la charla. JAJAJA (risa malvada)";
-    audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito2 && appConfig.mensajesDebilitamiento.hito2.audio) || "hacker_debil2.mp3";
+    audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito2 && appConfig.mensajesDebilitamiento.hito2.audio) || "audio-hacker-2.mp3";
     title = "[!!] ALERTA CRÍTICA: FISURA MASIVA EN EL NÚCLEO [40%]";
     integrityPct = 40;
   }

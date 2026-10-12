@@ -4,24 +4,24 @@
   "numeroEquipos": 5,
   "tiempoMinutos": 45,
   "mensajeHacker": {
-    "saludo": "Hola {nombreInstituto}, me he infiltrado en vuestro instituto jajajajaja (risa malvada).",
-    "cuerpo": "Voy a cifrar todos vuestros datos. Pero para que esto sea más divertido voy a dejaros unos retos para que podáis pararme.\nTendréis que hacer {numeroEquipos} grupos, con el objetivo de intentar pararme con todo lo que habéis aprendido en esta charla.\nMucha suerte."
+    "saludo": "",
+    "cuerpo": ""
   },
   "mensajesDebilitamiento": {
     "hito1": {
       "umbral": 75,
       "frase": "Sois más buenos de lo que pensaba, pero esto no ha terminado aún",
-      "audio": "hacker_debil1.mp3"
+      "audio": "audio-hacker-1.mp3"
     },
     "hito2": {
       "umbral": 40,
       "frase": "Parece que estabais escuchando en la charla. JAJAJA (risa malvada)",
-      "audio": "hacker_debil2.mp3"
+      "audio": "audio-hacker-2.mp3"
     },
     "hito3": {
       "umbral": 0,
       "frase": "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Pensabais que resolviendo cuatro pistas ibais a recuperar vuestros archivos... Bienvenidos al mundo real. Vuestros datos... expedientes, historiales, notas y contraseñas... ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Habéis demostrado que sabéis abrir una terminal y mirar donde otros no miran. Nada mal para empezar. Pero si de verdad queréis jugar en las grandes ligas... si algún día pretendéis cazar a alguien como yo... vais a tener que aprender muchísimo más. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso. Vuestra flag final: FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}. Nos vemos en la red... analistas.",
-      "audio": "hacker_derrota.mp3"
+      "audio": "audio-hacker-3.mp3"
     }
   },
   "claves": {

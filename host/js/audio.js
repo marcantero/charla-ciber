@@ -171,6 +171,10 @@ function playAIVoice() {
 
   // 2. Comprobar si hay archivo de voz en audio/hacker/ o audio/
   const candidates = [
+    '/audio/hacker/audio-hacker-inicio.mp3',
+    '/audio/audio-hacker-inicio.mp3',
+    '/audio/hacker/audio-hacker-inicio2.mp3',
+    '/audio/audio-hacker-inicio2.mp3',
     '/audio/hacker/anon_voice.mp3',
     '/audio/anon_voice.mp3',
     '/audio/hacker/ai_voice.mp3',
