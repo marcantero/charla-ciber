@@ -169,24 +169,46 @@ function playAIVoice() {
     osc2.stop(now + 5.8);
   }
 
-  // 2. Comprobar si hay archivo de voz en audio/hacker/ o audio/
-  const candidates = [
+  // 2. Reproducir secuencia de introducción: audio-hacker-inicio.mp3 y después audio-hacker-inicio2.mp3
+  const part1Candidates = [
     '/audio/hacker/audio-hacker-inicio.mp3',
-    '/audio/audio-hacker-inicio.mp3',
-    '/audio/hacker/audio-hacker-inicio2.mp3',
-    '/audio/audio-hacker-inicio2.mp3',
-    '/audio/hacker/anon_voice.mp3',
-    '/audio/anon_voice.mp3',
-    '/audio/hacker/ai_voice.mp3',
-    '/audio/ai_voice.mp3',
-    '/audio/hacker/anon_voice.wav',
-    '/audio/anon_voice.wav'
+    '/audio/audio-hacker-inicio.mp3'
   ];
 
-  tryPlayCandidates(candidates, () => {
-    // Fallback a SpeechSynthesis robótica demoníaca
-    speakSynthesizedAnonymous();
-  });
+  const part2Candidates = [
+    '/audio/hacker/audio-hacker-inicio2.mp3',
+    '/audio/audio-hacker-inicio2.mp3'
+  ];
+
+  function playIntroPart2() {
+    tryPlayCandidates(part2Candidates, () => {
+      console.log('[AUDIO] Parte 2 de intro no encontrada.');
+    });
+  }
+
+  tryPlayCandidates(
+    part1Candidates,
+    () => {
+      // Si no está audio-hacker-inicio.mp3, probar si está directamente audio-hacker-inicio2.mp3 o anon_voice.mp3
+      const fallbackCandidates = [
+        '/audio/hacker/audio-hacker-inicio2.mp3',
+        '/audio/audio-hacker-inicio2.mp3',
+        '/audio/hacker/anon_voice.mp3',
+        '/audio/anon_voice.mp3',
+        '/audio/hacker/ai_voice.mp3',
+        '/audio/ai_voice.mp3'
+      ];
+      tryPlayCandidates(fallbackCandidates, () => {
+        // Fallback a SpeechSynthesis robótica demoníaca
+        speakSynthesizedAnonymous();
+      });
+    },
+    () => {
+      // Al terminar la primera parte, encadenar automáticamente la segunda parte
+      console.log('[AUDIO] Intro parte 1 terminada. Reproduciendo intro parte 2...');
+      playIntroPart2();
+    }
+  );
 }
 
 function speakSynthesizedAnonymous() {
