@@ -43,10 +43,10 @@ function playHackGlitchSound() {
   if (isMuted) return;
 
   const candidates = [
-    '/audio/hacker/hack_glitch.wav',
     '/audio/hacker/hack_glitch.mp3',
-    '/audio/hack_glitch.wav',
-    '/audio/hack_glitch.mp3'
+    '/audio/hack_glitch.mp3',
+    '/audio/hacker/hack_glitch.wav',
+    '/audio/hack_glitch.wav'
   ];
 
   tryPlayCandidates(candidates, () => {
@@ -98,10 +98,10 @@ function playSirenAlarm() {
   if (isMuted) return;
 
   const candidates = [
-    '/audio/hacker/siren_alarm.wav',
     '/audio/hacker/siren_alarm.mp3',
-    '/audio/siren_alarm.wav',
-    '/audio/siren_alarm.mp3'
+    '/audio/siren_alarm.mp3',
+    '/audio/hacker/siren_alarm.wav',
+    '/audio/siren_alarm.wav'
   ];
 
   tryPlayCandidates(candidates, () => {
@@ -171,12 +171,12 @@ function playAIVoice() {
 
   // 2. Comprobar si hay archivo de voz en audio/hacker/ o audio/
   const candidates = [
-    '/audio/hacker/anon_voice.wav',
     '/audio/hacker/anon_voice.mp3',
-    '/audio/anon_voice.wav',
     '/audio/anon_voice.mp3',
     '/audio/hacker/ai_voice.mp3',
-    '/audio/ai_voice.mp3'
+    '/audio/ai_voice.mp3',
+    '/audio/hacker/anon_voice.wav',
+    '/audio/anon_voice.wav'
   ];
 
   tryPlayCandidates(candidates, () => {
@@ -338,10 +338,10 @@ function playHackerWeakeningAudio(audioFileName, speechText, stage) {
   }
   if (baseName) {
     candidates.push(
-      `/audio/hacker/${baseName}.wav`,
       `/audio/hacker/${baseName}.mp3`,
-      `/audio/${baseName}.wav`,
-      `/audio/${baseName}.mp3`
+      `/audio/${baseName}.mp3`,
+      `/audio/hacker/${baseName}.wav`,
+      `/audio/${baseName}.wav`
     );
   }
 

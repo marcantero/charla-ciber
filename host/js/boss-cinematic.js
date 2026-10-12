@@ -378,10 +378,10 @@ function typewriterManifesto() {
     "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Vuestros datos ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso.";
   
   const candidates = [
-    '/audio/hacker/hacker_derrota.wav',
     '/audio/hacker/hacker_derrota.mp3',
-    '/audio/hacker_derrota.wav',
-    '/audio/hacker_derrota.mp3'
+    '/audio/hacker_derrota.mp3',
+    '/audio/hacker/hacker_derrota.wav',
+    '/audio/hacker_derrota.wav'
   ];
   if (typeof tryPlayCandidates === 'function') {
     tryPlayCandidates(candidates, () => {
