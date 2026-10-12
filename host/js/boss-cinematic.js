@@ -15,7 +15,11 @@ let bossCanvasAnimId = null;
 let bossParticles = [];
 let bossBeams = [];
 let bossCurrentAudio = null;
+let bossIntroAmbience = null;
+let bossFinalMusic = null;
 let bossSpeakingTimer = null;
+let bossDepartureTimer = null;
+let bossCompleteTimer = null;
 
 const MANIFESTO_PARAGRAPHS = [
   {
@@ -66,6 +70,7 @@ function triggerBossCinematic() {
   const stageIntro = document.getElementById('boss-stage-intro');
   const stageFakeVictory = document.getElementById('boss-stage-fake-victory');
   const stageReborn = document.getElementById('boss-stage-reborn');
+  const stageComplete = document.getElementById('boss-stage-complete');
   const flagBox = document.getElementById('boss-flag-reveal-box');
   const typewriterContainer = document.getElementById('boss-typewriter-container');
   const combatAvatar = document.getElementById('boss-combat-avatar');
@@ -88,6 +93,22 @@ function triggerBossCinematic() {
     stageReborn.classList.add('hidden');
     stageReborn.classList.remove('cinematic-fade-in');
   }
+  if (stageComplete) {
+    stageComplete.classList.add('hidden');
+    stageComplete.style.display = 'none';
+    stageComplete.classList.remove('cinematic-fade-in');
+    const completeScreen = document.getElementById('challenge-complete-screen');
+    if (completeScreen) {
+      completeScreen.classList.add('hidden');
+      completeScreen.style.display = 'none';
+      completeScreen.classList.remove('challenge-complete-materialize');
+    }
+    const depContainer = document.getElementById('boss-departure-container');
+    if (depContainer) {
+      depContainer.style.display = 'flex';
+      depContainer.classList.remove('departure-dissolving', 'departure-gone', 'hidden');
+    }
+  }
   if (flagBox) flagBox.classList.add('hidden');
   if (typewriterContainer) typewriterContainer.innerHTML = '';
   if (combatAvatar) combatAvatar.className = 'boss-combat-avatar';
@@ -95,8 +116,8 @@ function triggerBossCinematic() {
 
   const headline = document.getElementById('boss-action-headline');
   const subtag = document.getElementById('boss-action-subtag');
-  if (headline) headline.textContent = '¡AMENAZA DETECTADA!';
-  if (subtag) subtag.textContent = '[ INTRUSO EN EL SISTEMA // NÚCLEO HOSTIL ]';
+  if (headline) headline.textContent = '¡CONECTANDO EQUIPOS!';
+  if (subtag) subtag.textContent = '[ PROTOCOLO DE DEFENSA // COORDINANDO EQUIPOS ]';
 
   // Iniciar Canvas Engine
   initBossBattleCanvas();
@@ -104,8 +125,9 @@ function triggerBossCinematic() {
   // Poblar la barra de equipos con los equipos del aula
   populateTeamAttackChips(teamsBar);
 
-  // Sonido de alerta del Boss
-  playLaserLockSound();
+  // Sonido de aviso y alarma de combate + ambiente cinematográfico de combate
+  playBossWarningAlertSound();
+  startBattleIntroAmbience();
   logTerminalEvent('⚔️ ASALTO FINAL: Bloqueo de perímetro y contraataque coordinado de todos los equipos.', 'log-alert');
 
   // ==============================================================
@@ -152,6 +174,19 @@ function executeTeamsCounterattackSequence() {
   if (headline) headline.textContent = '¡EQUIPOS ATACANDO!';
   if (subtag) subtag.textContent = '[ DESCARGA DE FIREWALLS // SOBRECARGA DEL NÚCLEO ]';
 
+  // Detener ambiente previo de combate
+  stopBattleIntroAmbience();
+
+  // Iniciar la música final en el mismo momento que se le empieza a disparar
+  const destructionMusic = playBossFinalDestructionMusic(0.95);
+
+  let transitioned = false;
+  const proceedToFakeVictory = () => {
+    if (transitioned || !bossCinematicActive) return;
+    transitioned = true;
+    transitionToFakeVictory();
+  };
+
   // Disparar rayos desde cada equipo secuencialmente hacia el hacker
   const attackDuration = 3200;
   const intervalPerTeam = attackDuration / numTeams;
@@ -167,7 +202,13 @@ function executeTeamsCounterattackSequence() {
 
       // Disparar rayo visual y sacudida en el avatar
       launchTeamLaserAttack(i, numTeams);
-      playKeyClick();
+      playRealisticLaserAttack();
+
+      // En el ataque intermedio (equipo central), el boss sufre el primer impacto de dolor
+      const midTeam = Math.max(1, Math.floor(numTeams / 2));
+      if (i === midTeam) {
+        playBossPainAu();
+      }
 
       if (avatar) {
         avatar.classList.add('hit-glitch');
@@ -179,6 +220,7 @@ function executeTeamsCounterattackSequence() {
   }
 
   // Clímax del ataque: Impacto masivo conjunto y desintegración del Hacker
+  const climaxDelay = attackDuration + 400; // 3600ms
   setTimeout(() => {
     if (!bossCinematicActive) return;
 
@@ -194,9 +236,16 @@ function executeTeamsCounterattackSequence() {
     // Flash blanco y sacudida sísmica
     triggerImpactFlash();
     triggerCinematicCameraHeavyShake();
-    playCinematicBassBraam();
+    playRealisticCriticalImpact();
 
-    // El avatar estalla y se desmorona
+    // Grito desgarrador de derrota sincronizado con la sobrecarga del núcleo
+    setTimeout(() => {
+      if (bossCinematicActive) {
+        playBossPainNooo();
+      }
+    }, 150);
+
+    // El avatar estalla y se desmorona progresivamente con la música
     if (avatar) {
       avatar.classList.add('critical-shatter');
     }
@@ -211,13 +260,27 @@ function executeTeamsCounterattackSequence() {
       setTimeout(() => flare.classList.remove('flare-active'), 1200);
     }
 
-    // A los 3.2s del impacto: Transición a la PAUSA DE VICTORIA APARENTE
+    // A mitad de la destrucción (~2.4s tras el impacto), segunda oleada de chispas y purificación del núcleo
     setTimeout(() => {
-      if (!bossCinematicActive) return;
-      transitionToFakeVictory();
-    }, 3200);
+      if (bossCinematicActive) {
+        burstDissolutionParticles();
+        if (headline) headline.textContent = '¡NÚCLEO PURIFICADO!';
+        if (subtag) subtag.textContent = '[ AMENAZA DEL HACKER NEUTRALIZADA // 0% ]';
+      }
+    }, 2400);
 
-  }, attackDuration + 400);
+    // Transición hacia la PAUSA DE VICTORIA APARENTE al terminar la canción
+    if (destructionMusic) {
+      destructionMusic.addEventListener('ended', () => {
+        setTimeout(proceedToFakeVictory, 400);
+      }, { once: true });
+      // Temporizador de respaldo si ended no se dispara
+      setTimeout(proceedToFakeVictory, 3800);
+    } else {
+      setTimeout(proceedToFakeVictory, 3200);
+    }
+
+  }, climaxDelay);
 }
 
 // ----------------------------------------------------------------
@@ -226,6 +289,16 @@ function executeTeamsCounterattackSequence() {
 function transitionToFakeVictory() {
   const stageIntro = document.getElementById('boss-stage-intro');
   const stageFake = document.getElementById('boss-stage-fake-victory');
+
+  // Detener ambiente y música de combate previa
+  stopBattleIntroAmbience();
+  if (bossFinalMusic) {
+    try {
+      bossFinalMusic.pause();
+      bossFinalMusic.currentTime = 0;
+    } catch (e) {}
+    bossFinalMusic = null;
+  }
 
   if (stageIntro) {
     stageIntro.classList.add('fade-out-down');
@@ -648,6 +721,184 @@ function revealEpicFlag() {
   }
 
   logTerminalEvent('🏆 FLAG DE SEGURIDAD EMITIDA: FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}', 'log-advance');
+
+  // Después de 5 segundos mostrando la flag, transición al final épico del boss y mensaje de gracias
+  if (bossDepartureTimer) clearTimeout(bossDepartureTimer);
+  bossDepartureTimer = setTimeout(() => {
+    if (!bossCinematicActive) return;
+    transitionToBossDeparture();
+  }, 5000);
+}
+
+// ----------------------------------------------------------------
+//  FASE E: PARTIDA CINEMATOGRÁFICA DEL BOSS Y PANTALLA FINAL
+// ----------------------------------------------------------------
+function transitionToBossDeparture() {
+  if (bossDepartureTimer) {
+    clearTimeout(bossDepartureTimer);
+    bossDepartureTimer = null;
+  }
+
+  const stageReborn = document.getElementById('boss-stage-reborn');
+  const stageComplete = document.getElementById('boss-stage-complete');
+  const depContainer = document.getElementById('boss-departure-container');
+  const completeScreen = document.getElementById('challenge-complete-screen');
+  const viewport = document.getElementById('boss-cinematic-viewport');
+
+  // Asegurar que el contenedor de despedida esté listo y la pantalla de fin oculta
+  if (depContainer) {
+    depContainer.style.display = 'flex';
+    depContainer.classList.remove('departure-dissolving', 'departure-gone', 'hidden');
+  }
+  if (completeScreen) {
+    completeScreen.classList.add('hidden');
+    completeScreen.style.display = 'none';
+    completeScreen.classList.remove('challenge-complete-materialize');
+  }
+
+  // Transición de la fase C a la fase E
+  if (stageReborn) {
+    stageReborn.classList.add('fade-out-down');
+    setTimeout(() => {
+      stageReborn.classList.add('hidden');
+      stageReborn.style.display = 'none';
+    }, 500);
+  }
+
+  if (stageComplete) {
+    stageComplete.classList.remove('hidden');
+    stageComplete.style.display = 'flex';
+    stageComplete.classList.add('cinematic-fade-in');
+  }
+
+  if (viewport) {
+    viewport.scrollTop = 0;
+  }
+
+  // Flash y shake cinematográfico de despedida
+  triggerImpactFlash();
+  triggerCinematicCameraShake();
+  playHackGlitchSound();
+
+  // El boss aparece diciendo su frase y empieza a disolverse a los 2.0s
+  setTimeout(() => {
+    if (!bossCinematicActive) return;
+    if (depContainer) {
+      depContainer.classList.add('departure-dissolving');
+    }
+    // Partículas de disolución en el canvas
+    burstDepartureParticles();
+    playRealisticBossDissolve();
+  }, 2000);
+
+  // A los 3.8s: El boss se ha disuelto por completo, transición definitiva a la pantalla de RETO COMPLETADO Y GRACIAS
+  if (bossCompleteTimer) clearTimeout(bossCompleteTimer);
+  bossCompleteTimer = setTimeout(() => {
+    if (!bossCinematicActive) return;
+    if (depContainer) {
+      depContainer.classList.add('departure-gone');
+    }
+    triggerImpactFlash();
+    showChallengeCompleteScreen();
+  }, 3800);
+}
+
+function burstDepartureParticles() {
+  const canvas = document.getElementById('boss-defeat-canvas');
+  if (!canvas) return;
+
+  const cx = canvas.width / 2;
+  const cy = canvas.height * 0.4;
+
+  const colors = [
+    { fill: '#ff0055', glow: '#ff0055' },
+    { fill: '#ff4500', glow: '#ff4500' },
+    { fill: '#8b0000', glow: '#ff0055' },
+    { fill: '#1a1016', glow: '#ff0055' },
+    { fill: '#ffffff', glow: '#ffffff' }
+  ];
+
+  for (let i = 0; i < 200; i++) {
+    const col = colors[Math.floor(Math.random() * colors.length)];
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.8 + Math.random() * 5;
+
+    bossParticles.push({
+      x: cx + (Math.random() - 0.5) * 120,
+      y: cy + (Math.random() - 0.5) * 140,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 2,
+      gravity: -0.03,
+      size: 2 + Math.random() * 5,
+      color: col.fill,
+      glowColor: col.glow,
+      glowBlur: 8 + Math.random() * 12,
+      alpha: 0.9,
+      fadeRate: 0.004 + Math.random() * 0.008,
+      rotation: Math.random() * Math.PI,
+      vRot: (Math.random() - 0.5) * 0.12,
+      shape: Math.random() > 0.5 ? 'rect' : 'circle'
+    });
+  }
+}
+
+function showChallengeCompleteScreen() {
+  if (bossCompleteTimer) {
+    clearTimeout(bossCompleteTimer);
+    bossCompleteTimer = null;
+  }
+
+  const depContainer = document.getElementById('boss-departure-container');
+  const completeScreen = document.getElementById('challenge-complete-screen');
+  const stageComplete = document.getElementById('boss-stage-complete');
+  const viewport = document.getElementById('boss-cinematic-viewport');
+
+  if (depContainer) {
+    depContainer.style.display = 'none';
+    depContainer.classList.add('hidden');
+  }
+
+  if (stageComplete) {
+    stageComplete.classList.remove('hidden');
+    stageComplete.style.display = 'flex';
+  }
+
+  if (completeScreen) {
+    completeScreen.classList.remove('hidden');
+    completeScreen.style.display = 'flex';
+    completeScreen.classList.add('challenge-complete-materialize');
+  }
+
+  if (viewport) {
+    viewport.scrollTop = 0;
+  }
+
+  // Mostrar los nombres de los 5 organizadores/ponentes desde la configuración
+  renderThanksNames();
+
+  // Reproducir fanfarria y música triunfal final de ambiente
+  playRealisticVictoryFanfare();
+  startFinalCinematicMusic();
+
+  logTerminalEvent('🎉 ESCAPE ROOM COMPLETADO. ¡Gracias por participar!', 'log-advance');
+}
+
+function renderThanksNames(customNames) {
+  const container = document.getElementById('thanks-names-list');
+  if (!container) return;
+
+  const list = (Array.isArray(customNames) && customNames.length > 0)
+    ? customNames
+    : (typeof appConfig !== 'undefined' && appConfig && (appConfig.ponentes || appConfig.creadors || appConfig.creadores || appConfig.autores || appConfig.nombres))
+    || ['Nombre 1', 'Nombre 2', 'Nombre 3', 'Nombre 4', 'Nombre 5'];
+
+  container.innerHTML = '';
+  list.forEach(name => {
+    const chip = document.createElement('div');
+    chip.className = 'thanks-name-chip';
+    chip.innerHTML = `<span class="chip-avatar">⚡</span><span>${name}</span>`;
+    container.appendChild(chip);
+  });
 }
 
 function copyBossFlag(btn) {
@@ -666,41 +917,200 @@ function copyBossFlag(btn) {
 }
 
 function closeBossCinematic() {
-  bossCinematicActive = false;
-  if (bossCurrentAudio) {
-    try {
-      bossCurrentAudio.pause();
-      bossCurrentAudio.currentTime = 0;
-    } catch (e) {}
-    bossCurrentAudio = null;
-  }
-  const cinematic = document.getElementById('boss-defeat-cinematic');
-  if (cinematic) cinematic.classList.add('hidden');
-  if (bossCanvasAnimId) cancelAnimationFrame(bossCanvasAnimId);
-  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  // BLOQUEO PERMANENTE: Durante y tras la cinemática final de derrota en ningún momento se puede volver ya al menú principal
+  console.warn('[CINEMATIC] Intento de salida bloqueado: La cinemática de derrota y pantalla final es definitiva.');
+  return;
 }
 
 // ================================================================
-//  AUDIO CINEMATOGRÁFICO Y SÍNTESIS WEB AUDIO API
+//  AUDIO CINEMATOGRÁFICO REALISTA & MÚSICA FINAL
 // ================================================================
 
-function playLaserLockSound() {
-  initAudio();
-  if (!audioCtx || isMuted) return;
-  const now = audioCtx.currentTime;
+function startBattleIntroAmbience() {
+  if (isMuted || !bossCinematicActive) return;
+  try {
+    if (bossIntroAmbience) {
+      bossIntroAmbience.pause();
+      bossIntroAmbience.currentTime = 0;
+    }
+    bossIntroAmbience = new Audio('/audio/sfx/battle_intro_ambience.wav');
+    bossIntroAmbience.volume = 0.55;
+    bossIntroAmbience.loop = true;
+    const playPromise = bossIntroAmbience.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(e => console.warn('Ambiente de batalla bloqueado por autoplay:', e));
+    }
+  } catch (e) {
+    console.warn('Error al iniciar ambiente de batalla:', e);
+  }
+}
 
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(320, now);
-  osc.frequency.exponentialRampToValueAtTime(1400, now + 0.6);
-  gain.gain.setValueAtTime(0.001, now);
-  gain.gain.linearRampToValueAtTime(0.18, now + 0.2);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start(now);
-  osc.stop(now + 1.25);
+function stopBattleIntroAmbience() {
+  if (bossIntroAmbience) {
+    try {
+      bossIntroAmbience.pause();
+      bossIntroAmbience.currentTime = 0;
+    } catch (e) {}
+    bossIntroAmbience = null;
+  }
+}
+
+function playRealisticSound(filename, volume = 0.8, fallbackFn = null) {
+  if (isMuted) return;
+  try {
+    const audio = new Audio(`/audio/sfx/${filename}`);
+    audio.volume = Math.min(1, Math.max(0, volume));
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        if (typeof fallbackFn === 'function') fallbackFn();
+      });
+    }
+    return audio;
+  } catch (e) {
+    if (typeof fallbackFn === 'function') fallbackFn();
+    return null;
+  }
+}
+
+function playBossFinalDestructionMusic(volume = 0.95) {
+  if (isMuted || !bossCinematicActive) return null;
+  try {
+    if (bossFinalMusic) {
+      bossFinalMusic.pause();
+      bossFinalMusic.currentTime = 0;
+    }
+    // Cargar la canción subida por el usuario: final-music.mp3
+    bossFinalMusic = new Audio('/audio/sfx/final-music.mp3');
+    bossFinalMusic.volume = Math.min(1, Math.max(0, volume));
+    bossFinalMusic.loop = false; // Canción con timing exacto (~5.8s)
+    const playPromise = bossFinalMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(e => {
+        console.warn('final-music.mp3 bloqueado por autoplay o error, usando fallback:', e);
+        try {
+          bossFinalMusic = new Audio('/audio/sfx/final_cinematic_music.wav');
+          bossFinalMusic.volume = volume;
+          bossFinalMusic.play().catch(() => {});
+        } catch (_) {}
+      });
+    }
+    return bossFinalMusic;
+  } catch (e) {
+    console.warn('Error al reproducir música final del boss:', e);
+    return null;
+  }
+}
+
+function startFinalCinematicMusic() {
+  if (isMuted || !bossCinematicActive) return;
+  try {
+    if (bossFinalMusic) {
+      bossFinalMusic.pause();
+      bossFinalMusic.currentTime = 0;
+    }
+    bossFinalMusic = new Audio('/audio/sfx/final_cinematic_music.wav');
+    bossFinalMusic.volume = 0.55;
+    bossFinalMusic.loop = true;
+    const playPromise = bossFinalMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(e => console.warn('Música final bloqueada por autoplay:', e));
+    }
+  } catch (e) {
+    console.warn('Error al iniciar música final:', e);
+  }
+}
+
+function playBossPainAu() {
+  playRealisticSound('au.mp3', 0.95);
+}
+
+function playBossPainNooo() {
+  playRealisticSound('nooo.mp3', 1.0);
+}
+
+function playRealisticLaserAttack() {
+  playRealisticSound('laser_attack.wav', 0.65, () => {
+    if (typeof playKeyClick === 'function') playKeyClick();
+  });
+}
+
+function playRealisticCriticalImpact() {
+  playRealisticSound('critical_impact.wav', 0.9, playCinematicBassBraam);
+}
+
+function playRealisticBossDissolve() {
+  playRealisticSound('boss_dissolve.wav', 0.85, playCinematicBassBraam);
+}
+
+function playRealisticVictoryFanfare() {
+  playRealisticSound('victory_fanfare.wav', 0.9, () => {
+    if (typeof playVictoryFanfare === 'function') playVictoryFanfare();
+  });
+}
+
+function playBossWarningAlertSound() {
+  if (isMuted) return null;
+
+  const audio = playRealisticSound('boss_alarm.wav', 0.88, () => {
+    // Fallback con Web Audio API: Síntesis procedural de aviso de alarma en 5 pulsos
+    initAudio();
+    if (!audioCtx || isMuted) return;
+    const now = audioCtx.currentTime;
+
+    // Sub-golpe cinemático de aviso
+    const subOsc = audioCtx.createOscillator();
+    const subGain = audioCtx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(65, now);
+    subOsc.frequency.exponentialRampToValueAtTime(32, now + 0.5);
+    subGain.gain.setValueAtTime(0.3, now);
+    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+    subOsc.connect(subGain);
+    subGain.connect(audioCtx.destination);
+    subOsc.start(now);
+    subOsc.stop(now + 0.52);
+
+    // Secuencia de pulsos de aviso digital
+    const pulseTones = [
+      { delay: 0.04, dur: 0.13, freq: 880 },
+      { delay: 0.24, dur: 0.13, freq: 880 },
+      { delay: 0.52, dur: 0.15, freq: 1046 },
+      { delay: 0.76, dur: 0.15, freq: 1046 },
+      { delay: 1.08, dur: 0.30, freq: 1318 }
+    ];
+
+    pulseTones.forEach(p => {
+      const osc = audioCtx.createOscillator();
+      const oscHarm = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(p.freq, now + p.delay);
+
+      oscHarm.type = 'sine';
+      oscHarm.frequency.setValueAtTime(p.freq * 1.5, now + p.delay);
+
+      gain.gain.setValueAtTime(0.001, now + p.delay);
+      gain.gain.linearRampToValueAtTime(0.22, now + p.delay + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + p.delay + p.dur);
+
+      osc.connect(gain);
+      oscHarm.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now + p.delay);
+      oscHarm.start(now + p.delay);
+      osc.stop(now + p.delay + p.dur + 0.05);
+      oscHarm.stop(now + p.delay + p.dur + 0.05);
+    });
+  });
+
+  return audio;
+}
+
+function playLaserLockSound() {
+  return playBossWarningAlertSound();
 }
 
 function playCinematicBassBraam() {
@@ -768,9 +1178,10 @@ function playTerminalConnectSound() {
   });
 }
 
-// Tecla ESC para salir de la cinemática
+// Bloqueo estricto de la tecla Escape durante la cinemática de derrota
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && bossCinematicActive) {
-    closeBossCinematic();
+  if (bossCinematicActive && (e.key === 'Escape' || e.key === 'Esc')) {
+    e.preventDefault();
+    e.stopPropagation();
   }
-});
+}, true);

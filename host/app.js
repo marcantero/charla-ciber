@@ -37,6 +37,11 @@ function applyConfigToHost(cfg) {
   const teamsEl = document.getElementById('hacker-msg-teams');
   if (teamsEl) teamsEl.textContent = `${cfg.numeroEquipos || 5} grupos`;
 
+  // Actualizar los nombres de los 5 ponentes/organizadores en la pantalla final de agradecimiento
+  if (typeof renderThanksNames === 'function') {
+    renderThanksNames(cfg.ponentes || cfg.creadors || cfg.creadores || cfg.autores || cfg.nombres);
+  }
+
   // Inicializar o sincronizar el temporizador de cuenta atrás configurable
   if (typeof syncMissionTimerConfig === 'function') {
     syncMissionTimerConfig(cfg);
@@ -62,14 +67,23 @@ buildInitialTeamsGrid();
 
 // Atajos de teclado formales para la presentación, control y atajos del Host
 window.addEventListener('keydown', (e) => {
+  // Si la cinemática final de derrota está activa, impedir en todo momento volver al menú o realizar reinicios/previews
+  if (typeof bossCinematicActive !== 'undefined' && bossCinematicActive) {
+    if (e.key === 'Escape' || e.key === 'Esc' || e.key === 'r' || e.key === 'R' || e.key === '1' || e.key === '2' || e.key === '3') {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+  }
+
   const presScreen = document.getElementById('presentation-screen');
   const isPresVisible = presScreen && !presScreen.classList.contains('hidden');
   const dashScreen = document.getElementById('host-dashboard-screen');
   const isDashVisible = dashScreen && !dashScreen.classList.contains('hidden');
 
   if (isDashVisible) {
-    // Tecla Escape para cerrar overlay o modales
-    if (e.key === 'Escape') {
+    // Tecla Escape para cerrar overlay o modales (solo si no es derrota final)
+    if (e.key === 'Escape' || e.key === 'Esc') {
       closeWeakeningOverlay();
       closeResetModal();
       return;

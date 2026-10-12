@@ -210,17 +210,31 @@ function updateTeamsDisplay(teams) {
     }
   }
 
+  const threatWidget = document.getElementById('hud-threat-widget');
+
   if (threatFillEl) {
     threatFillEl.style.width = threatRemaining + '%';
     if (threatRemaining <= 25) {
-      threatFillEl.style.background = 'linear-gradient(90deg, #00ff66, #00e5ff)';
-      threatFillEl.style.boxShadow = '0 0 10px var(--green-glow)';
+      threatFillEl.style.background = 'linear-gradient(90deg, #00e676, #00ff66, #00e5ff)';
+      threatFillEl.style.boxShadow = '0 0 16px rgba(0, 255, 102, 0.8), inset 0 0 8px rgba(255, 255, 255, 0.3)';
+      if (threatWidget) {
+        threatWidget.style.borderColor = 'rgba(0, 255, 102, 0.55)';
+        threatWidget.style.boxShadow = '0 0 25px rgba(0, 255, 102, 0.22), inset 0 0 16px rgba(0, 255, 102, 0.08)';
+      }
     } else if (threatRemaining <= 60) {
-      threatFillEl.style.background = 'linear-gradient(90deg, #ffb000, #ff8800)';
-      threatFillEl.style.boxShadow = '0 0 10px var(--amber-glow)';
+      threatFillEl.style.background = 'linear-gradient(90deg, #ff9100, #ffb000, #ffc400)';
+      threatFillEl.style.boxShadow = '0 0 16px rgba(255, 176, 0, 0.8), inset 0 0 8px rgba(255, 255, 255, 0.3)';
+      if (threatWidget) {
+        threatWidget.style.borderColor = 'rgba(255, 176, 0, 0.55)';
+        threatWidget.style.boxShadow = '0 0 25px rgba(255, 176, 0, 0.22), inset 0 0 16px rgba(255, 176, 0, 0.08)';
+      }
     } else {
-      threatFillEl.style.background = 'linear-gradient(90deg, #ff003c, #ff3355)';
-      threatFillEl.style.boxShadow = '0 0 10px var(--red-glow)';
+      threatFillEl.style.background = 'linear-gradient(90deg, #ff003c 0%, #ff1744 50%, #ff3355 100%)';
+      threatFillEl.style.boxShadow = '0 0 16px rgba(255, 0, 60, 0.85), inset 0 0 8px rgba(255, 255, 255, 0.3)';
+      if (threatWidget) {
+        threatWidget.style.borderColor = 'rgba(255, 0, 60, 0.45)';
+        threatWidget.style.boxShadow = '0 0 25px rgba(255, 0, 60, 0.18), inset 0 0 16px rgba(255, 0, 60, 0.08)';
+      }
     }
   }
 

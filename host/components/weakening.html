@@ -13,9 +13,58 @@
       <div class="weakening-header mono">
         <div class="weakening-header-left">
           <span class="weakening-badge-dot"></span>
-          <span id="weakening-status-title" class="weakening-status-title">[!] ANOMALÍA EN EL SERVIDOR // CIFRADO AGRIETADO [75%]</span>
+          <span id="weakening-status-title" class="weakening-status-title">[!!] ALERTA CRÍTICA: FISURA MASIVA EN EL NÚCLEO</span>
+          <div class="header-pct-badge" id="weakening-header-badge">
+            <span class="header-pct-pulse"></span>
+            <span id="weakening-header-pct" class="header-pct-num">40%</span>
+            <span class="header-pct-lbl">RESTANTE</span>
+          </div>
         </div>
         <button class="weakening-close-btn" onclick="closeWeakeningOverlay()" title="Cerrar modal (Esc)">✕ CERRAR</button>
+      </div>
+
+      <!-- BANNER HERO DE AMENAZA Y PORCENTAJE (PROTAGONISMO TOTAL) -->
+      <div class="weakening-threat-banner mono" id="weakening-threat-banner">
+        <div class="threat-banner-hero-left">
+          <div class="threat-banner-meta-tag">
+            <span class="threat-alert-icon">⚡</span>
+            <span class="threat-kicker" id="weakening-threat-kicker">SISTEMA ENEMIGO EN CRISIS // ATAQUE DE LOS EQUIPOS</span>
+          </div>
+          <div class="threat-big-val-wrap">
+            <div class="threat-val-glow-box">
+              <span class="threat-giant-number text-red" id="weakening-banner-pct">40%</span>
+            </div>
+            <div class="threat-giant-meta">
+              <span class="meta-label-top">VIDA RESTANTE</span>
+              <span class="meta-label-sub" id="weakening-damage-stat">-60% DAÑO TOTAL INFLIGIDO</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="threat-banner-hero-center">
+          <div class="threat-meter-labels">
+            <span class="meter-lbl-left">BARRA DE VIDA DEL BOSS // AMENAZA</span>
+            <span class="meter-lbl-right" id="weakening-vuln-stat">¡NIVEL CRÍTICO!</span>
+          </div>
+          <div class="threat-big-track">
+            <div id="weakening-banner-fill" class="threat-big-fill" style="width: 40%;">
+              <div class="threat-fill-stripes"></div>
+              <div class="threat-fill-head-glow"></div>
+            </div>
+            <!-- Marcadores clave con etiquetas -->
+            <div class="track-marker marker-100" style="left: 100%;"><span class="marker-dot"></span><span class="marker-txt">100%</span></div>
+            <div class="track-marker marker-75" style="left: 75%;"><span class="marker-dot"></span><span class="marker-txt">75%</span></div>
+            <div class="track-marker marker-40" style="left: 40%;"><span class="marker-dot"></span><span class="marker-txt">40%</span></div>
+            <div class="track-marker marker-0" style="left: 0%;"><span class="marker-dot"></span><span class="marker-txt">0% (DERROTA)</span></div>
+          </div>
+        </div>
+
+        <div class="threat-banner-hero-right">
+          <div class="threat-phase-badge" id="weakening-phase-badge">
+            <span class="phase-lbl">FASE</span>
+            <span class="phase-num" id="weakening-phase-num">2 / 3</span>
+          </div>
+        </div>
       </div>
 
       <!-- Cuerpo interactivo -->
@@ -24,32 +73,88 @@
         <div class="weakening-avatar-wrapper">
           <div class="weakening-holo-aura"></div>
           <div class="weakening-mask-container" id="weakening-mask-box">
-            <!-- Máscara SVG con fisuras y circuitos que reaccionan al daño -->
-            <svg class="weakening-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Capucha negra -->
-              <path class="mask-hood" d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#0c050a" stroke="#ff003c" stroke-width="2.5"/>
-              <!-- Base de máscara ciber -->
-              <path class="mask-face" d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff003c" stroke-width="2.5"/>
-              <!-- Cejas -->
-              <path class="mask-brow" d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-              <!-- Ojos de escaneo láser -->
-              <ellipse cx="92" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-              <circle cx="92" cy="118" r="4" fill="#00ff66" class="mask-eye-laser laser-l"/>
-              <ellipse cx="148" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-              <circle cx="148" cy="118" r="4" fill="#00ff66" class="mask-eye-laser laser-r"/>
-              <!-- Bigote curvado -->
-              <path class="mask-mustache" d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
-              <!-- Sonrisa -->
-              <path class="mask-smile" d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <!-- Perilla -->
-              <path class="mask-beard" d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
-              
-              <!-- Red de grietas que se iluminan al debilitarse -->
+            <!-- Máscara Guy Fawkes ciberpunk que reacciona con grietas al debilitamiento -->
+            <svg class="weakening-mask-svg" viewBox="0 0 240 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="weakHoodGrad" x1="120" y1="10" x2="120" y2="280" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#160612"/>
+                  <stop offset="70%" stop-color="#0a0308"/>
+                  <stop offset="100%" stop-color="#040103"/>
+                </linearGradient>
+                <linearGradient id="weakMaskGrad" x1="120" y1="50" x2="120" y2="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#1f1826"/>
+                  <stop offset="50%" stop-color="#16101c"/>
+                  <stop offset="100%" stop-color="#0e0814"/>
+                </linearGradient>
+                <radialGradient id="weakCheekL" cx="80" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="weakCheekR" cx="160" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="weakGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- 1. Capucha cinemática -->
+              <path class="mask-hood" d="M120 12 C60 16 28 65 24 150 C20 220 28 275 38 285 C80 282 160 282 202 285 C212 275 220 220 216 150 C212 65 180 16 120 12 Z" fill="url(#weakHoodGrad)" stroke="#ff0055" stroke-width="2.5"/>
+              <path d="M48 115 C44 180 52 245 62 275 C52 230 46 175 52 118 Z" fill="#000000" opacity="0.6"/>
+              <path d="M192 115 C196 180 188 245 178 275 C188 230 194 175 188 118 Z" fill="#000000" opacity="0.6"/>
+
+              <!-- 2. Máscara Guy Fawkes anatómica -->
+              <path class="mask-face" d="M120 46 C74 46 54 82 54 126 C54 165 72 195 90 226 C104 250 120 258 120 258 C120 258 136 250 150 226 C168 195 186 165 186 126 C186 82 166 46 120 46 Z" fill="url(#weakMaskGrad)" stroke="#ff0055" stroke-width="2"/>
+
+              <!-- Rubor en mejillas -->
+              <circle cx="80" cy="155" r="24" fill="url(#weakCheekL)"/>
+              <circle cx="160" cy="155" r="24" fill="url(#weakCheekR)"/>
+
+              <!-- Trazos de circuito ciberpunk -->
+              <path d="M64 120 L74 120 L80 134 M60 148 L70 148 L76 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+              <path d="M176 120 L166 120 L160 134 M180 148 L170 148 L164 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+              <circle cx="80" cy="134" r="1.8" fill="#00ff66"/>
+              <circle cx="160" cy="134" r="1.8" fill="#00ff66"/>
+
+              <!-- 3. Cejas arqueadas inquisitivas -->
+              <path class="mask-brow" d="M68 98 C82 82 104 84 114 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#weakGlow)"/>
+              <path class="mask-brow" d="M172 98 C158 82 136 84 126 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#weakGlow)"/>
+
+              <!-- 4. Cuencas de los ojos rasgadas y misteriosas -->
+              <path d="M72 116 C80 108 102 108 110 118 C102 126 80 126 72 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+              <circle cx="91" cy="116" r="3.4" fill="#00ff66" class="mask-eye-laser laser-l" filter="url(#weakGlow)"/>
+              <circle cx="91" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M168 116 C160 108 138 108 130 118 C138 126 160 126 168 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+              <circle cx="149" cy="116" r="3.4" fill="#00ff66" class="mask-eye-laser laser-r" filter="url(#weakGlow)"/>
+              <circle cx="149" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M120 106 L117 142 L123 142" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+              <!-- 5. Bigote fino y elegante -->
+              <path class="mask-mustache" d="M120 162 C112 152 86 148 68 162 C82 168 104 165 118 168 C119 168 120 168 120 168 C120 168 121 168 122 168 C136 165 158 168 172 162 C154 148 128 152 120 162 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.8"/>
+
+              <!-- 6. Sonrisa enigmática -->
+              <path class="mask-smile" d="M76 174 C96 200 144 200 164 174" stroke="#ffffff" stroke-width="2.6" fill="none" stroke-linecap="round" filter="url(#weakGlow)"/>
+              <path d="M74 172 C71 168 67 169 66 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+              <path d="M166 172 C169 168 173 169 174 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- 7. Perilla estilizada -->
+              <path class="mask-beard" d="M117 206 L123 206 L120 236 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.5"/>
+              <line x1="120" y1="238" x2="120" y2="252" stroke="#ff0055" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.8"/>
+              <circle cx="120" cy="252" r="2" fill="#00ff66"/>
+
+              <!-- Red de fisuras / grietas que se iluminan en las fases 1 y 2 -->
               <g class="mask-cracks-group">
-                <path class="crack-path crack-1" d="M120 20 L112 55 L126 88 L104 125 L92 145" stroke="#ff003c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <path class="crack-path crack-2" d="M180 85 L156 108 L165 142 L138 175 L150 205" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path class="crack-path crack-3" d="M60 85 L84 108 L72 150 L102 182 L88 215" stroke="#ffb000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path class="crack-path crack-4" d="M104 125 L125 150 L115 190 L120 240" stroke="#ff003c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-1" d="M120 14 L114 48 L126 84 L104 120 L92 142 L112 166 L100 200" stroke="#ff5500" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-2" d="M182 85 L156 108 L165 138 L138 168 L152 198 L136 230" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-3" d="M58 85 L82 108 L70 145 L98 175 L82 208 L104 235" stroke="#ffcc00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-4" d="M104 120 L125 145 L115 185 L120 240" stroke="#ff0055" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </g>
 
               <!-- Fragmentos de código / desintegración -->
@@ -60,12 +165,16 @@
 
           <!-- Barra de Integridad del Hacker -->
           <div class="weakening-integrity-box mono">
-            <div class="integrity-labels">
-              <span class="integrity-title">AMENAZA DEL HACKER:</span>
-              <span id="weakening-integrity-val" class="integrity-val text-red">75%</span>
+            <div class="integrity-header-row">
+              <span class="integrity-title">AMENAZA RESTANTE:</span>
+              <span id="weakening-integrity-val" class="integrity-val text-red">40%</span>
             </div>
             <div class="integrity-meter">
-              <div id="weakening-meter-fill" class="integrity-meter-fill" style="width: 75%;"></div>
+              <div id="weakening-meter-fill" class="integrity-meter-fill" style="width: 40%;"></div>
+            </div>
+            <div class="integrity-sub-meta">
+              <span class="integrity-sub-badge" id="weakening-integrity-sub-badge">⚠️ ESTADO: CRÍTICO</span>
+              <span class="integrity-sub-pct" id="weakening-integrity-def-stat">-60% DEF</span>
             </div>
           </div>
         </div>
@@ -74,6 +183,7 @@
         <div class="weakening-dialogue-panel">
           <div class="dialogue-meta-bar mono">
             <span class="trans-chip"><span class="chip-blink-red"></span> INTERCEPTACIÓN DE FRECUENCIA</span>
+            <span class="trans-threat-chip" id="weakening-trans-chip">[ AMENAZA REDUCIDA AL 40% ]</span>
             <span class="trans-id">CANAL: 0xANONYMOUS_BROADCAST</span>
           </div>
 

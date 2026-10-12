@@ -3,6 +3,13 @@
   "nombreInstituto": "Institut Vil·la Romana",
   "numeroEquipos": 5,
   "tiempoMinutos": 45,
+  "ponentes": [
+    "Nombre 1",
+    "Nombre 2",
+    "Nombre 3",
+    "Nombre 4",
+    "Nombre 5"
+  ],
   "mensajeHacker": {
     "saludo": "",
     "cuerpo": ""

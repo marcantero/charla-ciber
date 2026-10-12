@@ -204,11 +204,29 @@
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 0, 60, 0.15);
   border-radius: 4px;
 }
+.speech-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .speech-pre {
   color: #ff3355;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.2em;
+}
+.speech-skip-hint {
+  font-size: 0.72rem;
+  color: var(--white-muted);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.speech-skip-hint:hover {
+  color: #ff3355;
+  opacity: 1;
 }
 .speech-quote {
   font-family: 'Orbitron', 'Inter', -apple-system, sans-serif;
@@ -219,6 +237,7 @@
   letter-spacing: 0.02em;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
   position: relative;
+  min-height: 2.8rem;
 }
 .speech-quote .quote-highlight-red {
   color: #ff2255;
@@ -234,6 +253,37 @@
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
   letter-spacing: 0.02em;
+  min-height: 4rem;
+}
+
+/* Cursor de tecleo cibernético */
+.type-cursor {
+  display: inline-block;
+  width: 9px;
+  height: 1.15em;
+  background: #ff0055;
+  margin-left: 3px;
+  vertical-align: -2px;
+  box-shadow: 0 0 8px #ff0055;
+  animation: typeCursorBlink 0.65s infinite ease-in-out;
+}
+@keyframes typeCursorBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Animación del avatar cuando el hacker está hablando */
+.anon-avatar-box.speaking {
+  box-shadow: 0 0 45px rgba(255, 0, 60, 0.7), inset 0 0 25px rgba(255, 0, 60, 0.3);
+  border-color: #ff003c;
+  animation: anonSpeakingPulse 0.35s infinite alternate ease-in-out;
+}
+@keyframes anonSpeakingPulse {
+  0% { transform: scale(1); filter: brightness(1); }
+  100% { transform: scale(1.02); filter: brightness(1.25); }
+}
+.anon-avatar-box.speaking .anon-mask-svg {
+  filter: drop-shadow(0 0 25px rgba(255, 0, 60, 0.95));
 }
 
 .hack-actions {
@@ -264,5 +314,12 @@
 }
 .btn-counterattack:active {
   transform: translateY(0);
+}
+.btn-counterattack.ready-pulse {
+  animation: btnCounterattackReady 1.2s infinite alternate ease-in-out;
+}
+@keyframes btnCounterattackReady {
+  0% { transform: scale(1); box-shadow: 0 0 25px rgba(255, 0, 60, 0.6); }
+  100% { transform: scale(1.04); box-shadow: 0 0 55px rgba(255, 0, 60, 1); background: #ff1f50; }
 }
 

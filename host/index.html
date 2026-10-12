@@ -170,30 +170,81 @@
         <!-- Visual del Hacker Anonymous -->
         <div class="anon-visual-panel">
           <div class="anon-avatar-box">
-            <!-- Máscara ciberpunk estilizada de Anonymous con circuitos -->
-            <svg class="anon-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Capucha negra -->
-              <path d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#0c050a" stroke="#ff003c" stroke-width="2.5"/>
-              <!-- Base de máscara blanca / ciber -->
-              <path d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff003c" stroke-width="2.5"/>
-              <!-- Cejas marcadas -->
-              <path d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-              <!-- Ojos de escaneo láser -->
-              <ellipse cx="92" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-              <circle cx="92" cy="118" r="4" fill="#00ff66" class="anon-eye-laser"/>
-              <ellipse cx="148" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-              <circle cx="148" cy="118" r="4" fill="#00ff66" class="anon-eye-laser"/>
-              <!-- Bigote curvado en punta -->
-              <path d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
-              <!-- Sonrisa enigmática -->
-              <path d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <!-- Perilla ciberpunk -->
-              <path d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
-              <!-- Circuitos que fluyen -->
-              <line x1="92" y1="125" x2="92" y2="152" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="3,3"/>
-              <line x1="148" y1="125" x2="148" y2="152" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="3,3"/>
-              <circle cx="92" cy="152" r="2.5" fill="#00ff66"/>
-              <circle cx="148" cy="152" r="2.5" fill="#00ff66"/>
+            <!-- Máscara Guy Fawkes ciberpunk de alta fidelidad (Presentación inicial) -->
+            <svg class="anon-mask-svg" viewBox="0 0 240 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="anonHoodGrad" x1="120" y1="10" x2="120" y2="280" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#160612"/>
+                  <stop offset="70%" stop-color="#0a0308"/>
+                  <stop offset="100%" stop-color="#040103"/>
+                </linearGradient>
+                <linearGradient id="anonMaskGrad" x1="120" y1="50" x2="120" y2="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#1f1826"/>
+                  <stop offset="50%" stop-color="#16101c"/>
+                  <stop offset="100%" stop-color="#0e0814"/>
+                </linearGradient>
+                <radialGradient id="anonCheekL" cx="80" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="anonCheekR" cx="160" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="anonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- 1. Capucha cinemática con halo de amenaza -->
+              <path class="anon-hood" d="M120 12 C60 16 28 65 24 150 C20 220 28 275 38 285 C80 282 160 282 202 285 C212 275 220 220 216 150 C212 65 180 16 120 12 Z" fill="url(#anonHoodGrad)" stroke="#ff003c" stroke-width="2.5"/>
+              <path d="M48 115 C44 180 52 245 62 275 C52 230 46 175 52 118 Z" fill="#000000" opacity="0.6"/>
+              <path d="M192 115 C196 180 188 245 178 275 C188 230 194 175 188 118 Z" fill="#000000" opacity="0.6"/>
+
+              <!-- 2. Máscara Guy Fawkes con pómulos anatómicos -->
+              <path class="anon-face" d="M120 46 C74 46 54 82 54 126 C54 165 72 195 90 226 C104 250 120 258 120 258 C120 258 136 250 150 226 C168 195 186 165 186 126 C186 82 166 46 120 46 Z" fill="url(#anonMaskGrad)" stroke="#ff003c" stroke-width="2"/>
+
+              <!-- Rubor en las mejillas -->
+              <circle cx="80" cy="155" r="24" fill="url(#anonCheekL)"/>
+              <circle cx="160" cy="155" r="24" fill="url(#anonCheekR)"/>
+
+              <!-- Circuitos ciberpunk que fluyen -->
+              <path d="M64 120 L74 120 L80 134 M60 148 L70 148 L76 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+              <path d="M176 120 L166 120 L160 134 M180 148 L170 148 L164 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+              <circle cx="80" cy="134" r="1.8" fill="#00ff66"/>
+              <circle cx="160" cy="134" r="1.8" fill="#00ff66"/>
+
+              <!-- 3. Cejas arqueadas inquisitivas -->
+              <path class="anon-brow" d="M68 98 C82 82 104 84 114 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#anonGlow)"/>
+              <path class="anon-brow" d="M172 98 C158 82 136 84 126 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#anonGlow)"/>
+
+              <!-- 4. Cuencas de los ojos rasgadas con láser -->
+              <path d="M72 116 C80 108 102 108 110 118 C102 126 80 126 72 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+              <circle cx="91" cy="116" r="3.4" fill="#00ff66" class="anon-eye-laser eye-l" filter="url(#anonGlow)"/>
+              <circle cx="91" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M168 116 C160 108 138 108 130 118 C138 126 160 126 168 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+              <circle cx="149" cy="116" r="3.4" fill="#00ff66" class="anon-eye-laser eye-r" filter="url(#anonGlow)"/>
+              <circle cx="149" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M120 106 L117 142 L123 142" stroke="#ff003c" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+              <!-- 5. Bigote fino y elegante Guy Fawkes -->
+              <path class="anon-mustache" d="M120 162 C112 152 86 148 68 162 C82 168 104 165 118 168 C119 168 120 168 120 168 C120 168 121 168 122 168 C136 165 158 168 172 162 C154 148 128 152 120 162 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.8"/>
+
+              <!-- 6. Sonrisa enigmática icónica -->
+              <path class="anon-smile" d="M76 174 C96 200 144 200 164 174" stroke="#ffffff" stroke-width="2.6" fill="none" stroke-linecap="round" filter="url(#anonGlow)"/>
+              <path d="M74 172 C71 168 67 169 66 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+              <path d="M166 172 C169 168 173 169 174 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- 7. Perilla estilizada -->
+              <path class="anon-beard" d="M117 206 L123 206 L120 236 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.5"/>
+              <line x1="120" y1="238" x2="120" y2="252" stroke="#ff003c" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.8"/>
+              <circle cx="120" cy="252" r="2" fill="#00ff66"/>
             </svg>
             <div class="anon-name-tag mono">IDENTIDAD: 0xANONYMOUS // INTRUSO</div>
           </div>
@@ -238,16 +289,15 @@
             </div>
           </div>
 
-          <!-- Mensaje amenazante del Anónimo -->
-          <div class="anon-speech-box">
-            <div class="speech-pre mono">&lt; MENSAJE PARA EL INSTITUTO &gt;</div>
-            <h2 class="speech-quote" id="anon-quote-text">
-              "Hola <span class="quote-highlight-red" id="hacker-msg-inst">IES Tecnológico</span>, me infiltrado en vuestro instituto jajajajaja (risa malvada)."
-            </h2>
-            <div class="speech-desc mono" id="anon-speech-desc">
-              <p>Voy a cifrar todos vuestros datos. Pero para que esto sea más divertido voy a dejaros unos retos para que podáis pararme.</p>
-              <p style="margin-top: 8px;">Tendréis que hacer <strong class="quote-highlight-cyan" id="hacker-msg-teams">5 grupos</strong>, con el objetivo de intentar pararme con todo lo que habéis aprendido en esta charla.</p>
-              <p style="margin-top: 8px; color: #ff3355; font-weight: 700;">Mucha suerte.</p>
+          <!-- Mensaje amenazante del Anónimo (Mecanografía sincronizada con la voz) -->
+          <div class="anon-speech-box" id="anon-speech-box" onclick="skipAnonTypewriter()">
+            <div class="speech-header-row mono">
+              <span class="speech-pre">&lt; MENSAJE PARA EL INSTITUTO &gt;</span>
+              <span class="speech-skip-hint mono" id="speech-skip-hint" title="Clic para mostrar todo el texto inmediatamente">[CLIC PARA COMPLETAR]</span>
+            </div>
+            <div class="anon-typewriter-body" id="anon-typewriter-body">
+              <h2 class="speech-quote" id="anon-quote-text"></h2>
+              <div class="speech-desc mono" id="anon-speech-desc"></div>
             </div>
           </div>
 
@@ -274,23 +324,39 @@
           <h2 class="hud-title">PANEL DE CONTROL — ESTADO DE LOS EQUIPOS</h2>
         </div>
 
-        <!-- Indicador de Amenaza Global del Instituto -->
-        <div class="hud-threat-widget">
+        <!-- Indicador de Amenaza Global del Instituto (Barra de Vida del Hacker / Cifrado) -->
+        <div class="hud-threat-widget" id="hud-threat-widget">
           <div class="threat-meta mono">
-            <span class="threat-label">AMENAZA DE CIFRADO DEL INSTITUTO:</span>
-            <span class="threat-pct text-red mono" id="global-threat-pct">100%</span>
+            <div class="threat-title-wrap">
+              <span class="threat-pulse-badge"></span>
+              <span class="threat-label">VIDA DEL HACKER // AMENAZA DE CIFRADO:</span>
+            </div>
+            <div class="threat-val-wrap">
+              <span class="threat-pct text-red mono" id="global-threat-pct">100%</span>
+            </div>
           </div>
-          <div class="threat-track">
-            <div class="threat-fill" id="global-threat-fill"></div>
+          <div class="threat-track" title="Integridad del Cifrado del Hacker">
+            <div class="threat-track-ticks">
+              <span class="threat-tick tick-75" style="left: 25%;"><i></i></span>
+              <span class="threat-tick tick-50" style="left: 50%;"><i></i></span>
+              <span class="threat-tick tick-25" style="left: 75%;"><i></i></span>
+            </div>
+            <div class="threat-fill" id="global-threat-fill">
+              <div class="threat-fill-stripes"></div>
+              <div class="threat-fill-head"></div>
+            </div>
           </div>
         </div>
 
         <div class="hud-meta mono">
-          <!-- Widget de Cuenta Atrás Configurable (No pausible) -->
+          <!-- Widget de Cuenta Atrás Protagonista -->
           <div class="hud-countdown-widget" id="hud-countdown-widget" title="Tiempo restante para completar la misión">
-            <span class="countdown-icon">⏳</span>
-            <div class="countdown-body">
+            <div class="countdown-badge-row">
+              <span class="countdown-live-dot"></span>
               <span class="countdown-label">TIEMPO RESTANTE</span>
+            </div>
+            <div class="countdown-display-row">
+              <span class="countdown-icon" aria-hidden="true">⏳</span>
               <span class="countdown-digits" id="dash-countdown-digits">--:--</span>
             </div>
           </div>
@@ -341,9 +407,58 @@
       <div class="weakening-header mono">
         <div class="weakening-header-left">
           <span class="weakening-badge-dot"></span>
-          <span id="weakening-status-title" class="weakening-status-title">[!] ANOMALÍA EN EL SERVIDOR // CIFRADO AGRIETADO [75%]</span>
+          <span id="weakening-status-title" class="weakening-status-title">[!!] ALERTA CRÍTICA: FISURA MASIVA EN EL NÚCLEO</span>
+          <div class="header-pct-badge" id="weakening-header-badge">
+            <span class="header-pct-pulse"></span>
+            <span id="weakening-header-pct" class="header-pct-num">40%</span>
+            <span class="header-pct-lbl">RESTANTE</span>
+          </div>
         </div>
         <button class="weakening-close-btn" onclick="closeWeakeningOverlay()" title="Cerrar modal (Esc)">✕ CERRAR</button>
+      </div>
+
+      <!-- BANNER HERO DE AMENAZA Y PORCENTAJE (PROTAGONISMO TOTAL) -->
+      <div class="weakening-threat-banner mono" id="weakening-threat-banner">
+        <div class="threat-banner-hero-left">
+          <div class="threat-banner-meta-tag">
+            <span class="threat-alert-icon">⚡</span>
+            <span class="threat-kicker" id="weakening-threat-kicker">SISTEMA ENEMIGO EN CRISIS // ATAQUE DE LOS EQUIPOS</span>
+          </div>
+          <div class="threat-big-val-wrap">
+            <div class="threat-val-glow-box">
+              <span class="threat-giant-number text-red" id="weakening-banner-pct">40%</span>
+            </div>
+            <div class="threat-giant-meta">
+              <span class="meta-label-top">VIDA RESTANTE</span>
+              <span class="meta-label-sub" id="weakening-damage-stat">-60% DAÑO TOTAL INFLIGIDO</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="threat-banner-hero-center">
+          <div class="threat-meter-labels">
+            <span class="meter-lbl-left">BARRA DE VIDA DEL BOSS // AMENAZA</span>
+            <span class="meter-lbl-right" id="weakening-vuln-stat">¡NIVEL CRÍTICO!</span>
+          </div>
+          <div class="threat-big-track">
+            <div id="weakening-banner-fill" class="threat-big-fill" style="width: 40%;">
+              <div class="threat-fill-stripes"></div>
+              <div class="threat-fill-head-glow"></div>
+            </div>
+            <!-- Marcadores clave con etiquetas -->
+            <div class="track-marker marker-100" style="left: 100%;"><span class="marker-dot"></span><span class="marker-txt">100%</span></div>
+            <div class="track-marker marker-75" style="left: 75%;"><span class="marker-dot"></span><span class="marker-txt">75%</span></div>
+            <div class="track-marker marker-40" style="left: 40%;"><span class="marker-dot"></span><span class="marker-txt">40%</span></div>
+            <div class="track-marker marker-0" style="left: 0%;"><span class="marker-dot"></span><span class="marker-txt">0% (DERROTA)</span></div>
+          </div>
+        </div>
+
+        <div class="threat-banner-hero-right">
+          <div class="threat-phase-badge" id="weakening-phase-badge">
+            <span class="phase-lbl">FASE</span>
+            <span class="phase-num" id="weakening-phase-num">2 / 3</span>
+          </div>
+        </div>
       </div>
 
       <!-- Cuerpo interactivo -->
@@ -352,32 +467,88 @@
         <div class="weakening-avatar-wrapper">
           <div class="weakening-holo-aura"></div>
           <div class="weakening-mask-container" id="weakening-mask-box">
-            <!-- Máscara SVG con fisuras y circuitos que reaccionan al daño -->
-            <svg class="weakening-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Capucha negra -->
-              <path class="mask-hood" d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#0c050a" stroke="#ff003c" stroke-width="2.5"/>
-              <!-- Base de máscara ciber -->
-              <path class="mask-face" d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff003c" stroke-width="2.5"/>
-              <!-- Cejas -->
-              <path class="mask-brow" d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-              <!-- Ojos de escaneo láser -->
-              <ellipse cx="92" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-              <circle cx="92" cy="118" r="4" fill="#00ff66" class="mask-eye-laser laser-l"/>
-              <ellipse cx="148" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-              <circle cx="148" cy="118" r="4" fill="#00ff66" class="mask-eye-laser laser-r"/>
-              <!-- Bigote curvado -->
-              <path class="mask-mustache" d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
-              <!-- Sonrisa -->
-              <path class="mask-smile" d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <!-- Perilla -->
-              <path class="mask-beard" d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
-              
-              <!-- Red de grietas que se iluminan al debilitarse -->
+            <!-- Máscara Guy Fawkes ciberpunk que reacciona con grietas al debilitamiento -->
+            <svg class="weakening-mask-svg" viewBox="0 0 240 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="weakHoodGrad" x1="120" y1="10" x2="120" y2="280" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#160612"/>
+                  <stop offset="70%" stop-color="#0a0308"/>
+                  <stop offset="100%" stop-color="#040103"/>
+                </linearGradient>
+                <linearGradient id="weakMaskGrad" x1="120" y1="50" x2="120" y2="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#1f1826"/>
+                  <stop offset="50%" stop-color="#16101c"/>
+                  <stop offset="100%" stop-color="#0e0814"/>
+                </linearGradient>
+                <radialGradient id="weakCheekL" cx="80" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="weakCheekR" cx="160" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="weakGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- 1. Capucha cinemática -->
+              <path class="mask-hood" d="M120 12 C60 16 28 65 24 150 C20 220 28 275 38 285 C80 282 160 282 202 285 C212 275 220 220 216 150 C212 65 180 16 120 12 Z" fill="url(#weakHoodGrad)" stroke="#ff0055" stroke-width="2.5"/>
+              <path d="M48 115 C44 180 52 245 62 275 C52 230 46 175 52 118 Z" fill="#000000" opacity="0.6"/>
+              <path d="M192 115 C196 180 188 245 178 275 C188 230 194 175 188 118 Z" fill="#000000" opacity="0.6"/>
+
+              <!-- 2. Máscara Guy Fawkes anatómica -->
+              <path class="mask-face" d="M120 46 C74 46 54 82 54 126 C54 165 72 195 90 226 C104 250 120 258 120 258 C120 258 136 250 150 226 C168 195 186 165 186 126 C186 82 166 46 120 46 Z" fill="url(#weakMaskGrad)" stroke="#ff0055" stroke-width="2"/>
+
+              <!-- Rubor en mejillas -->
+              <circle cx="80" cy="155" r="24" fill="url(#weakCheekL)"/>
+              <circle cx="160" cy="155" r="24" fill="url(#weakCheekR)"/>
+
+              <!-- Trazos de circuito ciberpunk -->
+              <path d="M64 120 L74 120 L80 134 M60 148 L70 148 L76 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+              <path d="M176 120 L166 120 L160 134 M180 148 L170 148 L164 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+              <circle cx="80" cy="134" r="1.8" fill="#00ff66"/>
+              <circle cx="160" cy="134" r="1.8" fill="#00ff66"/>
+
+              <!-- 3. Cejas arqueadas inquisitivas -->
+              <path class="mask-brow" d="M68 98 C82 82 104 84 114 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#weakGlow)"/>
+              <path class="mask-brow" d="M172 98 C158 82 136 84 126 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#weakGlow)"/>
+
+              <!-- 4. Cuencas de los ojos rasgadas y misteriosas -->
+              <path d="M72 116 C80 108 102 108 110 118 C102 126 80 126 72 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+              <circle cx="91" cy="116" r="3.4" fill="#00ff66" class="mask-eye-laser laser-l" filter="url(#weakGlow)"/>
+              <circle cx="91" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M168 116 C160 108 138 108 130 118 C138 126 160 126 168 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+              <circle cx="149" cy="116" r="3.4" fill="#00ff66" class="mask-eye-laser laser-r" filter="url(#weakGlow)"/>
+              <circle cx="149" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M120 106 L117 142 L123 142" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+              <!-- 5. Bigote fino y elegante -->
+              <path class="mask-mustache" d="M120 162 C112 152 86 148 68 162 C82 168 104 165 118 168 C119 168 120 168 120 168 C120 168 121 168 122 168 C136 165 158 168 172 162 C154 148 128 152 120 162 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.8"/>
+
+              <!-- 6. Sonrisa enigmática -->
+              <path class="mask-smile" d="M76 174 C96 200 144 200 164 174" stroke="#ffffff" stroke-width="2.6" fill="none" stroke-linecap="round" filter="url(#weakGlow)"/>
+              <path d="M74 172 C71 168 67 169 66 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+              <path d="M166 172 C169 168 173 169 174 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- 7. Perilla estilizada -->
+              <path class="mask-beard" d="M117 206 L123 206 L120 236 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.5"/>
+              <line x1="120" y1="238" x2="120" y2="252" stroke="#ff0055" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.8"/>
+              <circle cx="120" cy="252" r="2" fill="#00ff66"/>
+
+              <!-- Red de fisuras / grietas que se iluminan en las fases 1 y 2 -->
               <g class="mask-cracks-group">
-                <path class="crack-path crack-1" d="M120 20 L112 55 L126 88 L104 125 L92 145" stroke="#ff003c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <path class="crack-path crack-2" d="M180 85 L156 108 L165 142 L138 175 L150 205" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path class="crack-path crack-3" d="M60 85 L84 108 L72 150 L102 182 L88 215" stroke="#ffb000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path class="crack-path crack-4" d="M104 125 L125 150 L115 190 L120 240" stroke="#ff003c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-1" d="M120 14 L114 48 L126 84 L104 120 L92 142 L112 166 L100 200" stroke="#ff5500" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-2" d="M182 85 L156 108 L165 138 L138 168 L152 198 L136 230" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-3" d="M58 85 L82 108 L70 145 L98 175 L82 208 L104 235" stroke="#ffcc00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path class="crack-path crack-4" d="M104 120 L125 145 L115 185 L120 240" stroke="#ff0055" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </g>
 
               <!-- Fragmentos de código / desintegración -->
@@ -388,12 +559,16 @@
 
           <!-- Barra de Integridad del Hacker -->
           <div class="weakening-integrity-box mono">
-            <div class="integrity-labels">
-              <span class="integrity-title">AMENAZA DEL HACKER:</span>
-              <span id="weakening-integrity-val" class="integrity-val text-red">75%</span>
+            <div class="integrity-header-row">
+              <span class="integrity-title">AMENAZA RESTANTE:</span>
+              <span id="weakening-integrity-val" class="integrity-val text-red">40%</span>
             </div>
             <div class="integrity-meter">
-              <div id="weakening-meter-fill" class="integrity-meter-fill" style="width: 75%;"></div>
+              <div id="weakening-meter-fill" class="integrity-meter-fill" style="width: 40%;"></div>
+            </div>
+            <div class="integrity-sub-meta">
+              <span class="integrity-sub-badge" id="weakening-integrity-sub-badge">⚠️ ESTADO: CRÍTICO</span>
+              <span class="integrity-sub-pct" id="weakening-integrity-def-stat">-60% DEF</span>
             </div>
           </div>
         </div>
@@ -402,6 +577,7 @@
         <div class="weakening-dialogue-panel">
           <div class="dialogue-meta-bar mono">
             <span class="trans-chip"><span class="chip-blink-red"></span> INTERCEPTACIÓN DE FRECUENCIA</span>
+            <span class="trans-threat-chip" id="weakening-trans-chip">[ AMENAZA REDUCIDA AL 40% ]</span>
             <span class="trans-id">CANAL: 0xANONYMOUS_BROADCAST</span>
           </div>
 
@@ -490,25 +666,91 @@
           <!-- Avatar del Hacker en combate -->
           <div class="boss-combat-avatar" id="boss-combat-avatar">
             <div class="combat-avatar-aura" id="combat-avatar-aura"></div>
-            <svg class="boss-combat-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path class="holo-piece holo-hood" d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#08040a" stroke="#ff0055" stroke-width="2.5"/>
-              <path class="holo-piece holo-face" d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#100812" stroke="#ff0055" stroke-width="2"/>
-              <path class="holo-piece holo-brow" d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
-              <ellipse cx="92" cy="118" rx="14" ry="6" fill="#000000" stroke="#00e5ff" stroke-width="2"/>
-              <circle cx="92" cy="118" r="3.5" fill="#00e5ff" class="combat-eye-laser eye-l"/>
-              <ellipse cx="148" cy="118" rx="14" ry="6" fill="#000000" stroke="#00e5ff" stroke-width="2"/>
-              <circle cx="148" cy="118" r="3.5" fill="#00e5ff" class="combat-eye-laser eye-r"/>
-              <path class="holo-piece holo-mustache" d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff0055"/>
-              <path class="holo-piece holo-smile" d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-              <path class="holo-piece holo-beard" d="M114 202 L126 202 L120 226 Z" fill="#ff0055"/>
+            <svg class="boss-combat-svg" viewBox="0 0 240 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="hoodGrad" x1="120" y1="10" x2="120" y2="280" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#140810"/>
+                  <stop offset="70%" stop-color="#0a0308"/>
+                  <stop offset="100%" stop-color="#050204"/>
+                </linearGradient>
+                <linearGradient id="maskGrad" x1="120" y1="50" x2="120" y2="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#1c1622"/>
+                  <stop offset="50%" stop-color="#140e1a"/>
+                  <stop offset="100%" stop-color="#0c0710"/>
+                </linearGradient>
+                <radialGradient id="cheekGlowL" cx="80" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="cheekGlowR" cx="160" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="cyberGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- 1. Capucha cinemática con pliegues realistas -->
+              <path class="holo-piece holo-hood" d="M120 12 C60 16 28 65 24 150 C20 220 28 275 38 285 C80 282 160 282 202 285 C212 275 220 220 216 150 C212 65 180 16 120 12 Z" fill="url(#hoodGrad)" stroke="#ff0055" stroke-width="2.5"/>
+              <!-- Pliegues interiores de la capucha (sombras volumétricas) -->
+              <path d="M48 115 C44 180 52 245 62 275 C52 230 46 175 52 118 Z" fill="#000000" opacity="0.6"/>
+              <path d="M192 115 C196 180 188 245 178 275 C188 230 194 175 188 118 Z" fill="#000000" opacity="0.6"/>
+
+              <!-- 2. Silueta anatómica de la máscara Guy Fawkes (pómulos anchos, mandíbula estilizada) -->
+              <path class="holo-piece holo-face" d="M120 46 C74 46 54 82 54 126 C54 165 72 195 90 226 C104 250 120 258 120 258 C120 258 136 250 150 226 C168 195 186 165 186 126 C186 82 166 46 120 46 Z" fill="url(#maskGrad)" stroke="#ff0055" stroke-width="2"/>
+
+              <!-- Rubor / Contorno pómulos característico de Anonymous -->
+              <circle cx="80" cy="155" r="24" fill="url(#cheekGlowL)"/>
+              <circle cx="160" cy="155" r="24" fill="url(#cheekGlowR)"/>
+
+              <!-- Circuitos neuronales hacker en los laterales de la máscara -->
+              <path d="M64 120 L74 120 L80 134 M60 148 L70 148 L76 160" stroke="#00e5ff" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.8"/>
+              <path d="M176 120 L166 120 L160 134 M180 148 L170 148 L164 160" stroke="#00e5ff" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.8"/>
+              <circle cx="80" cy="134" r="1.8" fill="#00e5ff"/>
+              <circle cx="160" cy="134" r="1.8" fill="#00e5ff"/>
+
+              <!-- 3. Cejas esculpidas con arqueo cínico e inquisitivo -->
+              <path class="holo-piece holo-brow" d="M68 98 C82 82 104 84 114 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#cyberGlow)"/>
+              <path class="holo-piece holo-brow" d="M172 98 C158 82 136 84 126 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#cyberGlow)"/>
+
+              <!-- 4. Cuencas de los ojos estilizadas (rendijas rasgadas enigmáticas) -->
+              <path d="M72 116 C80 108 102 108 110 118 C102 126 80 126 72 116 Z" fill="#040206" stroke="#ff0055" stroke-width="1.8"/>
+              <circle cx="91" cy="116" r="3.2" fill="#00e5ff" class="combat-eye-laser eye-l" filter="url(#cyberGlow)"/>
+              <circle cx="91" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M168 116 C160 108 138 108 130 118 C138 126 160 126 168 116 Z" fill="#040206" stroke="#ff0055" stroke-width="1.8"/>
+              <circle cx="149" cy="116" r="3.2" fill="#00e5ff" class="combat-eye-laser eye-r" filter="url(#cyberGlow)"/>
+              <circle cx="149" cy="116" r="1.2" fill="#ffffff"/>
+
+              <!-- Puente de la nariz sutil -->
+              <path d="M120 106 L117 142 L123 142" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+              <!-- 5. Bigote icónico de Guy Fawkes (delgado, elegante y curvado hacia arriba) -->
+              <path class="holo-piece holo-mustache" d="M120 162 C112 152 86 148 68 162 C82 168 104 165 118 168 C119 168 120 168 120 168 C120 168 121 168 122 168 C136 165 158 168 172 162 C154 148 128 152 120 162 Z" fill="#ff0055" stroke="#ffffff" stroke-width="0.8"/>
+
+              <!-- 6. Sonrisa refinada (línea estilizada sin labios gruesos) -->
+              <path class="holo-piece holo-smile" d="M76 174 C96 200 144 200 164 174" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" filter="url(#cyberGlow)"/>
+              <!-- Comisuras pícaras -->
+              <path d="M74 172 C71 168 67 169 66 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+              <path d="M166 172 C169 168 173 169 174 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- 7. Perilla puntiaguda refinada -->
+              <path class="holo-piece holo-beard" d="M117 206 L123 206 L120 236 Z" fill="#ff0055" stroke="#ffffff" stroke-width="0.5"/>
+              <line x1="120" y1="238" x2="120" y2="252" stroke="#ff0055" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.8"/>
+              <circle cx="120" cy="252" r="2" fill="#00e5ff"/>
             </svg>
             <div class="combat-scanline"></div>
           </div>
         </div>
 
         <div class="boss-battle-banner">
-          <div class="banner-subtag mono" id="boss-action-subtag">[ INTRUSO EN EL SISTEMA // NÚCLEO HOSTIL ]</div>
-          <h1 class="banner-headline glitch-text" id="boss-action-headline" data-text="¡AMENAZA DETECTADA!">¡AMENAZA DETECTADA!</h1>
+          <div class="banner-subtag mono" id="boss-action-subtag">[ PROTOCOLO DE DEFENSA // COORDINANDO EQUIPOS ]</div>
+          <h1 class="banner-headline" id="boss-action-headline">¡CONECTANDO EQUIPOS!</h1>
         </div>
 
         <!-- Hud de nodos de equipos disparando ataques -->
@@ -559,27 +801,84 @@
             <div class="reborn-avatar-wrapper" id="reborn-avatar-wrapper">
               <div class="reborn-smoke-fx" id="reborn-smoke-fx"></div>
               <div class="reborn-mask-box" id="reborn-mask-box">
-                <svg class="reborn-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <!-- Capucha negra -->
-                  <path class="reborn-piece r-hood" d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#08040a" stroke="#ff0055" stroke-width="2.5"/>
-                  <!-- Base de máscara ciber -->
-                  <path class="reborn-piece r-face" d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff0055" stroke-width="2"/>
-                  <!-- Cejas -->
-                  <path class="reborn-piece r-brow" d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
-                  <!-- Ojos láser hostiles -->
-                  <ellipse cx="92" cy="118" rx="14" ry="6" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-                  <circle cx="92" cy="118" r="4" fill="#00ff66" class="reborn-eye-glow eye-l"/>
-                  <ellipse cx="148" cy="118" rx="14" ry="6" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-                  <circle cx="148" cy="118" r="4" fill="#00ff66" class="reborn-eye-glow eye-r"/>
-                  <!-- Bigote -->
-                  <path class="reborn-piece r-mustache" d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
-                  <!-- Boca / Sonrisa parlante animada -->
+                <svg class="reborn-mask-svg" viewBox="0 0 240 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="rebornHoodGrad" x1="120" y1="10" x2="120" y2="280" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#160612"/>
+                      <stop offset="70%" stop-color="#0a0308"/>
+                      <stop offset="100%" stop-color="#040103"/>
+                    </linearGradient>
+                    <linearGradient id="rebornMaskGrad" x1="120" y1="50" x2="120" y2="250" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#1f1826"/>
+                      <stop offset="50%" stop-color="#16101c"/>
+                      <stop offset="100%" stop-color="#0e0814"/>
+                    </linearGradient>
+                    <radialGradient id="rebornCheekL" cx="80" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#ff0055" stop-opacity="0.38"/>
+                      <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="rebornCheekR" cx="160" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#ff0055" stop-opacity="0.38"/>
+                      <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                    </radialGradient>
+                    <filter id="rebornGlow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                      <feMerge>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+
+                  <!-- 1. Capucha cinemática con halo de amenaza -->
+                  <path class="reborn-piece r-hood" d="M120 12 C60 16 28 65 24 150 C20 220 28 275 38 285 C80 282 160 282 202 285 C212 275 220 220 216 150 C212 65 180 16 120 12 Z" fill="url(#rebornHoodGrad)" stroke="#ff0055" stroke-width="2.5"/>
+                  <path d="M48 115 C44 180 52 245 62 275 C52 230 46 175 52 118 Z" fill="#000000" opacity="0.6"/>
+                  <path d="M192 115 C196 180 188 245 178 275 C188 230 194 175 188 118 Z" fill="#000000" opacity="0.6"/>
+
+                  <!-- 2. Máscara Guy Fawkes con pómulos prominentes -->
+                  <path class="reborn-piece r-face" d="M120 46 C74 46 54 82 54 126 C54 165 72 195 90 226 C104 250 120 258 120 258 C120 258 136 250 150 226 C168 195 186 165 186 126 C186 82 166 46 120 46 Z" fill="url(#rebornMaskGrad)" stroke="#ff0055" stroke-width="2"/>
+
+                  <!-- Rubor en las mejillas -->
+                  <circle cx="80" cy="155" r="24" fill="url(#rebornCheekL)"/>
+                  <circle cx="160" cy="155" r="24" fill="url(#rebornCheekR)"/>
+
+                  <!-- Trazos de circuito ciberpunk que parpadean con la voz -->
+                  <path d="M64 120 L74 120 L80 134 M60 148 L70 148 L76 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+                  <path d="M176 120 L166 120 L160 134 M180 148 L170 148 L164 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+                  <circle cx="80" cy="134" r="1.8" fill="#00ff66"/>
+                  <circle cx="160" cy="134" r="1.8" fill="#00ff66"/>
+
+                  <!-- 3. Cejas arqueadas inquisitivas -->
+                  <path class="reborn-piece r-brow" d="M68 98 C82 82 104 84 114 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#rebornGlow)"/>
+                  <path class="reborn-piece r-brow" d="M172 98 C158 82 136 84 126 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#rebornGlow)"/>
+
+                  <!-- 4. Cuencas de los ojos rasgadas y misteriosas -->
+                  <path d="M72 116 C80 108 102 108 110 118 C102 126 80 126 72 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+                  <circle cx="91" cy="116" r="3.4" fill="#00ff66" class="reborn-eye-glow eye-l" filter="url(#rebornGlow)"/>
+                  <circle cx="91" cy="116" r="1.2" fill="#ffffff"/>
+
+                  <path d="M168 116 C160 108 138 108 130 118 C138 126 160 126 168 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+                  <circle cx="149" cy="116" r="3.4" fill="#00ff66" class="reborn-eye-glow eye-r" filter="url(#rebornGlow)"/>
+                  <circle cx="149" cy="116" r="1.2" fill="#ffffff"/>
+
+                  <path d="M120 106 L117 142 L123 142" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+                  <!-- 5. Bigote fino y elegante -->
+                  <path class="reborn-piece r-mustache" d="M120 162 C112 152 86 148 68 162 C82 168 104 165 118 168 C119 168 120 168 120 168 C120 168 121 168 122 168 C136 165 158 168 172 162 C154 148 128 152 120 162 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.8"/>
+
+                  <!-- 6. Boca parlante adaptada al habla del hacker -->
                   <g id="reborn-talking-mouth" class="reborn-talking-mouth">
-                    <path class="reborn-smile-path" d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
-                    <ellipse cx="120" cy="182" rx="16" ry="6" fill="#ff003c" class="reborn-mouth-cavity"/>
+                    <!-- Sombra bucal interior dinámica -->
+                    <ellipse cx="120" cy="180" rx="14" ry="4" fill="#ff003c" opacity="0.6" class="reborn-mouth-cavity"/>
+                    <path class="reborn-smile-path" d="M76 174 C96 200 144 200 164 174" stroke="#ffffff" stroke-width="2.6" fill="none" stroke-linecap="round" filter="url(#rebornGlow)"/>
+                    <path d="M74 172 C71 168 67 169 66 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M166 172 C169 168 173 169 174 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
                   </g>
-                  <!-- Perilla -->
-                  <path class="reborn-piece r-beard" d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
+
+                  <!-- 7. Perilla estilizada -->
+                  <path class="reborn-piece r-beard" d="M117 206 L123 206 L120 236 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.5"/>
+                  <line x1="120" y1="238" x2="120" y2="252" stroke="#ff0055" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.8"/>
+                  <circle cx="120" cy="252" r="2" fill="#00ff66"/>
                 </svg>
               </div>
             </div>
@@ -629,9 +928,14 @@
                 <div class="flag-token-display glitch-text" id="boss-flag-token" data-text="FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}">
                   FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}
                 </div>
-                <button class="btn-copy-flag mono" onclick="copyBossFlag(this)">
-                  <span class="copy-icon">📋</span> COPIAR FLAG
-                </button>
+                <div class="flag-action-buttons">
+                  <button class="btn-copy-flag mono" onclick="copyBossFlag(this)">
+                    <span class="copy-icon">📋</span> COPIAR FLAG
+                  </button>
+                  <button class="btn-proceed-final mono" onclick="transitionToBossDeparture()">
+                    <span>FINALIZAR RETO ▶</span>
+                  </button>
+                </div>
               </div>
               <div class="flag-card-footer">
                 <span>🛡️ LECCIÓN APRENDIDA: LA CIBERSEGURIDAD EMPIEZA POR LA PREVENCIÓN Y NUNCA CONFIAR A CIEGAS 🛡️</span>
@@ -640,12 +944,92 @@
           </div>
 
         </div>
+      </div>
 
-        <!-- Pie de página con control para el ponente -->
-        <div class="boss-cinematic-controls">
-          <button class="btn-cinematic-exit mono" onclick="closeBossCinematic()">
-            <span>[ VOLVER AL MONITOR DEL HOST (ESC) ]</span>
-          </button>
+      <!-- FASE E: PARTIDA DEL BOSS Y PANTALLA DE RETO COMPLETADO -->
+      <div id="boss-stage-complete" class="boss-cinematic-stage hidden">
+        <!-- Partida del boss: se desvanece en datos -->
+        <div class="boss-departure-container" id="boss-departure-container">
+          <div class="departure-avatar-wrapper" id="departure-avatar-wrapper">
+            <div class="departure-dissolve-fx" id="departure-dissolve-fx"></div>
+            <div class="departure-mask-box" id="departure-mask-box">
+              <svg class="departure-mask-svg" viewBox="0 0 240 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="depHoodGrad" x1="120" y1="10" x2="120" y2="280" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#160612"/>
+                    <stop offset="70%" stop-color="#0a0308"/>
+                    <stop offset="100%" stop-color="#040103"/>
+                  </linearGradient>
+                  <linearGradient id="depMaskGrad" x1="120" y1="50" x2="120" y2="250" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#1f1826"/>
+                    <stop offset="50%" stop-color="#16101c"/>
+                    <stop offset="100%" stop-color="#0e0814"/>
+                  </linearGradient>
+                </defs>
+
+                <!-- 1. Capucha cinemática -->
+                <path class="dep-hood" d="M120 12 C60 16 28 65 24 150 C20 220 28 275 38 285 C80 282 160 282 202 285 C212 275 220 220 216 150 C212 65 180 16 120 12 Z" fill="url(#depHoodGrad)" stroke="#ff0055" stroke-width="2.5"/>
+                <path d="M48 115 C44 180 52 245 62 275 C52 230 46 175 52 118 Z" fill="#000000" opacity="0.6"/>
+                <path d="M192 115 C196 180 188 245 178 275 C188 230 194 175 188 118 Z" fill="#000000" opacity="0.6"/>
+
+                <!-- 2. Máscara anatómica -->
+                <path class="dep-face" d="M120 46 C74 46 54 82 54 126 C54 165 72 195 90 226 C104 250 120 258 120 258 C120 258 136 250 150 226 C168 195 186 165 186 126 C186 82 166 46 120 46 Z" fill="url(#depMaskGrad)" stroke="#ff0055" stroke-width="2"/>
+
+                <!-- 3. Cejas arqueadas -->
+                <path class="dep-brow" d="M68 98 C82 82 104 84 114 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+                <path class="dep-brow" d="M172 98 C158 82 136 84 126 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+
+                <!-- 4. Cuencas de los ojos rasgadas -->
+                <path d="M72 116 C80 108 102 108 110 118 C102 126 80 126 72 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+                <circle cx="91" cy="116" r="3.4" fill="#ff0055" class="dep-eye eye-l"/>
+                <circle cx="91" cy="116" r="1.2" fill="#ffffff"/>
+
+                <path d="M168 116 C160 108 138 108 130 118 C138 126 160 126 168 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+                <circle cx="149" cy="116" r="3.4" fill="#ff0055" class="dep-eye eye-r"/>
+                <circle cx="149" cy="116" r="1.2" fill="#ffffff"/>
+
+                <path d="M120 106 L117 142 L123 142" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+                <!-- 5. Bigote refinado -->
+                <path class="dep-mustache" d="M120 162 C112 152 86 148 68 162 C82 168 104 165 118 168 C119 168 120 168 120 168 C120 168 121 168 122 168 C136 165 158 168 172 162 C154 148 128 152 120 162 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.8"/>
+
+                <!-- 6. Sonrisa icónica -->
+                <path class="dep-smile" d="M76 174 C96 200 144 200 164 174" stroke="#ffffff" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+                <path d="M74 172 C71 168 67 169 66 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                <path d="M166 172 C169 168 173 169 174 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+
+                <!-- 7. Perilla estilizada -->
+                <path class="dep-beard" d="M117 206 L123 206 L120 236 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.5"/>
+              </svg>
+            </div>
+          </div>
+          <div class="departure-text mono" id="departure-text">
+            <span class="dep-quote">"Nos vemos en la red... analistas."</span>
+          </div>
+        </div>
+
+        <!-- Pantalla de Reto Completado: Mensaje Final de Agradecimiento -->
+        <div class="challenge-complete-screen hidden" id="challenge-complete-screen">
+          <div class="final-thanks-card">
+            <div class="thanks-icon">🎉</div>
+            <h1 class="thanks-title glitch-text" data-text="¡Muchas gracias por participar!">
+              ¡Muchas gracias por participar!
+            </h1>
+            <div class="thanks-divider"></div>
+            <p class="thanks-subtitle mono">
+              Esperemos que os haya gustado.
+            </p>
+            <div class="thanks-names-wrapper" id="thanks-names-wrapper">
+              <span class="thanks-names-label mono">// EQUIPO ORGANIZADOR //</span>
+              <div class="thanks-names-list" id="thanks-names-list">
+                <div class="thanks-name-chip"><span class="chip-avatar">⚡</span><span>Nombre 1</span></div>
+                <div class="thanks-name-chip"><span class="chip-avatar">⚡</span><span>Nombre 2</span></div>
+                <div class="thanks-name-chip"><span class="chip-avatar">⚡</span><span>Nombre 3</span></div>
+                <div class="thanks-name-chip"><span class="chip-avatar">⚡</span><span>Nombre 4</span></div>
+                <div class="thanks-name-chip"><span class="chip-avatar">⚡</span><span>Nombre 5</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

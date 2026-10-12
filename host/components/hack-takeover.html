@@ -14,30 +14,81 @@
         <!-- Visual del Hacker Anonymous -->
         <div class="anon-visual-panel">
           <div class="anon-avatar-box">
-            <!-- Máscara ciberpunk estilizada de Anonymous con circuitos -->
-            <svg class="anon-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Capucha negra -->
-              <path d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#0c050a" stroke="#ff003c" stroke-width="2.5"/>
-              <!-- Base de máscara blanca / ciber -->
-              <path d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff003c" stroke-width="2.5"/>
-              <!-- Cejas marcadas -->
-              <path d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-              <!-- Ojos de escaneo láser -->
-              <ellipse cx="92" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-              <circle cx="92" cy="118" r="4" fill="#00ff66" class="anon-eye-laser"/>
-              <ellipse cx="148" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
-              <circle cx="148" cy="118" r="4" fill="#00ff66" class="anon-eye-laser"/>
-              <!-- Bigote curvado en punta -->
-              <path d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
-              <!-- Sonrisa enigmática -->
-              <path d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <!-- Perilla ciberpunk -->
-              <path d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
-              <!-- Circuitos que fluyen -->
-              <line x1="92" y1="125" x2="92" y2="152" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="3,3"/>
-              <line x1="148" y1="125" x2="148" y2="152" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="3,3"/>
-              <circle cx="92" cy="152" r="2.5" fill="#00ff66"/>
-              <circle cx="148" cy="152" r="2.5" fill="#00ff66"/>
+            <!-- Máscara Guy Fawkes ciberpunk de alta fidelidad (Presentación inicial) -->
+            <svg class="anon-mask-svg" viewBox="0 0 240 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="anonHoodGrad" x1="120" y1="10" x2="120" y2="280" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#160612"/>
+                  <stop offset="70%" stop-color="#0a0308"/>
+                  <stop offset="100%" stop-color="#040103"/>
+                </linearGradient>
+                <linearGradient id="anonMaskGrad" x1="120" y1="50" x2="120" y2="250" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#1f1826"/>
+                  <stop offset="50%" stop-color="#16101c"/>
+                  <stop offset="100%" stop-color="#0e0814"/>
+                </linearGradient>
+                <radialGradient id="anonCheekL" cx="80" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="anonCheekR" cx="160" cy="155" r="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ff0055" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0"/>
+                </radialGradient>
+                <filter id="anonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- 1. Capucha cinemática con halo de amenaza -->
+              <path class="anon-hood" d="M120 12 C60 16 28 65 24 150 C20 220 28 275 38 285 C80 282 160 282 202 285 C212 275 220 220 216 150 C212 65 180 16 120 12 Z" fill="url(#anonHoodGrad)" stroke="#ff003c" stroke-width="2.5"/>
+              <path d="M48 115 C44 180 52 245 62 275 C52 230 46 175 52 118 Z" fill="#000000" opacity="0.6"/>
+              <path d="M192 115 C196 180 188 245 178 275 C188 230 194 175 188 118 Z" fill="#000000" opacity="0.6"/>
+
+              <!-- 2. Máscara Guy Fawkes con pómulos anatómicos -->
+              <path class="anon-face" d="M120 46 C74 46 54 82 54 126 C54 165 72 195 90 226 C104 250 120 258 120 258 C120 258 136 250 150 226 C168 195 186 165 186 126 C186 82 166 46 120 46 Z" fill="url(#anonMaskGrad)" stroke="#ff003c" stroke-width="2"/>
+
+              <!-- Rubor en las mejillas -->
+              <circle cx="80" cy="155" r="24" fill="url(#anonCheekL)"/>
+              <circle cx="160" cy="155" r="24" fill="url(#anonCheekR)"/>
+
+              <!-- Circuitos ciberpunk que fluyen -->
+              <path d="M64 120 L74 120 L80 134 M60 148 L70 148 L76 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+              <path d="M176 120 L166 120 L160 134 M180 148 L170 148 L164 160" stroke="#ff0055" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 3" opacity="0.85"/>
+              <circle cx="80" cy="134" r="1.8" fill="#00ff66"/>
+              <circle cx="160" cy="134" r="1.8" fill="#00ff66"/>
+
+              <!-- 3. Cejas arqueadas inquisitivas -->
+              <path class="anon-brow" d="M68 98 C82 82 104 84 114 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#anonGlow)"/>
+              <path class="anon-brow" d="M172 98 C158 82 136 84 126 98" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#anonGlow)"/>
+
+              <!-- 4. Cuencas de los ojos rasgadas con láser -->
+              <path d="M72 116 C80 108 102 108 110 118 C102 126 80 126 72 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+              <circle cx="91" cy="116" r="3.4" fill="#00ff66" class="anon-eye-laser eye-l" filter="url(#anonGlow)"/>
+              <circle cx="91" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M168 116 C160 108 138 108 130 118 C138 126 160 126 168 116 Z" fill="#030105" stroke="#ff003c" stroke-width="1.8"/>
+              <circle cx="149" cy="116" r="3.4" fill="#00ff66" class="anon-eye-laser eye-r" filter="url(#anonGlow)"/>
+              <circle cx="149" cy="116" r="1.2" fill="#ffffff"/>
+
+              <path d="M120 106 L117 142 L123 142" stroke="#ff003c" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+
+              <!-- 5. Bigote fino y elegante Guy Fawkes -->
+              <path class="anon-mustache" d="M120 162 C112 152 86 148 68 162 C82 168 104 165 118 168 C119 168 120 168 120 168 C120 168 121 168 122 168 C136 165 158 168 172 162 C154 148 128 152 120 162 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.8"/>
+
+              <!-- 6. Sonrisa enigmática icónica -->
+              <path class="anon-smile" d="M76 174 C96 200 144 200 164 174" stroke="#ffffff" stroke-width="2.6" fill="none" stroke-linecap="round" filter="url(#anonGlow)"/>
+              <path d="M74 172 C71 168 67 169 66 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+              <path d="M166 172 C169 168 173 169 174 171" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- 7. Perilla estilizada -->
+              <path class="anon-beard" d="M117 206 L123 206 L120 236 Z" fill="#ff003c" stroke="#ffffff" stroke-width="0.5"/>
+              <line x1="120" y1="238" x2="120" y2="252" stroke="#ff003c" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.8"/>
+              <circle cx="120" cy="252" r="2" fill="#00ff66"/>
             </svg>
             <div class="anon-name-tag mono">IDENTIDAD: 0xANONYMOUS // INTRUSO</div>
           </div>
@@ -82,16 +133,15 @@
             </div>
           </div>
 
-          <!-- Mensaje amenazante del Anónimo -->
-          <div class="anon-speech-box">
-            <div class="speech-pre mono">&lt; MENSAJE PARA EL INSTITUTO &gt;</div>
-            <h2 class="speech-quote" id="anon-quote-text">
-              "Hola <span class="quote-highlight-red" id="hacker-msg-inst">IES Tecnológico</span>, me infiltrado en vuestro instituto jajajajaja (risa malvada)."
-            </h2>
-            <div class="speech-desc mono" id="anon-speech-desc">
-              <p>Voy a cifrar todos vuestros datos. Pero para que esto sea más divertido voy a dejaros unos retos para que podáis pararme.</p>
-              <p style="margin-top: 8px;">Tendréis que hacer <strong class="quote-highlight-cyan" id="hacker-msg-teams">5 grupos</strong>, con el objetivo de intentar pararme con todo lo que habéis aprendido en esta charla.</p>
-              <p style="margin-top: 8px; color: #ff3355; font-weight: 700;">Mucha suerte.</p>
+          <!-- Mensaje amenazante del Anónimo (Mecanografía sincronizada con la voz) -->
+          <div class="anon-speech-box" id="anon-speech-box" onclick="skipAnonTypewriter()">
+            <div class="speech-header-row mono">
+              <span class="speech-pre">&lt; MENSAJE PARA EL INSTITUTO &gt;</span>
+              <span class="speech-skip-hint mono" id="speech-skip-hint" title="Clic para mostrar todo el texto inmediatamente">[CLIC PARA COMPLETAR]</span>
+            </div>
+            <div class="anon-typewriter-body" id="anon-typewriter-body">
+              <h2 class="speech-quote" id="anon-quote-text"></h2>
+              <div class="speech-desc mono" id="anon-speech-desc"></div>
             </div>
           </div>
 

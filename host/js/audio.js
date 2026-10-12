@@ -151,6 +151,10 @@ function playSirenAlarm() {
 
 // 1.3 Voz distorsionada del Anónimo / IA
 function playAIVoice() {
+  if (typeof startInitialHackTypewriter === 'function') {
+    startInitialHackTypewriter();
+    return;
+  }
   initAudio();
 
   // 1. Generador de graves misteriosos y zumbido de fondo

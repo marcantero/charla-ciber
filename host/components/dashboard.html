@@ -10,23 +10,39 @@
           <h2 class="hud-title">PANEL DE CONTROL — ESTADO DE LOS EQUIPOS</h2>
         </div>
 
-        <!-- Indicador de Amenaza Global del Instituto -->
-        <div class="hud-threat-widget">
+        <!-- Indicador de Amenaza Global del Instituto (Barra de Vida del Hacker / Cifrado) -->
+        <div class="hud-threat-widget" id="hud-threat-widget">
           <div class="threat-meta mono">
-            <span class="threat-label">AMENAZA DE CIFRADO DEL INSTITUTO:</span>
-            <span class="threat-pct text-red mono" id="global-threat-pct">100%</span>
+            <div class="threat-title-wrap">
+              <span class="threat-pulse-badge"></span>
+              <span class="threat-label">VIDA DEL HACKER // AMENAZA DE CIFRADO:</span>
+            </div>
+            <div class="threat-val-wrap">
+              <span class="threat-pct text-red mono" id="global-threat-pct">100%</span>
+            </div>
           </div>
-          <div class="threat-track">
-            <div class="threat-fill" id="global-threat-fill"></div>
+          <div class="threat-track" title="Integridad del Cifrado del Hacker">
+            <div class="threat-track-ticks">
+              <span class="threat-tick tick-75" style="left: 25%;"><i></i></span>
+              <span class="threat-tick tick-50" style="left: 50%;"><i></i></span>
+              <span class="threat-tick tick-25" style="left: 75%;"><i></i></span>
+            </div>
+            <div class="threat-fill" id="global-threat-fill">
+              <div class="threat-fill-stripes"></div>
+              <div class="threat-fill-head"></div>
+            </div>
           </div>
         </div>
 
         <div class="hud-meta mono">
-          <!-- Widget de Cuenta Atrás Configurable (No pausible) -->
+          <!-- Widget de Cuenta Atrás Protagonista -->
           <div class="hud-countdown-widget" id="hud-countdown-widget" title="Tiempo restante para completar la misión">
-            <span class="countdown-icon">⏳</span>
-            <div class="countdown-body">
+            <div class="countdown-badge-row">
+              <span class="countdown-live-dot"></span>
               <span class="countdown-label">TIEMPO RESTANTE</span>
+            </div>
+            <div class="countdown-display-row">
+              <span class="countdown-icon" aria-hidden="true">⏳</span>
               <span class="countdown-digits" id="dash-countdown-digits">--:--</span>
             </div>
           </div>

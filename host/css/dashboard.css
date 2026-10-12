@@ -40,35 +40,161 @@
   text-transform: uppercase;
 }
 
-/* Widget de Amenaza Global */
+/* ═══════ WIDGET DE AMENAZA GLOBAL (BARRA DE VIDA DEL BOSS / CIFRADO) ═══════ */
 .hud-threat-widget {
-  flex: 1;
-  max-width: 440px;
+  flex: 1.35;
+  max-width: 580px;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  background: linear-gradient(180deg, rgba(22, 7, 16, 0.9) 0%, rgba(10, 3, 8, 0.96) 100%);
+  border: 1.5px solid rgba(255, 0, 60, 0.45);
+  border-radius: 4px;
+  padding: 9px 18px 11px;
+  box-shadow: 0 0 25px rgba(255, 0, 60, 0.18), inset 0 0 16px rgba(255, 0, 60, 0.08);
+  position: relative;
+  transition: all 0.35s ease;
 }
+
 .threat-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 0.74rem;
-  letter-spacing: 0.08em;
+  align-items: center;
+  gap: 12px;
 }
-.threat-label { color: var(--white-muted); }
+
+.threat-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.threat-pulse-badge {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff003c;
+  box-shadow: 0 0 10px #ff003c;
+  animation: pulseDot 1s infinite;
+  flex-shrink: 0;
+}
+
+.threat-label {
+  color: #ffb0bf;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 8px rgba(255, 0, 60, 0.5);
+}
+
+.threat-val-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.threat-pct {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.threat-pct.text-red {
+  color: #ff1744;
+  text-shadow: 0 0 16px rgba(255, 23, 68, 0.9), 0 0 30px rgba(255, 0, 60, 0.4);
+}
+
+.threat-pct.text-amber {
+  color: #ffb000;
+  text-shadow: 0 0 16px rgba(255, 176, 0, 0.9), 0 0 30px rgba(255, 176, 0, 0.4);
+}
+
+.threat-pct.text-green {
+  color: #00ff66;
+  text-shadow: 0 0 16px rgba(0, 255, 102, 0.9), 0 0 30px rgba(0, 255, 102, 0.4);
+}
+
+/* Riel y Barra de Salud */
 .threat-track {
   width: 100%;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 0, 60, 0.3);
+  height: 22px;
+  background: rgba(4, 1, 3, 0.95);
+  border: 1.5px solid rgba(255, 0, 60, 0.6);
+  border-radius: 3px;
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 10px rgba(255, 0, 60, 0.15);
 }
+
+.threat-track-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.threat-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.threat-tick i {
+  display: block;
+  width: 1px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+}
+
 .threat-fill {
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, #ff003c, #ff3355);
-  box-shadow: 0 0 10px var(--red-glow);
-  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s ease;
+  background: linear-gradient(90deg, #ff003c 0%, #ff1744 50%, #ff3355 100%);
+  box-shadow: 0 0 16px var(--red-glow), inset 0 0 8px rgba(255, 255, 255, 0.3);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s ease, box-shadow 0.6s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.threat-fill-stripes {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 8px,
+    rgba(255, 255, 255, 0.15) 8px,
+    rgba(255, 255, 255, 0.15) 16px
+  );
+  animation: threatStripesMove 1.6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes threatStripesMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 23px 0; }
+}
+
+.threat-fill-head {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #ffffff;
+  box-shadow: 0 0 12px #ffffff, 0 0 6px #ff3355;
+  pointer-events: none;
 }
 
 .hud-meta {
@@ -77,65 +203,123 @@
   gap: 16px;
 }
 
-/* ═══════ WIDGET DE CUENTA ATRÁS ═══════ */
+/* ═══════ WIDGET DE CUENTA ATRÁS PROTAGONISTA ═══════ */
 .hud-countdown-widget {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(18, 9, 16, 0.9);
-  border: 1px solid rgba(255, 0, 60, 0.35);
-  padding: 4px 12px;
-  box-shadow: 0 0 12px rgba(255, 0, 60, 0.15);
-  transition: all 0.3s ease;
-}
-.hud-countdown-widget.warning {
-  border-color: rgba(255, 176, 0, 0.8);
-  box-shadow: 0 0 16px rgba(255, 176, 0, 0.3);
-}
-.hud-countdown-widget.urgent {
-  border-color: var(--red);
-  background: rgba(255, 0, 60, 0.15);
-  box-shadow: 0 0 20px rgba(255, 0, 60, 0.4);
-  animation: countdownPulse 1s infinite alternate;
-}
-@keyframes countdownPulse {
-  0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 0, 60, 0.3); }
-  100% { transform: scale(1.03); box-shadow: 0 0 25px rgba(255, 0, 60, 0.7); }
-}
-.hud-countdown-widget.paused {
-  opacity: 0.65;
-  filter: grayscale(0.5);
-}
-.countdown-icon {
-  font-size: 0.95rem;
-}
-.countdown-body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
+  justify-content: center;
+  gap: 3px;
+  background: linear-gradient(180deg, rgba(8, 22, 30, 0.95) 0%, rgba(3, 11, 16, 0.98) 100%);
+  border: 1.5px solid rgba(0, 229, 255, 0.55);
+  padding: 8px 18px 9px;
+  border-radius: 4px;
+  min-width: 175px;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.22), inset 0 0 14px rgba(0, 229, 255, 0.08);
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
 }
+
+.countdown-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.countdown-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: pulseDot 1.2s infinite;
+  flex-shrink: 0;
+}
+
 .countdown-label {
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  color: var(--white-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: rgba(0, 229, 255, 0.85);
+  text-transform: uppercase;
+  line-height: 1;
 }
+
+.countdown-display-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.countdown-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.65));
+  flex-shrink: 0;
+}
+
 .countdown-digits {
   font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-size: 2.15rem;
+  font-weight: 900;
   letter-spacing: 0.08em;
-  color: var(--cyan);
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
-  line-height: 1.1;
+  color: #00f0ff;
+  text-shadow: 0 0 14px rgba(0, 240, 255, 0.85), 0 0 30px rgba(0, 240, 255, 0.4);
+  line-height: 1;
+}
+
+/* Estado de Advertencia (<= 5 min) */
+.hud-countdown-widget.warning {
+  border-color: rgba(255, 176, 0, 0.85);
+  background: linear-gradient(180deg, rgba(28, 20, 8, 0.95) 0%, rgba(18, 12, 4, 0.98) 100%);
+  box-shadow: 0 0 30px rgba(255, 176, 0, 0.35), inset 0 0 15px rgba(255, 176, 0, 0.12);
+}
+.hud-countdown-widget.warning .countdown-live-dot {
+  background: var(--amber);
+  box-shadow: 0 0 8px var(--amber);
+}
+.hud-countdown-widget.warning .countdown-label {
+  color: rgba(255, 176, 0, 0.95);
+}
+.hud-countdown-widget.warning .countdown-icon {
+  filter: drop-shadow(0 0 8px rgba(255, 176, 0, 0.8));
 }
 .hud-countdown-widget.warning .countdown-digits {
-  color: var(--amber);
-  text-shadow: 0 0 10px rgba(255, 176, 0, 0.6);
+  color: #ffb000;
+  text-shadow: 0 0 15px rgba(255, 176, 0, 0.85), 0 0 30px rgba(255, 176, 0, 0.4);
+}
+
+/* Estado Crítico / Alarma (<= 1 min) */
+.hud-countdown-widget.urgent {
+  border-color: #ff003c;
+  background: linear-gradient(180deg, rgba(32, 6, 12, 0.95) 0%, rgba(20, 3, 7, 0.98) 100%);
+  box-shadow: 0 0 35px rgba(255, 0, 60, 0.5), inset 0 0 20px rgba(255, 0, 60, 0.2);
+  animation: countdownUrgentAlarm 0.8s infinite alternate;
+}
+@keyframes countdownUrgentAlarm {
+  0% { transform: scale(1); box-shadow: 0 0 25px rgba(255, 0, 60, 0.4); }
+  100% { transform: scale(1.03); box-shadow: 0 0 45px rgba(255, 0, 60, 0.85); }
+}
+.hud-countdown-widget.urgent .countdown-live-dot {
+  background: #ff003c;
+  box-shadow: 0 0 10px #ff003c;
+}
+.hud-countdown-widget.urgent .countdown-label {
+  color: #ff3355;
+}
+.hud-countdown-widget.urgent .countdown-icon {
+  filter: drop-shadow(0 0 8px #ff003c);
 }
 .hud-countdown-widget.urgent .countdown-digits {
-  color: var(--red);
-  text-shadow: 0 0 12px var(--red-glow);
+  color: #ff003c;
+  text-shadow: 0 0 18px rgba(255, 0, 60, 0.95), 0 0 35px rgba(255, 0, 60, 0.6);
+}
+
+.hud-countdown-widget.paused {
+  opacity: 0.65;
+  filter: grayscale(0.5);
 }
 .countdown-ctrl-btn {
   background: rgba(255, 255, 255, 0.06);
@@ -331,27 +515,31 @@
   letter-spacing: 0.05em;
 }
 .has-many-teams .hud-threat-widget {
-  max-width: 380px;
-  gap: 4px;
+  max-width: 480px;
+  padding: 8px 14px 10px;
+  gap: 6px;
 }
 .has-many-teams .threat-meta {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
+}
+.has-many-teams .threat-pct {
+  font-size: 1.35rem;
 }
 .has-many-teams .threat-track {
-  height: 8px;
+  height: 18px;
 }
 .has-many-teams .hud-live-clock {
   font-size: 1rem;
 }
 .has-many-teams .hud-countdown-widget {
-  padding: 3px 8px;
-  gap: 6px;
+  padding: 6px 14px 7px;
+  min-width: 155px;
 }
 .has-many-teams .countdown-digits {
-  font-size: 1rem;
+  font-size: 1.75rem;
 }
 .has-many-teams .countdown-label {
-  font-size: 0.55rem;
+  font-size: 0.6rem;
 }
 .has-many-teams .countdown-ctrl-btn {
   width: 20px;

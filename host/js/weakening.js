@@ -11,6 +11,34 @@ let hackerMilestones = {
 let currentWeakeningStage = 0;
 let testStageCounter = 1;
 
+let countdownAnimFrame = null;
+
+function animateNumberCountdown(el, fromVal, toVal, duration = 1000) {
+  if (!el) return;
+  const startTime = performance.now();
+  el.classList.add('pct-animating');
+
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(1, elapsed / duration);
+    // Ease-out cúbico para desaceleración dramática hacia el valor final
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(fromVal + (toVal - fromVal) * eased);
+    el.textContent = `${current}%`;
+
+    if (progress < 1) {
+      countdownAnimFrame = requestAnimationFrame(step);
+    } else {
+      el.textContent = `${toVal}%`;
+      el.classList.remove('pct-animating');
+      el.classList.add('pct-hit-punch');
+      setTimeout(() => el.classList.remove('pct-hit-punch'), 700);
+    }
+  }
+  if (countdownAnimFrame) cancelAnimationFrame(countdownAnimFrame);
+  countdownAnimFrame = requestAnimationFrame(step);
+}
+
 function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
   const overlay = document.getElementById('hacker-weakening-overlay');
   const card = document.getElementById('weakening-card');
@@ -19,6 +47,18 @@ function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
   const valEl = document.getElementById('weakening-integrity-val');
   const fillEl = document.getElementById('weakening-meter-fill');
   const timerFill = document.getElementById('weakening-timer-fill');
+
+  // Elementos de protagonismo del porcentaje
+  const headerPctEl = document.getElementById('weakening-header-pct');
+  const bannerPctEl = document.getElementById('weakening-banner-pct');
+  const bannerFillEl = document.getElementById('weakening-banner-fill');
+  const damageStatEl = document.getElementById('weakening-damage-stat');
+  const vulnStatEl = document.getElementById('weakening-vuln-stat');
+  const phaseNumEl = document.getElementById('weakening-phase-num');
+  const threatKickerEl = document.getElementById('weakening-threat-kicker');
+  const subBadgeEl = document.getElementById('weakening-integrity-sub-badge');
+  const defStatEl = document.getElementById('weakening-integrity-def-stat');
+  const transChipEl = document.getElementById('weakening-trans-chip');
 
   if (!overlay || !card) return;
 
@@ -34,25 +74,72 @@ function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
   let audioFile = customAudioFile;
   let title = '';
   let integrityPct = 100;
+  let startPct = 100;
+  let damageText = '';
+  let vulnText = '';
+  let phaseText = '';
+  let kickerText = '';
+  let subBadgeText = '';
+  let defText = '';
 
   if (stage === 1) {
     phrase = phrase || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito1 && appConfig.mensajesDebilitamiento.hito1.frase) || "Sois más buenos de lo que pensaba, pero esto no ha terminado aún";
     audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito1 && appConfig.mensajesDebilitamiento.hito1.audio) || "audio-hacker-1.mp3";
-    title = "[!] ANOMALÍA EN EL SERVIDOR // CIFRADO AGRIETADO [75%]";
+    title = "[!] ANOMALÍA EN EL SERVIDOR // CIFRADO AGRIETADO";
     integrityPct = 75;
+    startPct = 100;
+    damageText = "-25% DAÑO INFLIGIDO";
+    vulnText = "DEFENSA AGRIETADA (75% RESTANTE)";
+    phaseText = "1 / 3";
+    kickerText = "ESCUDOS COMPROMETIDOS // ATAQUE DE LOS EQUIPOS";
+    subBadgeText = "⚡ ESTADO: AGRIETADO";
+    defText = "-25% DEF";
   } else if (stage === 2) {
     phrase = phrase || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito2 && appConfig.mensajesDebilitamiento.hito2.frase) || "Parece que estabais escuchando en la charla. JAJAJA (risa malvada)";
     audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito2 && appConfig.mensajesDebilitamiento.hito2.audio) || "audio-hacker-2.mp3";
-    title = "[!!] ALERTA CRÍTICA: FISURA MASIVA EN EL NÚCLEO [40%]";
+    title = "[!!] ALERTA CRÍTICA: FISURA MASIVA EN EL NÚCLEO";
     integrityPct = 40;
+    startPct = 75;
+    damageText = "-60% DAÑO TOTAL INFLIGIDO";
+    vulnText = "¡COLAPSO INMINENTE! (40% RESTANTE)";
+    phaseText = "2 / 3";
+    kickerText = "SISTEMA ENEMIGO EN CRISIS // ALERTA CRÍTICA";
+    subBadgeText = "⚠️ ESTADO: CRÍTICO";
+    defText = "-60% DEF";
   }
 
   // Actualizar apariencia
   card.className = `weakening-card tech-frame stage-weakening-${stage}`;
   if (titleEl) titleEl.textContent = title;
   if (quoteEl) quoteEl.textContent = phrase;
-  if (valEl) valEl.textContent = `${integrityPct}%`;
-  if (fillEl) fillEl.style.width = `${integrityPct}%`;
+  if (headerPctEl) headerPctEl.textContent = `${integrityPct}%`;
+  if (damageStatEl) damageStatEl.textContent = damageText;
+  if (vulnStatEl) vulnStatEl.textContent = vulnText;
+  if (phaseNumEl) phaseNumEl.textContent = phaseText;
+  if (threatKickerEl) threatKickerEl.textContent = kickerText;
+  if (subBadgeEl) subBadgeEl.textContent = subBadgeText;
+  if (defStatEl) defStatEl.textContent = defText;
+  if (transChipEl) transChipEl.textContent = `[ AMENAZA REDUCIDA AL ${integrityPct}% ]`;
+
+  // Animación del medidor: inicia en el porcentaje previo y desciende con dramatismo
+  if (fillEl) {
+    fillEl.style.transition = 'none';
+    fillEl.style.width = `${startPct}%`;
+    void fillEl.offsetWidth;
+    fillEl.style.transition = 'width 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+    fillEl.style.width = `${integrityPct}%`;
+  }
+  if (bannerFillEl) {
+    bannerFillEl.style.transition = 'none';
+    bannerFillEl.style.width = `${startPct}%`;
+    void bannerFillEl.offsetWidth;
+    bannerFillEl.style.transition = 'width 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+    bannerFillEl.style.width = `${integrityPct}%`;
+  }
+
+  // Conteo numérico dinámico visible para la clase
+  if (bannerPctEl) animateNumberCountdown(bannerPctEl, startPct, integrityPct, 1100);
+  if (valEl) animateNumberCountdown(valEl, startPct, integrityPct, 1100);
 
   const timerDesc = document.getElementById('weakening-timer-desc');
   if (timerDesc) timerDesc.textContent = 'SE CERRARÁ AUTOMÁTICAMENTE';
@@ -63,7 +150,7 @@ function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
   playHackerWeakeningAudio(audioFile, phrase, stage);
 
   // Registrar en terminal de eventos
-  logTerminalEvent(`[!] INTERCEPTACIÓN: Anonymous se debilita (Fase ${stage}/3). Mensaje transmitido al aula.`, 'log-alert');
+  logTerminalEvent(`[!] INTERCEPTACIÓN: Anonymous se debilita (Fase ${stage}/3 // Queda ${integrityPct}%). Mensaje transmitido al aula.`, 'log-alert');
 
   // Barra de progreso y temporizador
   if (weakeningTimerId) clearTimeout(weakeningTimerId);
