@@ -20,7 +20,7 @@
     },
     "hito3": {
       "umbral": 0,
-      "frase": "Me habéis derrotado, pero esto no va acabar así, que sepáis que volveré.",
+      "frase": "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Pensabais que resolviendo cuatro pistas ibais a recuperar vuestros archivos... Bienvenidos al mundo real. Vuestros datos... expedientes, historiales, notas y contraseñas... ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Habéis demostrado que sabéis abrir una terminal y mirar donde otros no miran. Nada mal para empezar. Pero si de verdad queréis jugar en las grandes ligas... si algún día pretendéis cazar a alguien como yo... vais a tener que aprender muchísimo más. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso. Vuestra flag final: FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}. Nos vemos en la red... analistas.",
       "audio": "hacker_derrota.mp3"
     }
   },
