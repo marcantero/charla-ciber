@@ -37,6 +37,27 @@ function tryPlayCandidates(candidates, onFail, onEnd) {
   next();
 }
 
+// Helper sincronizado: reproduce y devuelve el elemento Audio (o null si falla) para sincronización precisa
+function tryPlayAudioWithSync(candidates, onStart, onFail, onEnd) {
+  let idx = 0;
+  function next() {
+    if (idx >= candidates.length) {
+      if (onFail) onFail();
+      return;
+    }
+    const path = candidates[idx++];
+    const sound = new Audio(path);
+    sound.play().then(() => {
+      console.log(`[AUDIO SYNC] Reproduciendo archivo sincronizado: ${path}`);
+      if (onStart) onStart(sound);
+      if (onEnd) sound.onended = () => onEnd(sound);
+    }).catch(() => {
+      next();
+    });
+  }
+  next();
+}
+
 // 1.1 Glitch de interferencia eléctrica inicial
 function playHackGlitchSound() {
   initAudio();

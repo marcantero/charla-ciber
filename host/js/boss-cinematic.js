@@ -315,68 +315,19 @@ function triggerCinematicCameraShake() {
 
 // ================================================================
 //  MECANOGRAFÍA DEL MANIFIESTO ENCRIPTADO Y REVELACIÓN DE FLAG
+//  Sincronización milimétrica con la duración real del audio del hacker
 // ================================================================
+
+let bossCurrentAudio = null;
 
 function typewriterManifesto() {
   const container = document.getElementById('boss-typewriter-container');
   if (!container) return;
   container.innerHTML = '';
 
-  let pIndex = 0;
-
-  function typeNextParagraph() {
-    if (pIndex >= MANIFESTO_PARAGRAPHS.length) {
-      // Al terminar el manifiesto, revelar la FLAG de forma épica
-      setTimeout(revealEpicFlag, 800);
-      return;
-    }
-
-    const item = MANIFESTO_PARAGRAPHS[pIndex];
-    pIndex++;
-
-    const p = document.createElement('div');
-    p.className = `cinematic-type-line ${item.cls}`;
-
-    const prefixSpan = document.createElement('span');
-    prefixSpan.className = 'type-prefix';
-    prefixSpan.textContent = item.prefix;
-    p.appendChild(prefixSpan);
-
-    const textSpan = document.createElement('span');
-    textSpan.className = 'type-body';
-    p.appendChild(textSpan);
-
-    container.appendChild(p);
-    container.scrollTop = container.scrollHeight;
-
-    // Efecto de tecleo de caracteres
-    let charIndex = 0;
-    const text = item.text;
-    const typingInterval = setInterval(() => {
-      if (!bossCinematicActive) {
-        clearInterval(typingInterval);
-        return;
-      }
-      if (charIndex < text.length) {
-        textSpan.textContent += text[charIndex++];
-        if (charIndex % 3 === 0 && !isMuted) {
-          playKeyClick();
-        }
-      } else {
-        clearInterval(typingInterval);
-        // Pausa entre párrafos para lectura orgánica
-        setTimeout(typeNextParagraph, item.cls.includes('alert-highlight') ? 950 : 420);
-      }
-      container.scrollTop = container.scrollHeight;
-    }, 18);
-  }
-
-  typeNextParagraph();
-
-  // Audio o voz de locución del hacker si está disponible
   const phrase = (appConfig && appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.frase) ||
     "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Vuestros datos ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso.";
-  
+
   const audioCfg = (appConfig && appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.audio) || 'audio-hacker-3.mp3';
   const candidates = [
     `/audio/hacker/${audioCfg}`,
@@ -386,15 +337,125 @@ function typewriterManifesto() {
     '/audio/hacker/hacker_derrota.mp3',
     '/audio/hacker_derrota.mp3'
   ];
-  if (typeof tryPlayCandidates === 'function') {
-    tryPlayCandidates(candidates, () => {
-      speakHackerPhrase(phrase, 3);
+
+  // Iniciar audio con helper sincronizado
+  let audioStarted = false;
+
+  function onAudioStarted(soundInstance) {
+    audioStarted = true;
+    bossCurrentAudio = soundInstance;
+
+    // Obtener duración (o esperar evento loadedmetadata si aún no está lista)
+    if (soundInstance.duration && !isNaN(soundInstance.duration) && soundInstance.duration > 5) {
+      startSynchronizedTypewriting(soundInstance.duration);
+    } else {
+      soundInstance.addEventListener('loadedmetadata', () => {
+        const dur = (soundInstance.duration && !isNaN(soundInstance.duration)) ? soundInstance.duration : 82;
+        startSynchronizedTypewriting(dur);
+      }, { once: true });
+
+      // Fallback de seguridad si loadedmetadata tarda
+      setTimeout(() => {
+        if (!typewritingStarted) {
+          const dur = (soundInstance.duration && !isNaN(soundInstance.duration)) ? soundInstance.duration : 82;
+          startSynchronizedTypewriting(dur);
+        }
+      }, 400);
+    }
+  }
+
+  function onAudioFailed() {
+    console.warn('[BOSS SYNC] Audio no disponible o bloqueado. Usando síntesis de voz / temporización estimada.');
+    // Duración estimada para locución hablada (~45 segundos para el manifiesto completo)
+    startSynchronizedTypewriting(45);
+    speakHackerPhrase(phrase, 3);
+  }
+
+  let typewritingStarted = false;
+
+  function startSynchronizedTypewriting(totalAudioDurationSeconds) {
+    if (typewritingStarted || !bossCinematicActive) return;
+    typewritingStarted = true;
+
+    // Calcular distribución de tiempo proporcional a los caracteres de cada párrafo
+    const totalChars = MANIFESTO_PARAGRAPHS.reduce((sum, p) => sum + p.text.length, 0);
+    // Reservamos 3.5s antes del final del audio para la revelación y pausa final
+    const availableTypingDurationMs = Math.max((totalAudioDurationSeconds - 3.5) * 1000, 20000);
+
+    // Tiempo promedio por caracter adaptado dinámicamente al audio
+    const msPerChar = Math.max(availableTypingDurationMs / totalChars, 14);
+
+    console.log(`[BOSS SYNC] Duración audio: ${totalAudioDurationSeconds.toFixed(1)}s. ms/carácter calculado: ${msPerChar.toFixed(2)}ms`);
+
+    let pIndex = 0;
+
+    function typeNextParagraph() {
+      if (!bossCinematicActive) return;
+
+      if (pIndex >= MANIFESTO_PARAGRAPHS.length) {
+        // Al terminar el manifiesto, revelar la FLAG de forma épica
+        setTimeout(revealEpicFlag, 800);
+        return;
+      }
+
+      const item = MANIFESTO_PARAGRAPHS[pIndex];
+      pIndex++;
+
+      const p = document.createElement('div');
+      p.className = `cinematic-type-line ${item.cls}`;
+
+      const prefixSpan = document.createElement('span');
+      prefixSpan.className = 'type-prefix';
+      prefixSpan.textContent = item.prefix;
+      p.appendChild(prefixSpan);
+
+      const textSpan = document.createElement('span');
+      textSpan.className = 'type-body';
+      p.appendChild(textSpan);
+
+      container.appendChild(p);
+      container.scrollTop = container.scrollHeight;
+
+      // Mecanografiar caracter por caracter adaptado
+      let charIndex = 0;
+      const text = item.text;
+      const pInterval = setInterval(() => {
+        if (!bossCinematicActive) {
+          clearInterval(pInterval);
+          return;
+        }
+
+        if (charIndex < text.length) {
+          textSpan.textContent += text[charIndex++];
+          if (charIndex % 4 === 0 && !isMuted) {
+            playKeyClick();
+          }
+        } else {
+          clearInterval(pInterval);
+          // Pausa proporcional entre párrafos
+          const pauseBetween = item.cls.includes('alert-highlight') ? Math.max(msPerChar * 14, 700) : Math.max(msPerChar * 8, 400);
+          setTimeout(typeNextParagraph, pauseBetween);
+        }
+        container.scrollTop = container.scrollHeight;
+      }, msPerChar);
+    }
+
+    typeNextParagraph();
+  }
+
+  // Ejecutar reproductor con callbacks sincronizados
+  if (typeof tryPlayAudioWithSync === 'function') {
+    tryPlayAudioWithSync(candidates, onAudioStarted, onAudioFailed, () => {
+      // Al terminar el audio, asegurar que la flag esté revelada
+      revealEpicFlag();
     });
+  } else if (typeof tryPlayCandidates === 'function') {
+    tryPlayCandidates(candidates, onAudioFailed, () => {
+      revealEpicFlag();
+    });
+    startSynchronizedTypewriting(82);
   } else {
-    const customAudio = new Audio(candidates[0]);
-    customAudio.play().catch(() => {
-      speakHackerPhrase(phrase, 3);
-    });
+    onAudioFailed();
   }
 }
 
@@ -402,8 +463,17 @@ function revealEpicFlag() {
   const flagBox = document.getElementById('boss-flag-reveal-box');
   if (!flagBox) return;
 
+  // Si ya está visible, no duplicar efectos
+  if (!flagBox.classList.contains('hidden')) return;
+
   flagBox.classList.remove('hidden');
   flagBox.classList.add('flag-card-materialize');
+
+  // Auto-scroll para que el contenedor siempre muestre la flag completa
+  const viewport = document.getElementById('boss-cinematic-viewport');
+  if (viewport) {
+    viewport.scrollTop = viewport.scrollHeight;
+  }
 
   // Fanfarria triunfal sintética
   if (typeof playVictoryFanfare === 'function') {
@@ -430,6 +500,13 @@ function copyBossFlag(btn) {
 
 function closeBossCinematic() {
   bossCinematicActive = false;
+  if (bossCurrentAudio) {
+    try {
+      bossCurrentAudio.pause();
+      bossCurrentAudio.currentTime = 0;
+    } catch (e) {}
+    bossCurrentAudio = null;
+  }
   const cinematic = document.getElementById('boss-defeat-cinematic');
   if (cinematic) cinematic.classList.add('hidden');
   if (bossCanvasAnimId) cancelAnimationFrame(bossCanvasAnimId);

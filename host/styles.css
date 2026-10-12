@@ -3307,20 +3307,21 @@ body.hacked-mode .deco {
 }
 
 .darknet-terminal-body {
-  padding: 22px 28px;
-  min-height: 250px;
-  max-height: 330px;
+  padding: 18px 24px;
+  min-height: 220px;
+  max-height: 280px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  font-size: 1.02rem;
-  line-height: 1.65;
+  gap: 10px;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  scroll-behavior: smooth;
 }
 
 .cinematic-type-line {
   display: block;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   word-break: break-word;
 }
 
