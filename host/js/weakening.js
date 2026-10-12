@@ -24,6 +24,12 @@ function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
 
   currentWeakeningStage = stage;
 
+  // Si se alcanza el hito 3 (derrota final / 0% amenaza), lanzar la cinemática épica
+  if (stage === 3 && typeof triggerBossCinematic === 'function') {
+    triggerBossCinematic();
+    return;
+  }
+
   let phrase = customPhrase;
   let audioFile = customAudioFile;
   let title = '';
@@ -39,44 +45,22 @@ function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
     audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito2 && appConfig.mensajesDebilitamiento.hito2.audio) || "hacker_debil2.mp3";
     title = "[!!] ALERTA CRÍTICA: FISURA MASIVA EN EL NÚCLEO [40%]";
     integrityPct = 40;
-  } else if (stage === 3) {
-    phrase = phrase || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.frase) || "Me habéis derrotado, pero esto no va acabar así, que sepáis que volveré.";
-    audioFile = audioFile || (appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.audio) || "hacker_derrota.mp3";
-    title = "[✓✓] ¡VICTORIA TOTAL! SISTEMA DEL INSTITUTO RESTAURADO [0%]";
-    integrityPct = 0;
   }
 
   // Actualizar apariencia
   card.className = `weakening-card tech-frame stage-weakening-${stage}`;
   if (titleEl) titleEl.textContent = title;
   if (quoteEl) quoteEl.textContent = phrase;
-  if (valEl) valEl.textContent = integrityPct === 0 ? '0% (NEUTRALIZADO)' : `${integrityPct}%`;
+  if (valEl) valEl.textContent = `${integrityPct}%`;
   if (fillEl) fillEl.style.width = `${integrityPct}%`;
 
   const twistPanel = document.getElementById('boss-twist-panel');
   const dismissBtn = document.getElementById('boss-defeat-dismiss-btn');
   const timerDesc = document.getElementById('weakening-timer-desc');
 
-  if (stage === 3) {
-    // Revelar panel épico de la carta del hacker y la FLAG
-    if (twistPanel) twistPanel.classList.remove('hidden');
-    if (dismissBtn) dismissBtn.classList.remove('hidden');
-    if (timerDesc) timerDesc.textContent = 'MISIÓN CONCLUIDA // MANIFIESTO EN PANTALLA';
-
-    // Desencadenar terremoto visual y flash crítico
-    document.body.classList.remove('epic-boss-defeat-shake');
-    void document.body.offsetWidth;
-    document.body.classList.add('epic-boss-defeat-shake');
-
-    const flash = document.createElement('div');
-    flash.className = 'boss-critical-flash';
-    document.body.appendChild(flash);
-    setTimeout(() => flash.remove(), 2000);
-  } else {
-    if (twistPanel) twistPanel.classList.add('hidden');
-    if (dismissBtn) dismissBtn.classList.add('hidden');
-    if (timerDesc) timerDesc.textContent = 'SE CERRARÁ AUTOMÁTICAMENTE';
-  }
+  if (twistPanel) twistPanel.classList.add('hidden');
+  if (dismissBtn) dismissBtn.classList.add('hidden');
+  if (timerDesc) timerDesc.textContent = 'SE CERRARÁ AUTOMÁTICAMENTE';
 
   overlay.classList.remove('hidden');
 
@@ -84,11 +68,11 @@ function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
   playHackerWeakeningAudio(audioFile, phrase, stage);
 
   // Registrar en terminal de eventos
-  logTerminalEvent(`[!] INTERCEPTACIÓN: Anonymous se debilita (Fase ${stage}/3). Mensaje transmitido al aula.`, stage === 3 ? 'log-advance' : 'log-alert');
+  logTerminalEvent(`[!] INTERCEPTACIÓN: Anonymous se debilita (Fase ${stage}/3). Mensaje transmitido al aula.`, 'log-alert');
 
-  // Barra de progreso y temporizador (en la fase 3 final se deja tiempo suficiente o manual)
+  // Barra de progreso y temporizador
   if (weakeningTimerId) clearTimeout(weakeningTimerId);
-  const autoCloseDuration = stage === 3 ? 45000 : 7500; // 45s en etapa 3 para leer el manifiesto y la flag
+  const autoCloseDuration = 7500;
 
   if (timerFill) {
     timerFill.style.transition = 'none';
@@ -114,7 +98,11 @@ function closeWeakeningOverlay() {
 
 function previewWeakeningSequence(specificStage) {
   const stage = specificStage || testStageCounter;
-  triggerHackerWeakening(stage);
+  if (stage === 3 && typeof triggerBossCinematic === 'function') {
+    triggerBossCinematic();
+  } else {
+    triggerHackerWeakening(stage);
+  }
   testStageCounter = (testStageCounter % 3) + 1;
 }
 
@@ -137,12 +125,16 @@ function checkThreatMilestones(threatRemaining, totalSolved) {
     return;
   }
 
-  // Hito 3: amenaza reducida al 0% (victoria total)
+  // Hito 3: amenaza reducida al 0% (victoria total -> Cinemática Épica de Derrota)
   if (threatRemaining === 0 && !hackerMilestones.m3) {
     hackerMilestones.m1 = true;
     hackerMilestones.m2 = true;
     hackerMilestones.m3 = true;
-    triggerHackerWeakening(3);
+    if (typeof triggerBossCinematic === 'function') {
+      triggerBossCinematic();
+    } else {
+      triggerHackerWeakening(3);
+    }
     return;
   }
 }

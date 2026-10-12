@@ -504,6 +504,119 @@
     </div>
   </div>
 
+  <!-- ============================================================== -->
+  <!-- CINEMÁTICA ÉPICA DE DERROTA DEL BOSS FINAL                     -->
+  <!-- ============================================================== -->
+  <div id="boss-defeat-cinematic" class="boss-defeat-cinematic hidden">
+    <!-- Capa de ruido analógico y estática CRT -->
+    <div class="boss-defeat-crt"></div>
+    <div class="boss-defeat-vignette"></div>
+    <div class="boss-defeat-particles" id="boss-particles-layer"></div>
+
+    <div class="boss-cinematic-container">
+      <!-- Fase 1 de la cinemática: Alarma de colapso y máscara desintegrándose -->
+      <div id="boss-cinematic-stage1" class="boss-cinematic-stage">
+        <div class="boss-cinematic-banner mono">
+          <span class="boss-blink-warning">🚨</span>
+          <span class="glitch-text" data-text="COLAPSO CRÍTICO DEL SISTEMA HOSTIL">COLAPSO CRÍTICO DEL SISTEMA HOSTIL</span>
+          <span class="boss-blink-warning">🚨</span>
+        </div>
+
+        <div class="boss-mask-shatter-wrapper">
+          <div class="boss-shatter-shockwave"></div>
+          <svg class="boss-shatter-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="shatter-piece p-hood" d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#0c050a" stroke="#ff003c" stroke-width="2.5"/>
+            <path class="shatter-piece p-face" d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff003c" stroke-width="2.5"/>
+            <path class="shatter-piece p-brow" d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+            <ellipse cx="92" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+            <circle cx="92" cy="118" r="4" fill="#ff003c" class="shatter-eye"/>
+            <ellipse cx="148" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+            <circle cx="148" cy="118" r="4" fill="#ff003c" class="shatter-eye"/>
+            <path class="shatter-piece p-mustache" d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
+            <path class="shatter-piece p-smile" d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path class="shatter-piece p-beard" d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
+          </svg>
+          <div class="boss-glitch-slice slice-top"></div>
+          <div class="boss-glitch-slice slice-mid"></div>
+          <div class="boss-glitch-slice slice-bot"></div>
+        </div>
+
+        <div class="boss-defeat-title-box">
+          <div class="boss-defeat-subtitle mono">[ EXPULSIÓN DE EMERGENCIA // INTEGRIDAD DEL INTRUSO: 0% ]</div>
+          <h1 class="boss-defeat-main-title glitch-text" data-text="¡BOSS NEUTRALIZADO! ¡BOSS NEUTRALIZADO!">¡BOSS NEUTRALIZADO!</h1>
+          <div class="boss-status-bars-row mono">
+            <div class="boss-bar-item">
+              <span>FIREWALL INSTITUTO:</span>
+              <span class="text-green">RESTABLECIDO [100%]</span>
+            </div>
+            <div class="boss-bar-item">
+              <span>NÚCLEO MALICIOSO:</span>
+              <span class="text-red">PURGADO</span>
+            </div>
+            <div class="boss-bar-item">
+              <span>CONEXIONES REMOTAS:</span>
+              <span class="text-green">CORTADAS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fase 2 de la cinemática: Giro dramático y transmisión del Manifiesto -->
+      <div id="boss-cinematic-stage2" class="boss-cinematic-stage hidden">
+        <!-- Notificación de transmisión forzada -->
+        <div class="boss-transmission-header mono">
+          <div class="transmission-badge"><span class="badge-dot-blink"></span> SEÑAL RESIDUAL FORZADA</div>
+          <div class="transmission-origin">ORIGEN: PROTOCOLO TOR DARKNET // CANAL DE EMERGENCIA</div>
+          <div class="transmission-status text-red">ESTADO: EXFILTRACIÓN CONSUMADA</div>
+        </div>
+
+        <!-- Terminal cinematográfica del Manifiesto -->
+        <div class="boss-terminal-card tech-frame">
+          <div class="frame-corner top-left"></div>
+          <div class="frame-corner top-right"></div>
+          <div class="frame-corner bottom-left"></div>
+          <div class="frame-corner bottom-right"></div>
+
+          <div class="boss-terminal-topbar mono">
+            <div class="term-dots">
+              <span class="term-dot red"></span>
+              <span class="term-dot yellow"></span>
+              <span class="term-dot green"></span>
+            </div>
+            <span class="term-filename">root@dark-proxy:~# cat /srv/exfiltration/MANIFIESTO_FINAL.txt</span>
+            <span class="term-time" id="cinematic-live-time">--:--:--</span>
+          </div>
+
+          <div class="boss-terminal-content mono" id="boss-typewriter-container">
+            <!-- Párrafos inyectados con efecto máquina de escribir -->
+          </div>
+        </div>
+
+        <!-- Fase 3: La FLAG Épica y el llamado a la acción -->
+        <div id="boss-flag-reveal-box" class="boss-flag-reveal-box mono hidden">
+          <div class="boss-flag-ribbon">
+            <span class="star-icon">★</span> FLAG FINAL DEL ESCAPE ROOM CAPTURADA <span class="star-icon">★</span>
+          </div>
+          <div class="boss-flag-token-wrapper">
+            <div class="boss-flag-token glitch-text" id="boss-flag-token" data-text="FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}">
+              FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}
+            </div>
+          </div>
+          <div class="boss-flag-subtitle">
+            <span>// REGLA Nº 1 DE LA CIBERSEGURIDAD: LA DEFENSA NUNCA TERMINA //</span>
+          </div>
+        </div>
+
+        <!-- Botón de salida para el ponente -->
+        <div class="boss-cinematic-footer">
+          <button class="btn-boss-close-cinematic mono" onclick="closeBossCinematic()">
+            <span>[ VOLVER AL MONITOR DEL HOST (ESC) ]</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal de confirmación para reiniciar partida -->
   <div id="reset-confirm-modal" class="reset-modal-overlay hidden">
     <div class="reset-modal-card tech-frame">
@@ -535,6 +648,7 @@
   <script src="js/presentation.js"></script>
   <script src="js/hack-sequence.js"></script>
   <script src="js/weakening.js"></script>
+  <script src="js/boss-cinematic.js"></script>
   <script src="js/teams-grid.js"></script>
   <script src="js/socket-client.js"></script>
   <script src="app.js"></script>

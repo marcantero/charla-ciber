@@ -358,3 +358,52 @@ function toggleMute() {
     window.speechSynthesis.cancel();
   }
 }
+
+// Clic mecánico de tecleo para la terminal cinematográfica
+function playKeyClick() {
+  initAudio();
+  if (!audioCtx || isMuted) return;
+  const now = audioCtx.currentTime;
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(2200 + Math.random() * 400, now);
+  osc.frequency.exponentialRampToValueAtTime(300, now + 0.025);
+
+  gain.gain.setValueAtTime(0.04, now);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.025);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now + 0.03);
+}
+
+// Fanfarria triunfal sintética para la revelación de la FLAG final
+function playVictoryFanfare() {
+  initAudio();
+  if (!audioCtx || isMuted) return;
+  const now = audioCtx.currentTime;
+
+  const notes = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5 acorde brillante
+  notes.forEach((freq, idx) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const startTime = now + idx * 0.12;
+    const dur = 1.4;
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, startTime);
+
+    gain.gain.setValueAtTime(0.001, startTime);
+    gain.gain.linearRampToValueAtTime(0.18, startTime + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + dur);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + dur + 0.1);
+  });
+}
+
