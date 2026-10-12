@@ -1,0 +1,37 @@
+  <!-- FASE 3: FORENSE -->
+  <div class="screen hidden phase-screen" id="phase-3-screen">
+    <div class="phase-header">
+      <div class="phase-badge mono">// FASE 03 / FORENSE</div>
+      <div class="phase-tool mono">exiftool + unzip</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-mission-box">
+        <div class="mission-label mono">MISIÓN</div>
+        <p class="mission-text">La IA ha escondido datos en los metadatos de una imagen.<br>Utiliza
+          <strong>exiftool</strong> para inspeccionarla y <strong>unzip</strong> si hace falta descomprimir archivos.
+        </p>
+      </div>
+      <div class="clue-box">
+        <div class="clue-label mono">// ARCHIVO SOSPECHOSO //</div>
+        <div class="clue-content">
+          <span class="clue-file mono">foto_instituto.jpg</span>
+          <span class="clue-hint mono">[pista: exiftool foto_instituto.jpg | grep Comment]</span>
+        </div>
+        <div class="exif-output mono">
+          <div class="exif-line"><span class="exif-key">File Name</span> : foto_instituto.jpg</div>
+          <div class="exif-line"><span class="exif-key">File Size</span> : 2.4 MB</div>
+          <div class="exif-line"><span class="exif-key">Camera Model</span> : HACKER_CAM_v2</div>
+          <div class="exif-line highlight-line"><span class="exif-key">Comment</span> : CÓDIGO: BETA-4491</div>
+          <div class="exif-line"><span class="exif-key">GPS Position</span> : [CIFRADO]</div>
+        </div>
+      </div>
+      <div class="answer-section">
+        <div class="answer-label mono">INTRODUCE EL CÓDIGO DE LOS METADATOS:</div>
+        <div class="answer-input-row">
+          <input class="hack-input" id="ans-3" type="text" placeholder="XXXX-YYYY" maxlength="20" autocomplete="off">
+          <button class="btn-submit" onclick="checkAnswer(3)">VERIFICAR</button>
+        </div>
+        <div class="answer-feedback" id="feedback-3"></div>
+      </div>
+    </div>
+  </div>

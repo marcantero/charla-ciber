@@ -1,0 +1,107 @@
+  <!-- ============================================================== -->
+  <!-- 1. OVERLAY DE HACKEO REPENTINO DE ANONYMOUS                   -->
+  <!-- ============================================================== -->
+  <div class="screen hidden" id="hack-takeover-screen">
+    <div class="hack-container">
+      <!-- Alerta roja parpadeante de intrusión -->
+      <div class="breach-alert-bar mono">
+        <span class="status-dot blink-red"></span>
+        <span class="alert-title">[!] ALERTA CRÍTICA: TRANSMISIÓN INTERCEPTADA // SEÑAL FORZADA [!]</span>
+        <span class="status-dot blink-red"></span>
+      </div>
+
+      <div class="hack-stage">
+        <!-- Visual del Hacker Anonymous -->
+        <div class="anon-visual-panel">
+          <div class="anon-avatar-box">
+            <!-- Máscara ciberpunk estilizada de Anonymous con circuitos -->
+            <svg class="anon-mask-svg" viewBox="0 0 240 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Capucha negra -->
+              <path d="M35 270 C25 180 35 60 120 18 C205 60 215 180 205 270 C160 275 80 275 35 270 Z" fill="#0c050a" stroke="#ff003c" stroke-width="2.5"/>
+              <!-- Base de máscara blanca / ciber -->
+              <path d="M60 85 C60 62 180 62 180 85 C180 165 165 220 120 242 C75 220 60 165 60 85 Z" fill="#130811" stroke="#ff003c" stroke-width="2.5"/>
+              <!-- Cejas marcadas -->
+              <path d="M72 100 Q94 88 112 102 M168 100 Q146 88 128 102" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+              <!-- Ojos de escaneo láser -->
+              <ellipse cx="92" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+              <circle cx="92" cy="118" r="4" fill="#00ff66" class="anon-eye-laser"/>
+              <ellipse cx="148" cy="118" rx="15" ry="7" fill="#000000" stroke="#ff003c" stroke-width="2"/>
+              <circle cx="148" cy="118" r="4" fill="#00ff66" class="anon-eye-laser"/>
+              <!-- Bigote curvado en punta -->
+              <path d="M82 165 Q120 152 120 172 Q120 152 158 165 C175 182 152 180 120 184 C88 180 65 182 82 165 Z" fill="#ff003c"/>
+              <!-- Sonrisa enigmática -->
+              <path d="M80 172 Q120 200 160 172" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <!-- Perilla ciberpunk -->
+              <path d="M114 202 L126 202 L120 226 Z" fill="#ff003c"/>
+              <!-- Circuitos que fluyen -->
+              <line x1="92" y1="125" x2="92" y2="152" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <line x1="148" y1="125" x2="148" y2="152" stroke="#00ff66" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <circle cx="92" cy="152" r="2.5" fill="#00ff66"/>
+              <circle cx="148" cy="152" r="2.5" fill="#00ff66"/>
+            </svg>
+            <div class="anon-name-tag mono">IDENTIDAD: 0xANONYMOUS // INTRUSO</div>
+          </div>
+
+          <!-- Estado de los sistemas del instituto -->
+          <div class="institute-damage-panel mono">
+            <div class="damage-header">// ESTADO DE VULNERABILIDAD DEL INSTITUTO //</div>
+            <div class="damage-item">
+              <span>SERVIDOR DE NOTAS:</span>
+              <span class="text-red">CIFRANDO... [89%]</span>
+            </div>
+            <div class="damage-item">
+              <span>EXPEDIENTES Y DNI:</span>
+              <span class="text-red">BLOQUEADO</span>
+            </div>
+            <div class="damage-item">
+              <span>CÁMARAS DEL CENTRO:</span>
+              <span class="text-red">ACCESO TOMADO</span>
+            </div>
+            <div class="damage-item">
+              <span>FIREWALL DEL IES:</span>
+              <span class="text-red">DERRIBADO</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal de ataque en tiempo real y mensaje del hacker -->
+        <div class="anon-terminal-panel">
+          <div class="terminal-box">
+            <div class="terminal-header mono">
+              <span class="term-dot red"></span>
+              <span class="term-dot yellow"></span>
+              <span class="term-dot green"></span>
+              <span class="term-title">anonymous@dark-proxy:~$ attack_institute.sh</span>
+            </div>
+            <div class="terminal-body mono" id="anon-terminal-output">
+              <div class="term-log-line">&gt; Escaneando subred educativa 192.168.1.0/24...</div>
+              <div class="term-log-line">&gt; Vulnerabilidad crítica detectada en puerto 8080.</div>
+              <div class="term-log-line text-red">&gt; [OK] Inyección de payload de cifrado ejecutada.</div>
+              <div class="term-log-line text-green">&gt; ROOT ACCESO CONCEDIDO A: root@ies-servidor</div>
+              <div class="term-log-line">&gt; Interrumpiendo pantalla del aula...</div>
+            </div>
+          </div>
+
+          <!-- Mensaje amenazante del Anónimo -->
+          <div class="anon-speech-box">
+            <div class="speech-pre mono">&lt; MENSAJE PARA EL INSTITUTO &gt;</div>
+            <h2 class="speech-quote" id="anon-quote-text">
+              "Hola <span class="quote-highlight-red" id="hacker-msg-inst">IES Tecnológico</span>, me infiltrado en vuestro instituto jajajajaja (risa malvada)."
+            </h2>
+            <div class="speech-desc mono" id="anon-speech-desc">
+              <p>Voy a cifrar todos vuestros datos. Pero para que esto sea más divertido voy a dejaros unos retos para que podáis pararme.</p>
+              <p style="margin-top: 8px;">Tendréis que hacer <strong class="quote-highlight-cyan" id="hacker-msg-teams">5 grupos</strong>, con el objetivo de intentar pararme con todo lo que habéis aprendido en esta charla.</p>
+              <p style="margin-top: 8px; color: #ff3355; font-weight: 700;">Mucha suerte.</p>
+            </div>
+          </div>
+
+          <div class="hack-actions">
+            <button class="btn-counterattack" id="btn-enter-dashboard" onclick="openHostDashboardFromHack()">
+              <span class="btn-ca-text">ACEPTAR EL RETO // MONITORIZAR EQUIPOS</span>
+              <span class="btn-ca-arrow">▶</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

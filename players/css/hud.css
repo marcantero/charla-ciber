@@ -1,0 +1,171 @@
+/* ═══════ MUTE BUTTON ═══════ */
+#mute-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(10, 6, 8, 0.85);
+  border: 1px solid rgba(204, 17, 34, 0.4);
+  border-radius: 4px;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+#mute-btn::after {
+  content: 'SO ON';
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+}
+#mute-btn.muted {
+  color: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.1);
+}
+#mute-btn.muted::after { content: 'SO OFF'; }
+#mute-btn:hover {
+  border-color: var(--red);
+  color: var(--white);
+  box-shadow: 0 0 12px rgba(204,17,34,0.3);
+}
+
+/* ═══════ SCROLLBAR ═══════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0d0d0d; }
+::-webkit-scrollbar-thumb { background: var(--red-dark); border-radius: 2px; }
+
+/* ═══════ RESPONSIVE ═══════ */
+@media (max-width: 600px) {
+  .phases-header, .phase-row {
+    grid-template-columns: 40px 1fr 1fr;
+  }
+  .ph-tool { display: none; }
+  .code-collect { grid-template-columns: 1fr 1fr; }
+  .phase-header { padding: 12px 16px; }
+  .phase-body { padding: 20px 16px; }
+  .briefing-container { padding: 40px 20px; }
+  .status-bar .status-text:not(:first-of-type) { display: none; }
+}
+
+/* ═══════ MULTIPLAYER TEAM SELECTOR MODAL ═══════ */
+.status-team-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(204, 17, 34, 0.18);
+  border: 1px solid var(--red);
+  color: var(--white);
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-left: 8px;
+}
+.status-team-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse-green 2s infinite;
+}
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.team-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 2, 4, 0.92);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+.team-modal-backdrop.hidden {
+  display: none;
+}
+.team-modal-box {
+  position: relative;
+  background: #0d080b;
+  border: 1px solid rgba(204, 17, 34, 0.4);
+  box-shadow: 0 0 40px rgba(204, 17, 34, 0.25), inset 0 0 20px rgba(0, 0, 0, 0.8);
+  max-width: 580px;
+  width: 100%;
+  padding: 36px 32px;
+  text-align: center;
+}
+.team-modal-tag {
+  color: var(--red);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+.team-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.team-modal-subtitle {
+  color: var(--white-muted);
+  font-size: 0.85rem;
+  margin-bottom: 28px;
+  letter-spacing: 0.04em;
+}
+.team-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.btn-team {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--white-soft);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  padding: 16px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+.btn-team .team-num {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--red);
+  transition: color 0.2s ease;
+}
+.btn-team:hover {
+  background: rgba(204, 17, 34, 0.15);
+  border-color: var(--red);
+  color: var(--white);
+  box-shadow: 0 0 16px rgba(204, 17, 34, 0.4);
+  transform: translateY(-2px);
+}
+.btn-team:hover .team-num {
+  color: #ff3344;
+  text-shadow: 0 0 8px rgba(255, 51, 68, 0.8);
+}
+.btn-team:active {
+  transform: translateY(0);
+}
+

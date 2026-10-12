@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════════
+   HOST CONTROL DASHBOARD — CYBER MISSION & SYSTEM COMPROMISED
+   Diseño de Alta Tensión para Proyector de Aula
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #040204;
+  --bg-card: #0d070b;
+  --bg-card-alt: #120910;
+  --white: #ffffff;
+  --white-soft: rgba(255, 255, 255, 0.85);
+  --white-muted: rgba(255, 255, 255, 0.45);
+  
+  /* Paleta de estados de amenaza */
+  --red: #ff003c;
+  --red-dark: #8a051d;
+  --red-glow: rgba(255, 0, 60, 0.65);
+  --amber: #ffb000;
+  --amber-glow: rgba(255, 176, 0, 0.5);
+  --green: #00ff66;
+  --green-glow: rgba(0, 255, 102, 0.6);
+  --cyan: #00e5ff;
+
+  --font-display: 'Orbitron', -apple-system, sans-serif;
+  --font-mono: 'Share Tech Mono', 'Courier New', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════ ESTADO PRESENTACIÓN FORMAL (Cero estética hacker) ═══════ */
+body.in-formal-presentation {
+  background: radial-gradient(ellipse at 50% 0%, #15243d 0%, #0c1527 60%, #060a14 100%) !important;
+  color: #f8fafc !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+body.in-formal-presentation #matrix-canvas,
+body.in-formal-presentation .scanlines,
+body.in-formal-presentation .crt-flicker,
+body.in-formal-presentation .deco,
+body.in-formal-presentation .host-floating-controls {
+  display: none !important;
+}
+
+body.hacked-mode {
+  background: var(--bg) !important;
+}
+body.hacked-mode #matrix-canvas,
+body.hacked-mode .scanlines,
+body.hacked-mode .crt-flicker,
+body.hacked-mode .deco {
+  display: block !important;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* ═══════ MATRIX RAIN CANVAS & CRT FX ═══════ */
+#matrix-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.35) 2px,
+    rgba(0, 0, 0, 0.35) 4px
+  );
+  pointer-events: none;
+  z-index: 99;
+}
+
+.crt-flicker {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 0, 60, 0.012);
+  pointer-events: none;
+  z-index: 98;
+  animation: crtFlicker 0.12s infinite;
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.94; }
+  50% { opacity: 1; }
+  100% { opacity: 0.96; }
+}
+
+/* Decoraciones en esquinas del viewport */
+.deco {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  z-index: 100;
+}
+.deco-tl { top: 12px; left: 12px; border-top: 2px solid var(--red); border-left: 2px solid var(--red); }
+.deco-tr { top: 12px; right: 12px; border-top: 2px solid var(--red); border-right: 2px solid var(--red); }
+.deco-bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--red); border-left: 2px solid var(--red); }
+.deco-br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--red); border-right: 2px solid var(--red); }
+
+/* Tech-frame universal */
+.tech-frame {
+  position: relative;
+}
+.frame-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+}
+.frame-corner.top-left { top: -2px; left: -2px; border-top: 2px solid var(--red); border-left: 2px solid var(--red); }
+.frame-corner.top-right { top: -2px; right: -2px; border-top: 2px solid var(--red); border-right: 2px solid var(--red); }
+.frame-corner.bottom-left { bottom: -2px; left: -2px; border-bottom: 2px solid var(--red); border-left: 2px solid var(--red); }
+.frame-corner.bottom-right { bottom: -2px; right: -2px; border-bottom: 2px solid var(--red); border-right: 2px solid var(--red); }
+
+/* Utilidades de texto */
+.text-red { color: var(--red); }
+.text-green { color: var(--green); }
+.text-white { color: var(--white); }
+.text-amber { color: var(--amber); }
+
+.screen {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  min-height: 100vh;
+}
+.screen.hidden,
+.hidden {
+  display: none !important;
+}
+
+/* Botones flotantes eliminados de la presentación para evitar spoilers */

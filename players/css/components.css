@@ -1,0 +1,19 @@
+/* ═══════════════════════════════════════
+   TECH FRAME
+   ═══════════════════════════════════════ */
+.tech-frame {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.frame-corner {
+  position: absolute;
+  width: 24px; height: 24px;
+  border-color: rgba(204, 17, 34, 0.5);
+  border-style: solid;
+}
+.frame-corner.top-left { top: 0; left: 0; border-width: 2px 0 0 2px; }
+.frame-corner.top-right { top: 0; right: 0; border-width: 2px 2px 0 0; }
+.frame-corner.bottom-left { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+.frame-corner.bottom-right { bottom: 0; right: 0; border-width: 0 2px 2px 0; }

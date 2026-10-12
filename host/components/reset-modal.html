@@ -1,0 +1,22 @@
+  <!-- Modal de confirmación para reiniciar partida -->
+  <div id="reset-confirm-modal" class="reset-modal-overlay hidden">
+    <div class="reset-modal-card tech-frame">
+      <div class="frame-corner top-left"></div>
+      <div class="frame-corner top-right"></div>
+      <div class="frame-corner bottom-left"></div>
+      <div class="frame-corner bottom-right"></div>
+      <div class="reset-modal-header mono">
+        <span class="text-red">⚠ ADVERTENCIA DE CONTROL CENTRAL</span>
+      </div>
+      <div class="reset-modal-body">
+        <h3>¿REINICIAR TODA LA PARTIDA DEL ESCAPE ROOM?</h3>
+        <p class="mono text-muted" style="margin-top: 8px;">
+          Se reseteará el progreso de todos los equipos al 0% y se reactivará la amenaza inicial al 100%.
+        </p>
+      </div>
+      <div class="reset-modal-actions mono">
+        <button class="btn-hud-control" onclick="closeResetModal()">CANCELAR</button>
+        <button class="btn-hud-control btn-hud-danger" onclick="confirmResetGame()">SÍ, REINICIAR PARTIDA</button>
+      </div>
+    </div>
+  </div>

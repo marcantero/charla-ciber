@@ -1,0 +1,691 @@
+/* ================================================================
+   CINEMÁTICA ÉPICA DE DERROTA DEL BOSS FINAL (CINEMATIC CUTSCENE)
+   Aspect Ratio 2.39:1 / Widescreen Letterboxing / Tech-Noir Clean
+   ================================================================ */
+
+.boss-defeat-cinematic {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #010103;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  color: #fff;
+  user-select: none;
+}
+
+.boss-defeat-cinematic.hidden {
+  display: none !important;
+}
+
+/* Barras de Letterboxing Cinematográficas (Widescreen 2.39:1) */
+.cinematic-letterbox {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 8.5vh;
+  background: #000000;
+  z-index: 30;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.letterbox-top {
+  top: 0;
+  transform: translateY(0);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  animation: letterboxSlideTop 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.letterbox-bottom {
+  bottom: 0;
+  transform: translateY(0);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  animation: letterboxSlideBottom 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes letterboxSlideTop {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes letterboxSlideBottom {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(0); }
+}
+
+/* Destello Anamórfico Horizontal (Efecto lente cinematográfica) */
+.cinematic-anamorphic-flare {
+  position: absolute;
+  top: 48%;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.3) 15%, #00e5ff 40%, #ffffff 50%, #00e5ff 60%, rgba(0, 229, 255, 0.3) 85%, transparent);
+  filter: drop-shadow(0 0 16px #00e5ff) drop-shadow(0 0 32px #00e5ff);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 25;
+  transform: translateY(-50%) scaleX(0.05);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
+}
+
+.cinematic-anamorphic-flare.flare-active {
+  opacity: 1;
+  transform: translateY(-50%) scaleX(1.4);
+}
+
+/* Canvas de Desintegración y Partículas */
+.boss-defeat-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+}
+
+/* Post-procesado fílmico */
+.boss-defeat-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: inset 0 0 180px rgba(0, 0, 0, 0.98), inset 0 0 80px rgba(0, 229, 255, 0.08);
+}
+
+.boss-defeat-crt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+  background-size: 100% 3px;
+  opacity: 0.6;
+}
+
+/* Viewport con Cámara Cinematográfica */
+.boss-cinematic-viewport {
+  position: relative;
+  z-index: 15;
+  width: 92%;
+  max-width: 1100px;
+  height: 82vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: cameraPushIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cameraPushIn {
+  0% { transform: scale(1.06); filter: blur(8px); opacity: 0; }
+  100% { transform: scale(1.0); filter: blur(0); opacity: 1; }
+}
+
+/* Sacudida controlada por impacto físico */
+.cinematic-camera-shake {
+  animation: cameraImpactHit 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes cameraImpactHit {
+  10%, 90% { transform: translate3d(-3px, 2px, 0) scale(1.01); }
+  20%, 80% { transform: translate3d(5px, -4px, 0) scale(0.99); }
+  30%, 50%, 70% { transform: translate3d(-6px, 3px, 0) scale(1.01); }
+  40%, 60% { transform: translate3d(4px, -2px, 0) scale(1.0); }
+}
+
+/* ================================================================
+   ACTO 1: EL ENCIERRO Y LA DESINTEGRACIÓN
+   ================================================================ */
+
+.boss-cinematic-stage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.boss-cinematic-stage.hidden {
+  display: none !important;
+}
+
+.boss-cinematic-stage.fade-out-down {
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  pointer-events: none;
+}
+
+.cinematic-fade-in {
+  animation: stageFadeInSmooth 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes stageFadeInSmooth {
+  0% { opacity: 0; transform: translateY(24px) scale(0.98); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* HUD de Bloqueo Superior */
+.boss-lockdown-hud {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.lockdown-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15), inset 0 0 10px rgba(0, 229, 255, 0.05);
+  padding: 8px 22px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #00e5ff;
+  border-radius: 2px;
+}
+
+.lockdown-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00e5ff;
+  box-shadow: 0 0 10px #00e5ff;
+  animation: pulseCyan 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseCyan {
+  0%, 100% { transform: scale(0.85); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+.lockdown-meta {
+  font-size: 0.76rem;
+  letter-spacing: 1.5px;
+  color: #a0aec0;
+  display: flex;
+  gap: 12px;
+}
+
+.meta-separator {
+  color: #4a5568;
+}
+
+/* Zona de Confinamiento del Avatar */
+.boss-avatar-containment-zone {
+  position: relative;
+  width: 310px;
+  height: 310px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0 24px;
+}
+
+.containment-reticle {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reticle-ring {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.ring-outer {
+  width: 290px;
+  height: 290px;
+  border: 1px dashed rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.1);
+  animation: rotateClockwise 28s linear infinite;
+}
+
+.ring-mid {
+  width: 240px;
+  height: 240px;
+  border: 1px dashed rgba(255, 0, 85, 0.35);
+  animation: rotateCounter 18s linear infinite;
+}
+
+@keyframes rotateClockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotateCounter {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.reticle-bracket {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: #00e5ff;
+  border-style: solid;
+}
+.bracket-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+.bracket-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+.bracket-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+.bracket-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+/* Avatar Holográfico */
+.boss-hologram-avatar {
+  position: relative;
+  width: 190px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.boss-hologram-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(0, 229, 255, 0.5));
+}
+
+.holo-eye-left,
+.holo-eye-right {
+  animation: eyeBlinkGlow 2.5s infinite alternate;
+}
+
+@keyframes eyeBlinkGlow {
+  0%, 80% { fill: #00e5ff; filter: drop-shadow(0 0 6px #00e5ff); }
+  85%, 90% { fill: #ffffff; filter: drop-shadow(0 0 12px #ffffff); }
+  95%, 100% { fill: #00e5ff; filter: drop-shadow(0 0 6px #00e5ff); }
+}
+
+.hologram-scanline-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(180deg, transparent, rgba(0, 229, 255, 0.3), transparent);
+  animation: holoScanSweep 2.2s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes holoScanSweep {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 0.9; }
+  100% { transform: translateY(220px); opacity: 0; }
+}
+
+/* Efecto de disolución y desintegración del Avatar */
+.boss-hologram-avatar.dissolving {
+  opacity: 0;
+  transform: scale(1.18);
+  filter: brightness(3.5) contrast(2) drop-shadow(0 0 40px #00e5ff) blur(6px);
+  pointer-events: none;
+}
+
+/* Banner de Titular del Acto 1 */
+.boss-defeat-headline-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.defeat-phase-tag {
+  color: #00e5ff;
+  font-size: 0.88rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+.defeat-hero-title {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #ffffff;
+  text-shadow: 0 0 25px rgba(0, 229, 255, 0.8), 0 0 50px rgba(0, 229, 255, 0.4);
+  margin: 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.defeat-hud-telemetry {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+  background: rgba(10, 16, 24, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 24px;
+  border-radius: 2px;
+}
+
+.telemetry-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+}
+
+.dot-green {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00ff66;
+  box-shadow: 0 0 8px #00ff66;
+}
+
+.dot-cyan {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00e5ff;
+  box-shadow: 0 0 8px #00e5ff;
+}
+
+/* ================================================================
+   ACTO 2: EL GIRO DE GUIÓN // MANIFIESTO ENCRIPTADO Y ROBO DE DATOS
+   ================================================================ */
+
+.darknet-session-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(8, 12, 18, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  padding: 8px 20px;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+.darknet-indicator {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #00e5ff;
+  font-weight: 700;
+}
+
+.darknet-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00e5ff;
+  box-shadow: 0 0 10px #00e5ff;
+  animation: pulseCyan 1s infinite alternate;
+}
+
+.darknet-timestamp {
+  color: #718096;
+}
+
+/* Ventana de Terminal Tech-Noir */
+.darknet-terminal-window {
+  width: 100%;
+  background: rgba(6, 10, 16, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 229, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.terminal-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(12, 18, 28, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 16px;
+  font-size: 0.8rem;
+}
+
+.chrome-controls {
+  display: flex;
+  gap: 7px;
+}
+
+.ctrl-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.dot-red { background: #ff453a; box-shadow: 0 0 6px #ff453a; }
+.dot-yellow { background: #ffd60a; box-shadow: 0 0 6px #ffd60a; }
+.dot-green { background: #30d158; box-shadow: 0 0 6px #30d158; }
+
+.chrome-title {
+  color: #cbd5e0;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.chrome-status {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.darknet-terminal-body {
+  padding: 18px 24px;
+  min-height: 220px;
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+.cinematic-type-line {
+  display: block;
+  letter-spacing: 0.6px;
+  word-break: break-word;
+}
+
+.type-prefix {
+  font-weight: 800;
+  margin-right: 6px;
+  user-select: none;
+}
+
+.cinematic-type-line.text-normal { color: #f7fafc; }
+.cinematic-type-line.text-normal .type-prefix { color: #a0aec0; }
+
+.cinematic-type-line.text-amber {
+  color: #fbd38d;
+  text-shadow: 0 0 10px rgba(246, 173, 85, 0.35);
+}
+.cinematic-type-line.text-amber .type-prefix { color: #dd6b20; }
+
+.cinematic-type-line.text-red { color: #ff3860; }
+.cinematic-type-line.text-red .type-prefix { color: #ff0055; }
+
+.cinematic-type-line.alert-highlight {
+  background: rgba(255, 0, 85, 0.12);
+  border-left: 3px solid #ff0055;
+  padding: 8px 16px;
+  box-shadow: 0 0 25px rgba(255, 0, 85, 0.2);
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cinematic-type-line.text-cyan { color: #63b3ed; }
+.cinematic-type-line.text-cyan .type-prefix { color: #00e5ff; }
+
+.cinematic-type-line.highlight-lesson {
+  color: #68d391;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(104, 211, 145, 0.45);
+}
+.cinematic-type-line.highlight-lesson .type-prefix { color: #00ff66; }
+
+.cinematic-type-line.text-flag {
+  color: #fefcbf;
+  font-weight: 800;
+}
+.cinematic-type-line.text-flag .type-prefix { color: #ecc94b; }
+
+.cinematic-type-line.text-dim {
+  color: #718096;
+  font-style: italic;
+}
+
+/* ================================================================
+   ACTO 3: REVELACIÓN DE LA FLAG DE SEGURIDAD
+   ================================================================ */
+
+.boss-flag-card {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(16, 24, 18, 0.95), rgba(8, 16, 24, 0.95));
+  border: 1px solid #00ff66;
+  box-shadow: 0 0 45px rgba(0, 255, 102, 0.35), 0 0 75px rgba(0, 229, 255, 0.2), inset 0 0 25px rgba(0, 255, 102, 0.1);
+  padding: 16px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.boss-flag-card.hidden {
+  display: none !important;
+}
+
+.flag-card-materialize {
+  animation: flagMaterializeAnim 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes flagMaterializeAnim {
+  0% { transform: scale(0.85) translateY(20px); opacity: 0; filter: blur(10px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
+}
+
+.flag-card-header {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #ecc94b;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(236, 201, 75, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.flag-star {
+  color: #ffd700;
+  font-size: 0.95rem;
+}
+
+.flag-token-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 6px 0;
+}
+
+.flag-token-display {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #ffffff;
+  padding: 8px 24px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1.5px dashed #00ff66;
+  box-shadow: 0 0 25px rgba(0, 255, 102, 0.5), inset 0 0 15px rgba(0, 255, 102, 0.25);
+  text-shadow: 0 0 15px #00ff66, 0 0 35px #00e5ff;
+  user-select: all;
+  cursor: copy;
+}
+
+.btn-copy-flag {
+  background: rgba(0, 255, 102, 0.15);
+  border: 1px solid #00ff66;
+  color: #00ff66;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 10px 18px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-copy-flag:hover {
+  background: #00ff66;
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.8);
+  transform: translateY(-2px);
+}
+
+.btn-copy-flag.copied {
+  background: #00e5ff !important;
+  border-color: #00e5ff !important;
+  color: #000 !important;
+}
+
+.flag-card-footer {
+  font-size: 0.76rem;
+  color: #00e5ff;
+  letter-spacing: 1.8px;
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+/* Controles de Salida para el Ponente */
+.boss-cinematic-controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.btn-cinematic-exit {
+  background: rgba(12, 16, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e0;
+  padding: 9px 24px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+.btn-cinematic-exit:hover {
+  background: rgba(0, 229, 255, 0.2);
+  border-color: #00e5ff;
+  color: #ffffff;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+
+
+

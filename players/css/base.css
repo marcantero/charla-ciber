@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════════════════
+   CHARLA CIBER — Hacker Simulation Aesthetic
+   Inspired by: Dark red terminal, glitch, matrix rain
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --red: #cc1122;
+  --red-dark: #8a0a16;
+  --red-glow: rgba(204, 17, 34, 0.6);
+  --red-dim: rgba(204, 17, 34, 0.15);
+  --bg: #0a0608;
+  --bg2: #100810;
+  --bg-panel: rgba(10, 6, 8, 0.9);
+  --white: #ffffff;
+  --white-soft: rgba(255, 255, 255, 0.85);
+  --white-muted: rgba(255, 255, 255, 0.4);
+  --cyan: #00ffcc;
+  --cyan-dim: rgba(0, 255, 204, 0.15);
+  --cyan-glow: rgba(0, 255, 204, 0.5);
+  --green: #00ff66;
+  --green-dim: rgba(0, 255, 102, 0.1);
+  --yellow: #ffcc00;
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --font-mono: 'Share Tech Mono', 'Courier New', monospace;
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+  overflow: hidden;
+  cursor: default;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: var(--font-mono); }
+
+/* ═══════ MATRIX CANVAS ═══════ */
+#matrix-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+/* ═══════ SCANLINES ═══════ */
+.scanlines {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+}
+
+/* ═══════ CRT FLICKER ═══════ */
+.crt-flicker {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  animation: flicker 8s infinite;
+}
+
+@keyframes flicker {
+  0%, 97%, 100% { opacity: 0; }
+  97.5% { opacity: 0.03; }
+  98% { opacity: 0; }
+  98.5% { opacity: 0.05; }
+  99% { opacity: 0; }
+}
+
+/* ═══════ CORNER DECORATORS ═══════ */
+.deco {
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  width: 60px;
+  height: 60px;
+  border-color: rgba(204, 17, 34, 0.4);
+  border-style: solid;
+}
+.deco-tl { top: 16px; left: 16px; border-width: 2px 0 0 2px; }
+.deco-tr { top: 16px; right: 16px; border-width: 2px 2px 0 0; }
+.deco-bl { bottom: 16px; left: 16px; border-width: 0 0 2px 2px; }
+.deco-br { bottom: 16px; right: 16px; border-width: 0 2px 2px 0; }
+
+/* ═══════ SCREENS ═══════ */
+.screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  overflow-y: auto;
+}
+
+.screen.hidden { display: none; }
+
+/* ═══════ GLITCH TEXT ═══════ */
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  overflow: hidden;
+}
+.glitch-text::before {
+  color: var(--cyan);
+  animation: glitch-before 3s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  transform: translate(-3px, 0);
+}
+.glitch-text::after {
+  color: var(--red);
+  animation: glitch-after 3s infinite;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  transform: translate(3px, 0);
+}
+@keyframes glitch-before {
+  0%, 90%, 100% { transform: translate(-3px, 0); opacity: 0; }
+  92% { transform: translate(-8px, -2px); opacity: 0.8; }
+  94% { transform: translate(4px, 1px); opacity: 0.8; }
+  96% { transform: translate(-3px, 0); opacity: 0; }
+}
+@keyframes glitch-after {
+  0%, 88%, 100% { transform: translate(3px, 0); opacity: 0; }
+  90% { transform: translate(8px, 2px); opacity: 0.6; }
+  93% { transform: translate(-4px, -1px); opacity: 0.6; }
+  95% { transform: translate(3px, 0); opacity: 0; }
+}
+
+/* ═══════ BLINK ANIMATIONS ═══════ */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 6px var(--red-glow); opacity: 1; }
+  50% { box-shadow: 0 0 20px var(--red-glow); opacity: 0.6; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

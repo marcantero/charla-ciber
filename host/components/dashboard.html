@@ -1,0 +1,63 @@
+  <!-- ============================================================== -->
+  <!-- 2. DASHBOARD DE PROGRESO DE LOS 5 EQUIPOS                      -->
+  <!-- ============================================================== -->
+  <div class="screen hidden" id="host-dashboard-screen">
+    <div class="dashboard-container">
+      <!-- Encabezado HUD superior -->
+      <header class="dashboard-header">
+        <div class="hud-left">
+          <div class="hud-tag mono">// MONITOR CENTRAL DE AULA //</div>
+          <h2 class="hud-title">PANEL DE CONTROL — ESTADO DE LOS EQUIPOS</h2>
+        </div>
+
+        <!-- Indicador de Amenaza Global del Instituto -->
+        <div class="hud-threat-widget">
+          <div class="threat-meta mono">
+            <span class="threat-label">AMENAZA DE CIFRADO DEL INSTITUTO:</span>
+            <span class="threat-pct text-red mono" id="global-threat-pct">100%</span>
+          </div>
+          <div class="threat-track">
+            <div class="threat-fill" id="global-threat-fill"></div>
+          </div>
+        </div>
+
+        <div class="hud-meta mono">
+          <!-- Widget de Cuenta Atrás Configurable (No pausible) -->
+          <div class="hud-countdown-widget" id="hud-countdown-widget" title="Tiempo restante para completar la misión">
+            <span class="countdown-icon">⏳</span>
+            <div class="countdown-body">
+              <span class="countdown-label">TIEMPO RESTANTE</span>
+              <span class="countdown-digits" id="dash-countdown-digits">--:--</span>
+            </div>
+          </div>
+
+          <div class="hud-status-chip" id="server-status-chip">
+            <span class="chip-dot"></span> <span id="server-status-text">CONECTADO</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Cuadrícula principal de los 5 equipos -->
+      <main class="teams-grid" id="teams-grid">
+        <!-- Generado dinámicamente para los 5 equipos -->
+      </main>
+
+      <!-- Pie de página con terminal de logs en vivo -->
+      <footer class="dashboard-footer">
+        <div class="terminal-panel">
+          <div class="terminal-bar mono">
+            <span class="term-dot red"></span>
+            <span class="term-dot yellow"></span>
+            <span class="term-dot green"></span>
+            <span class="term-title">REGISTRO DE EVENTOS EN RED LOCAL — /var/log/escape_room.log</span>
+            <div class="term-spacer"></div>
+            <span class="term-indicator mono" id="active-teams-counter">EQUIPOS ONLINE: 0 / 5</span>
+          </div>
+          <div class="terminal-logs mono" id="terminal-logs">
+            <div class="log-line log-sys">// SISTEMA INICIADO: Monitor de red en escucha en puerto 4000</div>
+            <div class="log-line log-sys">// Esperando conexión de los 5 equipos de alumnos...</div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>

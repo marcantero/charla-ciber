@@ -1,0 +1,84 @@
+  <!-- INTRO SCREEN -->
+  <div class="screen" id="intro-screen">
+    <div class="intro-container">
+      <div class="status-bar">
+        <span class="status-dot blink-red"></span>
+        <span class="status-text">SISTEMA COMPROMETIDO</span>
+        <div class="status-team-badge mono" id="player-team-badge">
+          <span class="status-team-dot"></span>
+          <span id="player-team-label">EQUIPO: --</span>
+        </div>
+        <div class="status-spacer"></div>
+        <div class="player-timer-badge mono" id="player-timer-badge" title="Tiempo de misión restante">
+          <span class="timer-badge-dot">⏳</span>
+          <span id="player-countdown">45:00</span>
+        </div>
+        <span class="status-sep">//</span>
+        <span class="status-text mono">IP: 192.168.1.XXX</span>
+        <span class="status-sep">//</span>
+        <span class="status-text mono" id="live-time">--:--:--</span>
+      </div>
+      <div class="hero-content">
+        <div class="bg-code-text" id="bg-code-text"></div>
+        <div class="title-block">
+          <div class="pre-title mono">[ ALERTA DE SEGURIDAD CRÍTICA ]</div>
+          <h1 class="main-title">
+            <span class="title-white">TE HAN</span><br>
+            <span class="title-red glitch-text" data-text="HACKEADO">HACKEADO</span>
+          </h1>
+          <div class="subtitle-badge">
+            <span class="subtitle-text">POR UNA IA, DICEN</span>
+          </div>
+        </div>
+        <div class="terminal-box" id="terminal-box">
+          <div class="terminal-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title mono">hack_protocol_v4.2 — bash</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line">
+              <span class="term-prompt">root@0x4A2F:~#</span>
+              <span class="term-cmd" id="term-typing-1"></span>
+            </div>
+            <div class="terminal-progress-wrapper" id="term-progress-wrapper" style="display:none;">
+              <div class="term-file-line">
+                <span class="term-label mono">cifrando</span>
+                <span class="term-filename mono" id="term-filename"
+                  style="transition: opacity 0.18s ease;">notas-examen-final-v7.xlsx</span>
+                <span class="term-cursor">&#9608;</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+              </div>
+              <div class="progress-meta">
+                <span class="term-percent mono" id="progress-pct">0%</span>
+                <span class="term-warn mono">no cierres esta ventana</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mission-brief">
+          <div class="brief-header mono">// MISIÓN //</div>
+          <p class="brief-text">Una IA ha tomado el control de los sistemas de nuestro instituto.<br>Tienes <strong>5
+              retos</strong> para recuperarlo. Falla y lo pierdes todo.</p>
+        </div>
+        <button class="btn-hack" id="start-btn" onclick="startMission()">
+          <span class="btn-text">ACEPTAR MISIÓN</span>
+          <span class="btn-arrow">&#9654;</span>
+        </button>
+      </div>
+      <div class="bottom-bar">
+        <span class="mono bottom-label">5 FASES ACTIVAS</span>
+        <div class="phases-preview">
+          <span class="phase-dot active" title="Fase 1: Audio"></span>
+          <span class="phase-dot" title="Fase 2: Terminal"></span>
+          <span class="phase-dot" title="Fase 3: Forense"></span>
+          <span class="phase-dot" title="Fase 4: Cripto"></span>
+          <span class="phase-dot" title="Fase 5: Clímax"></span>
+        </div>
+        <span class="mono bottom-label">NIVEL: CRÍTICO</span>
+      </div>
+    </div>
+  </div>
