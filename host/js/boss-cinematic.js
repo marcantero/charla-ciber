@@ -377,10 +377,22 @@ function typewriterManifesto() {
   const phrase = (appConfig && appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.frase) ||
     "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Vuestros datos ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso.";
   
-  const customAudio = new Audio('/audio/hacker_derrota.mp3');
-  customAudio.play().catch(() => {
-    speakHackerPhrase(phrase, 3);
-  });
+  const candidates = [
+    '/audio/hacker/hacker_derrota.wav',
+    '/audio/hacker/hacker_derrota.mp3',
+    '/audio/hacker_derrota.wav',
+    '/audio/hacker_derrota.mp3'
+  ];
+  if (typeof tryPlayCandidates === 'function') {
+    tryPlayCandidates(candidates, () => {
+      speakHackerPhrase(phrase, 3);
+    });
+  } else {
+    const customAudio = new Audio(candidates[0]);
+    customAudio.play().catch(() => {
+      speakHackerPhrase(phrase, 3);
+    });
+  }
 }
 
 function revealEpicFlag() {

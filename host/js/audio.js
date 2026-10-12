@@ -17,14 +17,39 @@ function initAudio() {
   }
 }
 
+// Helper para probar rutas candidatas (/audio/hacker y /audio/, .wav y .mp3)
+function tryPlayCandidates(candidates, onFail, onEnd) {
+  let idx = 0;
+  function next() {
+    if (idx >= candidates.length) {
+      if (onFail) onFail();
+      return;
+    }
+    const path = candidates[idx++];
+    const sound = new Audio(path);
+    sound.play().then(() => {
+      console.log(`[AUDIO] Reproduciendo archivo: ${path}`);
+      if (onEnd) sound.onended = onEnd;
+    }).catch(() => {
+      next();
+    });
+  }
+  next();
+}
+
 // 1.1 Glitch de interferencia eléctrica inicial
 function playHackGlitchSound() {
   initAudio();
   if (isMuted) return;
 
-  // Intentar cargar MP3 local primero si existe
-  const glitchAudio = new Audio('/audio/hack_glitch.mp3');
-  glitchAudio.play().catch(() => {
+  const candidates = [
+    '/audio/hacker/hack_glitch.wav',
+    '/audio/hacker/hack_glitch.mp3',
+    '/audio/hack_glitch.wav',
+    '/audio/hack_glitch.mp3'
+  ];
+
+  tryPlayCandidates(candidates, () => {
     // Fallback: Sintetizador procedural Web Audio API de cortocircuito
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -72,9 +97,14 @@ function playSirenAlarm() {
   initAudio();
   if (isMuted) return;
 
-  // Intentar cargar MP3 local primero
-  const sirenAudio = new Audio('/audio/siren_alarm.mp3');
-  sirenAudio.play().catch(() => {
+  const candidates = [
+    '/audio/hacker/siren_alarm.wav',
+    '/audio/hacker/siren_alarm.mp3',
+    '/audio/siren_alarm.wav',
+    '/audio/siren_alarm.mp3'
+  ];
+
+  tryPlayCandidates(candidates, () => {
     // Fallback: Sirena de alarma sintetizada
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -139,15 +169,19 @@ function playAIVoice() {
     osc2.stop(now + 5.8);
   }
 
-  // 2. Comprobar si hay archivo de voz MP3 personalizado en audio/
-  const customVoice = new Audio('/audio/anon_voice.mp3');
-  customVoice.play().catch(() => {
-    // Si no está anon_voice.mp3, probar ai_voice.mp3
-    const fallbackVoice = new Audio('/audio/ai_voice.mp3');
-    fallbackVoice.play().catch(() => {
-      // Fallback a SpeechSynthesis robótica demoníaca
-      speakSynthesizedAnonymous();
-    });
+  // 2. Comprobar si hay archivo de voz en audio/hacker/ o audio/
+  const candidates = [
+    '/audio/hacker/anon_voice.wav',
+    '/audio/hacker/anon_voice.mp3',
+    '/audio/anon_voice.wav',
+    '/audio/anon_voice.mp3',
+    '/audio/hacker/ai_voice.mp3',
+    '/audio/ai_voice.mp3'
+  ];
+
+  tryPlayCandidates(candidates, () => {
+    // Fallback a SpeechSynthesis robótica demoníaca
+    speakSynthesizedAnonymous();
   });
 }
 
@@ -296,19 +330,29 @@ function playHackerWeakeningAudio(audioFileName, speechText, stage) {
   const eqWidget = document.getElementById('weakening-audio-freq');
   if (eqWidget) eqWidget.classList.add('playing');
 
-  // 2. Intentar cargar MP3 personalizado de la carpeta /audio/
-  const customAudio = new Audio(`/audio/${audioFileName}`);
-  customAudio.play().then(() => {
-    console.log(`[AUDIO] Reproduciendo archivo personalizado: /audio/${audioFileName}`);
-    customAudio.onended = () => {
-      if (eqWidget) eqWidget.classList.remove('playing');
-    };
-  }).catch((err) => {
-    console.log(`[AUDIO] /audio/${audioFileName} no encontrado, usando síntesis de voz procedimental.`);
+  // 2. Intentar cargar archivo de audio de /audio/hacker/ o /audio/
+  const baseName = (audioFileName || '').replace(/\.(mp3|wav|ogg)$/i, '');
+  const candidates = [];
+  if (audioFileName) {
+    candidates.push(`/audio/hacker/${audioFileName}`, `/audio/${audioFileName}`);
+  }
+  if (baseName) {
+    candidates.push(
+      `/audio/hacker/${baseName}.wav`,
+      `/audio/hacker/${baseName}.mp3`,
+      `/audio/${baseName}.wav`,
+      `/audio/${baseName}.mp3`
+    );
+  }
+
+  tryPlayCandidates(candidates, () => {
+    console.log(`[AUDIO] ${audioFileName} no encontrado, usando síntesis de voz procedimental.`);
     // 3. Fallback a voz sintetizada con tono de villano y risa malvada
     speakHackerPhrase(speechText, stage, () => {
       if (eqWidget) eqWidget.classList.remove('playing');
     });
+  }, () => {
+    if (eqWidget) eqWidget.classList.remove('playing');
   });
 }
 
