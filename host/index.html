@@ -425,13 +425,78 @@
             <span class="freq-status-text" id="freq-status-text">REPRODUCIENDO MENSAJE DEL HACKER...</span>
           </div>
 
+          <!-- Panel de revelación del Boss Final y Giro de Trama (Activado en Fase 3) -->
+          <div id="boss-twist-panel" class="boss-twist-panel hidden">
+            <div class="boss-twist-alert-strip mono">
+              <span class="twist-alert-icon">☠</span>
+              <span class="twist-alert-tag">[ALERTA CRÍTICA: AMENAZA NÚCLEO 0% // EXFILTRACIÓN MASIVA CONFIRMADA]</span>
+            </div>
+            <div class="boss-twist-content">
+              <div class="boss-twist-header">
+                <span class="twist-title glitch-text" data-text="BOSS NEUTRALIZADO... PERO EL ROBO SE HA CONSUMADO">BOSS NEUTRALIZADO... PERO EL ROBO SE HA CONSUMADO</span>
+              </div>
+              <div class="boss-twist-grid mono">
+                <div class="twist-box box-expelled">
+                  <span class="t-k">SERVIDOR CENTRAL:</span>
+                  <span class="t-v text-green">✓ INTRUSO EXPULSADO (0% AMENAZA)</span>
+                </div>
+                <div class="twist-box box-stolen">
+                  <span class="t-k">EXPEDIENTES Y NOTAS:</span>
+                  <span class="t-v text-red blink-slow">⚠ COPIA FINALIZADA HACE 10 MIN</span>
+                </div>
+              </div>
+
+              <!-- Terminal de Manifiesto del Hacker -->
+              <div class="boss-letter-box">
+                <div class="boss-letter-header mono">
+                  <span class="terminal-dot red"></span>
+                  <span class="terminal-dot yellow"></span>
+                  <span class="terminal-dot green"></span>
+                  <span class="letter-title">TRANSMISIÓN_INTERCEPTADA // MANIFIESTO_FINAL.TXT</span>
+                </div>
+                <div class="boss-letter-body" id="boss-letter-body">
+                  <p class="boss-letter-intro mono">// MENSAJE DEL HACKER // CANAL GLOBAL DEL INSTITUTO //</p>
+                  <p class="boss-letter-paragraph">
+                    "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto."
+                  </p>
+                  <p class="boss-letter-paragraph">
+                    "¿De verdad creíais que esto era un juego con final feliz? Pensabais que resolviendo cuatro pistas ibais a recuperar vuestros archivos... <strong>Bienvenidos al mundo real.</strong>"
+                  </p>
+                  <p class="boss-letter-paragraph alert-text">
+                    "Vuestros datos... expedientes, historiales, notas y contraseñas... ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado."
+                  </p>
+                  <p class="boss-letter-paragraph">
+                    "Habéis demostrado que sabéis abrir una terminal y mirar donde otros no miran. Nada mal para empezar. Pero si de verdad queréis jugar en las grandes ligas... si algún día pretendéis cazar a alguien como yo... vais a tener que aprender muchísimo más."
+                  </p>
+                  <p class="boss-letter-paragraph lesson-text">
+                    "Tomadlo como una lección: esto no era una prueba de rescate, era un aviso."
+                  </p>
+                </div>
+              </div>
+
+              <!-- Caja de Flag Épica de la Victoria -->
+              <div class="boss-flag-card mono">
+                <div class="boss-flag-badge">★ FLAG DE LA MISIÓN CONSEGUIDA ★</div>
+                <div class="boss-flag-code glitch-text" data-text="FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}">
+                  FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}
+                </div>
+                <div class="boss-flag-footer">
+                  <span>// NOS VEMOS EN LA RED... ANALISTAS //</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
             <!-- Barra de temporizador para cierre automático -->
             <div class="weakening-footer-control">
               <div class="weakening-timer-bar">
                 <div class="weakening-timer-fill" id="weakening-timer-fill"></div>
               </div>
               <div class="weakening-actions">
-                <span class="timer-desc mono">SE CERRARÁ AUTOMÁTICAMENTE</span>
+                <span class="timer-desc mono" id="weakening-timer-desc">SE CERRARÁ AUTOMÁTICAMENTE</span>
+                <button id="boss-defeat-dismiss-btn" class="btn-boss-defeat hidden" onclick="closeWeakeningOverlay()">
+                  <span>🏆 FINALIZAR MISIÓN // SEGUIR APRENDIENDO</span>
+                </button>
               </div>
             </div>
         </div>
@@ -462,8 +527,16 @@
     </div>
   </div>
 
-  <!-- Socket.io cliente y lógica del host -->
+  <!-- Socket.io cliente y módulos del host -->
   <script src="/socket.io/socket.io.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/matrix.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/presentation.js"></script>
+  <script src="js/hack-sequence.js"></script>
+  <script src="js/weakening.js"></script>
+  <script src="js/teams-grid.js"></script>
+  <script src="js/socket-client.js"></script>
   <script src="app.js"></script>
 </body>
 
