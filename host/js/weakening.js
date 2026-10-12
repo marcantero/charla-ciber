@@ -54,12 +54,7 @@ function triggerHackerWeakening(stage, customPhrase, customAudioFile) {
   if (valEl) valEl.textContent = `${integrityPct}%`;
   if (fillEl) fillEl.style.width = `${integrityPct}%`;
 
-  const twistPanel = document.getElementById('boss-twist-panel');
-  const dismissBtn = document.getElementById('boss-defeat-dismiss-btn');
   const timerDesc = document.getElementById('weakening-timer-desc');
-
-  if (twistPanel) twistPanel.classList.add('hidden');
-  if (dismissBtn) dismissBtn.classList.add('hidden');
   if (timerDesc) timerDesc.textContent = 'SE CERRARÁ AUTOMÁTICAMENTE';
 
   overlay.classList.remove('hidden');
