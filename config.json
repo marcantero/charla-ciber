@@ -35,37 +35,37 @@
     "1": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "ALFA-7743",
-      "reto3": "BETA-4491",
+      "reto3": "W3HY4_H0I1K1H4I4",
       "reto4": "R3CT4_C0D1F1C4D4",
-      "reto5": "FLAG{127.0.0.1}-ALFA-7743-BETA-4491-R3CT4_C0D1F1C4D4"
+      "reto5": "FLAG{127.0.0.1}-ALFA-7743-W3HY4_H0I1K1H4I4-R3CT4_C0D1F1C4D4"
     },
     "2": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "DELTA-8821",
-      "reto3": "GAMMA-3312",
+      "reto3": "IB1VH0UB4R14_4R1P",
       "reto4": "CR1PT0GR4F14_4F1N",
-      "reto5": "FLAG{127.0.0.1}-DELTA-8821-GAMMA-3312-CR1PT0GR4F14_4F1N"
+      "reto5": "FLAG{127.0.0.1}-DELTA-8821-IB1VH0UB4R14_4R1P-CR1PT0GR4F14_4F1N"
     },
     "3": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "EPSILON-9904",
-      "reto3": "OMEGA-1150",
+      "reto3": "3GY4G10R_V3GX4",
       "reto4": "3CU4C10N_R3CT4",
-      "reto5": "FLAG{127.0.0.1}-EPSILON-9904-OMEGA-1150-3CU4C10N_R3CT4"
+      "reto5": "FLAG{127.0.0.1}-EPSILON-9904-3GY4G10R_V3GX4-3CU4C10N_R3CT4"
     },
     "4": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "SIGMA-6632",
-      "reto3": "KAPPA-7721",
+      "reto3": "H1QA4K0_I1O34I",
       "reto4": "C1FR4D0_L1N34L",
-      "reto5": "FLAG{127.0.0.1}-SIGMA-6632-KAPPA-7721-C1FR4D0_L1N34L"
+      "reto5": "FLAG{127.0.0.1}-SIGMA-6632-H1QA4K0_I1O34I-C1FR4D0_L1N34L"
     },
     "5": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "ZETA-5519",
-      "reto3": "THETA-8843",
+      "reto3": "HQ4A3_1SA3WX4",
       "reto4": "CL4V3_1NV3RS4",
-      "reto5": "FLAG{127.0.0.1}-ZETA-5519-THETA-8843-CL4V3_1NV3RS4"
+      "reto5": "FLAG{127.0.0.1}-ZETA-5519-HQ4A3_1SA3WX4-CL4V3_1NV3RS4"
     },
     "6": {
       "reto1": "FLAG{127.0.0.1}",

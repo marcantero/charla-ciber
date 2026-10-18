@@ -15,9 +15,9 @@ const PHASES = [
 const ANSWERS = {
   1: 'FLAG{127.0.0.1}',       // Audio clue answer (IP format)
   2: 'ALFA-7743',            // Terminal directory
-  3: 'BETA-4491',            // Encrypted password in metadata
+  3: 'W3HY4_H0I1K1H4I4',     // Encrypted password in metadata
   4: 'R3CT4_C0D1F1C4D4',     // Decrypted image password
-  5: 'FLAG{127.0.0.1}-ALFA-7743-BETA-4491-R3CT4_C0D1F1C4D4' // Final combination
+  5: 'FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}' // Final shared flag
 };
 
 const CORRECT_MSG = [
