@@ -4,11 +4,11 @@
   "numeroEquipos": 5,
   "tiempoMinutos": 45,
   "ponentes": [
+    "Eric Folch",
     "Marc Cantero",
-    "Nombre 2",
-    "Nombre 3",
-    "Nombre 4",
-    "Nombre 5"
+    "Juan Carlos Díaz",
+    "Lucia Acedo",
+    "Alex Casalí"
   ],
   "mensajeHacker": {
     "saludo": "",
