@@ -30,10 +30,8 @@ function resolveAudioPath(p) {
   if (!p) return p;
   if (p.startsWith('http://') || p.startsWith('https://')) return p;
   const clean = p.replace(/^\/+/, '');
-  if (clean.startsWith('audio/')) {
-    return '../' + clean;
-  }
-  return '../audio/' + clean;
+  const basePath = clean.startsWith('audio/') ? '../' + clean : '../audio/' + clean;
+  return basePath + (basePath.includes('?') ? '&' : '?') + 'v=20261018';
 }
 
 // Helper para probar rutas candidatas (.wav y .mp3)
