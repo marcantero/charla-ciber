@@ -29,7 +29,7 @@ const MANIFESTO_PARAGRAPHS = [
   },
   {
     prefix: '> [CANAL AUDIO_INTERCEPT]: ',
-    text: '"¿De verdad creíais que esto era un juego con final feliz, verdad? Pensabais que resolviendo cuatro pistas ibais a recuperar vuestros archivos... Bienvenidos al mundo real."',
+    text: '"De verdad creíais que esto era un juego con final feliz, ¿verdad? Pensabais que resolviendo cuatro pistas ibais a recuperar vuestros archivos. Bienvenidos al mundo real."',
     cls: 'text-amber'
   },
   {
@@ -46,11 +46,6 @@ const MANIFESTO_PARAGRAPHS = [
     prefix: '> [AVISO CRÍTICO]: ',
     text: '"Tomadlo como una lección: esto no era una prueba de rescate, era un aviso."',
     cls: 'text-green highlight-lesson'
-  },
-  {
-    prefix: '> [SYSTEM_FLAG]: ',
-    text: 'Vuestra flag final: FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}',
-    cls: 'text-flag'
   },
   {
     prefix: '> [CONEXIÓN CERRADA]: ',
@@ -704,30 +699,20 @@ function triggerCinematicCameraHeavyShake() {
 
 function revealEpicFlag() {
   const flagBox = document.getElementById('boss-flag-reveal-box');
-  if (!flagBox) return;
-
-  if (!flagBox.classList.contains('hidden')) return;
-
-  flagBox.classList.remove('hidden');
-  flagBox.classList.add('flag-card-materialize');
-
-  const viewport = document.getElementById('boss-cinematic-viewport');
-  if (viewport) {
-    viewport.scrollTop = viewport.scrollHeight;
-  }
+  if (flagBox) flagBox.classList.add('hidden');
 
   if (typeof playVictoryFanfare === 'function') {
     playVictoryFanfare();
   }
 
-  logTerminalEvent('🏆 FLAG DE SEGURIDAD EMITIDA: FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}', 'log-advance');
+  logTerminalEvent('🏆 RETO 5 COMPLETADO // TRANSMISIÓN FINAL DEL ATACANTE CONCLUIDA', 'log-advance');
 
-  // Después de 5 segundos mostrando la flag, transición al final épico del boss y mensaje de gracias
+  // Transición a la despedida del boss y pantalla final
   if (bossDepartureTimer) clearTimeout(bossDepartureTimer);
   bossDepartureTimer = setTimeout(() => {
     if (!bossCinematicActive) return;
     transitionToBossDeparture();
-  }, 5000);
+  }, 2200);
 }
 
 // ----------------------------------------------------------------
@@ -901,20 +886,7 @@ function renderThanksNames(customNames) {
   });
 }
 
-function copyBossFlag(btn) {
-  const flagCode = 'FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}';
-  navigator.clipboard.writeText(flagCode).then(() => {
-    const original = btn.innerHTML;
-    btn.innerHTML = '<span>✓ ¡COPIADA!</span>';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.innerHTML = original;
-      btn.classList.remove('copied');
-    }, 2200);
-  }).catch(() => {
-    prompt('Copia tu FLAG de seguridad:', flagCode);
-  });
-}
+function copyBossFlag() {}
 
 function closeBossCinematic() {
   // BLOQUEO PERMANENTE: Durante y tras la cinemática final de derrota en ningún momento se puede volver ya al menú principal
