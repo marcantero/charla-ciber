@@ -11,14 +11,14 @@ let weakeningTimerId = null;
 function initAudio() {
   if (audioCtx) {
     if (audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => {});
+      audioCtx.resume().catch(() => { });
     }
     return;
   }
   try {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => {});
+      audioCtx.resume().catch(() => { });
     }
   } catch (e) {
     console.warn('Web Audio no disponible:', e);
@@ -93,7 +93,7 @@ function playHackGlitchSound() {
     // Fallback: Sintetizador procedural Web Audio API de cortocircuito
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
-    
+
     // Ruido blanco filtrado (estática CRT)
     const dur = 1.2;
     const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
@@ -102,7 +102,7 @@ function playHackGlitchSound() {
 
     const noiseSrc = audioCtx.createBufferSource();
     noiseSrc.buffer = buf;
-    
+
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'bandpass';
     filter.frequency.setValueAtTime(3200, now);
@@ -179,7 +179,7 @@ function playAIVoice() {
   // 1. Generador de graves misteriosos y zumbido de fondo
   if (audioCtx && !isMuted) {
     const now = audioCtx.currentTime;
-    
+
     // Subgraves de tensión (50Hz y 100Hz)
     const osc1 = audioCtx.createOscillator();
     const osc2 = audioCtx.createOscillator();
@@ -266,7 +266,7 @@ function speakSynthesizedAnonymous() {
     utterance.pitch = 0.22; // Voz ultra grave y amenazante
     utterance.rate = 0.82;  // Ritmo pausado
     utterance.volume = 1.0;
-    
+
     const voices = window.speechSynthesis.getVoices();
     const esVoice = voices.find(v => v.lang.startsWith('es'));
     if (esVoice) utterance.voice = esVoice;
@@ -524,7 +524,7 @@ function playVictoryFanfare() {
 const unlockHostAudio = () => {
   initAudio();
   if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume().catch(() => {});
+    audioCtx.resume().catch(() => { });
   }
 };
 ['click', 'keydown', 'touchstart', 'pointerdown'].forEach(evt => {
