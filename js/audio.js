@@ -12,9 +12,17 @@ let isMuted    = false;
 let isHackingActive = false;
 
 function initAudio() {
-  if (audioCtx) return;
+  if (audioCtx) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return;
+  }
   try {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
     masterGain = audioCtx.createGain();
     masterGain.gain.value = 0.6;
     masterGain.connect(audioCtx.destination);
@@ -34,7 +42,7 @@ function playHackGlitchSound() {
   initAudio();
   if (isMuted) return;
 
-  const glitchAudio = new Audio('/audio/hack_glitch.mp3');
+  const glitchAudio = new Audio('audio/laser_attack.wav');
   glitchAudio.play().catch(() => {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -79,7 +87,7 @@ function playSirenAlarm() {
   initAudio();
   if (isMuted) return;
 
-  const sirenAudio = new Audio('/audio/siren_alarm.mp3');
+  const sirenAudio = new Audio('audio/boss_alarm.wav');
   sirenAudio.play().catch(() => {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -108,43 +116,51 @@ function playAIVoice() {
   initAudio();
 
   if (audioCtx && !isMuted) {
-    const now = audioCtx.currentTime;
-    const osc1 = audioCtx.createOscillator();
-    const osc2 = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    const filter = audioCtx.createBiquadFilter();
+    try {
+      const now = audioCtx.currentTime;
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
 
-    osc1.type = 'sawtooth';
-    osc1.frequency.setValueAtTime(52, now);
-    osc1.frequency.exponentialRampToValueAtTime(36, now + 5.0);
+      osc1.type = 'sawtooth';
+      osc1.frequency.setValueAtTime(52, now);
+      osc1.frequency.exponentialRampToValueAtTime(36, now + 5.0);
 
-    osc2.type = 'square';
-    osc2.frequency.setValueAtTime(104, now);
-    osc2.frequency.exponentialRampToValueAtTime(72, now + 5.0);
+      osc2.type = 'square';
+      osc2.frequency.setValueAtTime(104, now);
+      osc2.frequency.exponentialRampToValueAtTime(72, now + 5.0);
 
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(400, now);
-    filter.Q.value = 6;
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(400, now);
+      filter.Q.value = 6;
 
-    gain.gain.setValueAtTime(0.001, now);
-    gain.gain.linearRampToValueAtTime(0.28, now + 0.4);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 5.5);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.28, now + 0.4);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 5.5);
 
-    osc1.connect(filter);
-    osc2.connect(filter);
-    filter.connect(gain);
-    gain.connect(audioCtx.destination);
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
 
-    osc1.start(now);
-    osc2.start(now);
-    osc1.stop(now + 5.8);
-    osc2.stop(now + 5.8);
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 5.8);
+      osc2.stop(now + 5.8);
+    } catch (e) {}
   }
 
-  const customVoice = new Audio('/audio/anon_voice.mp3');
-  customVoice.play().catch(() => {
-    const fallbackVoice = new Audio('/audio/ai_voice.mp3');
-    fallbackVoice.play().catch(() => {
+  // Reproducir audio-hacker-inicio.mp3 y después audio-hacker-inicio2.mp3
+  const voice1 = new Audio('audio/audio-hacker-inicio.mp3');
+  voice1.play().then(() => {
+    voice1.onended = () => {
+      const voice2 = new Audio('audio/audio-hacker-inicio2.mp3');
+      voice2.play().catch(() => {});
+    };
+  }).catch(() => {
+    const customVoice = new Audio('audio/anon_voice.mp3');
+    customVoice.play().catch(() => {
       speakSynthesizedAnonymous();
     });
   });
@@ -516,5 +532,12 @@ function seekInterceptAudio(e) {
   audio.currentTime = ratio * audio.duration;
 }
 
-document.addEventListener('click',   initAudio, { once: true });
-document.addEventListener('keydown', initAudio, { once: true });
+const unlockAudio = () => {
+  initAudio();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+};
+['click', 'keydown', 'touchstart', 'pointerdown'].forEach(evt => {
+  document.addEventListener(evt, unlockAudio, { passive: true });
+});

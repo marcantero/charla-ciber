@@ -9,15 +9,34 @@ let sirenInterval = null;
 let weakeningTimerId = null;
 
 function initAudio() {
-  if (audioCtx) return;
+  if (audioCtx) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return;
+  }
   try {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
   } catch (e) {
     console.warn('Web Audio no disponible:', e);
   }
 }
 
-// Helper para probar rutas candidatas (/audio/hacker y /audio/, .wav y .mp3)
+// Resolver rutas relativas para el Host (en subcarpeta /host/)
+function resolveAudioPath(p) {
+  if (!p) return p;
+  if (p.startsWith('http://') || p.startsWith('https://')) return p;
+  const clean = p.replace(/^\/+/, '');
+  if (clean.startsWith('audio/')) {
+    return '../' + clean;
+  }
+  return '../audio/' + clean;
+}
+
+// Helper para probar rutas candidatas (.wav y .mp3)
 function tryPlayCandidates(candidates, onFail, onEnd) {
   let idx = 0;
   function next() {
@@ -25,7 +44,8 @@ function tryPlayCandidates(candidates, onFail, onEnd) {
       if (onFail) onFail();
       return;
     }
-    const path = candidates[idx++];
+    const raw = candidates[idx++];
+    const path = resolveAudioPath(raw);
     const sound = new Audio(path);
     sound.play().then(() => {
       console.log(`[AUDIO] Reproduciendo archivo: ${path}`);
@@ -45,7 +65,8 @@ function tryPlayAudioWithSync(candidates, onStart, onFail, onEnd) {
       if (onFail) onFail();
       return;
     }
-    const path = candidates[idx++];
+    const raw = candidates[idx++];
+    const path = resolveAudioPath(raw);
     const sound = new Audio(path);
     sound.play().then(() => {
       console.log(`[AUDIO SYNC] Reproduciendo archivo sincronizado: ${path}`);
@@ -500,5 +521,12 @@ function playVictoryFanfare() {
     osc.start(startTime);
     osc.stop(startTime + dur + 0.1);
   });
-}
-
+const unlockHostAudio = () => {
+  initAudio();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+};
+['click', 'keydown', 'touchstart', 'pointerdown'].forEach(evt => {
+  document.addEventListener(evt, unlockHostAudio, { passive: true });
+});

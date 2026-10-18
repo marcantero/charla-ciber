@@ -11,19 +11,31 @@ let wetBus     = null;
 let isMuted    = false;
 
 function initAudio() {
-  if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  masterGain = audioCtx.createGain();
-  masterGain.gain.value = 0.6;
-  masterGain.connect(audioCtx.destination);
-  reverbNode = buildReverb();
-  dryBus = audioCtx.createGain(); dryBus.gain.value = 0.78;
-  wetBus = audioCtx.createGain(); wetBus.gain.value = 0.22;
-  reverbNode.connect(wetBus);
-  dryBus.connect(masterGain);
-  wetBus.connect(masterGain);
-  startAmbientDrone();
-  startRandomGlitches();
+  if (audioCtx) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    return;
+  }
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.6;
+    masterGain.connect(audioCtx.destination);
+    reverbNode = buildReverb();
+    dryBus = audioCtx.createGain(); dryBus.gain.value = 0.78;
+    wetBus = audioCtx.createGain(); wetBus.gain.value = 0.22;
+    reverbNode.connect(wetBus);
+    dryBus.connect(masterGain);
+    wetBus.connect(masterGain);
+    startAmbientDrone();
+    startRandomGlitches();
+  } catch (e) {
+    console.warn('AudioContext no inicializado:', e);
+  }
 }
 
 // Synthesized convolver reverb
@@ -368,5 +380,12 @@ function seekInterceptAudio(e) {
   audio.currentTime = ratio * audio.duration;
 }
 
-document.addEventListener('click',   initAudio, { once: true });
-document.addEventListener('keydown', initAudio, { once: true });
+const unlockPlayersAudio = () => {
+  initAudio();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+};
+['click', 'keydown', 'touchstart', 'pointerdown'].forEach(evt => {
+  document.addEventListener(evt, unlockPlayersAudio, { passive: true });
+});

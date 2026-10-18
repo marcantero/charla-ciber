@@ -64,3 +64,9 @@ document.addEventListener('keydown', (e) => {
     showScreen('briefing-screen');
   }
 });
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof initInterceptAudioPlayer === 'function') {
+    initInterceptAudioPlayer();
+  }
+});

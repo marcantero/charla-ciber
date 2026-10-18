@@ -247,8 +247,8 @@ function startInitialHackTypewriter() {
     }
 
     const part2Candidates = [
-      '/audio/hacker/audio-hacker-inicio2.mp3',
-      '/audio/audio-hacker-inicio2.mp3'
+      '../audio/hacker/audio-hacker-inicio2.mp3',
+      '../audio/audio-hacker-inicio2.mp3'
     ];
 
     if (typeof tryPlayAudioWithSync === 'function') {
@@ -292,8 +292,8 @@ function startInitialHackTypewriter() {
   }
 
   const part1Candidates = [
-    '/audio/hacker/audio-hacker-inicio.mp3',
-    '/audio/audio-hacker-inicio.mp3'
+    '../audio/hacker/audio-hacker-inicio.mp3',
+    '../audio/audio-hacker-inicio.mp3'
   ];
 
   if (typeof tryPlayAudioWithSync === 'function') {

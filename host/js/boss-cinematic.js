@@ -370,12 +370,12 @@ function typewriterManifestoWithSpeakingAvatar() {
 
   const audioCfg = (appConfig && appConfig.mensajesDebilitamiento && appConfig.mensajesDebilitamiento.hito3 && appConfig.mensajesDebilitamiento.hito3.audio) || 'audio-hacker-3.mp3';
   const candidates = [
-    `/audio/hacker/${audioCfg}`,
-    `/audio/${audioCfg}`,
-    '/audio/hacker/audio-hacker-3.mp3',
-    '/audio/audio-hacker-3.mp3',
-    '/audio/hacker/hacker_derrota.mp3',
-    '/audio/hacker_derrota.mp3'
+    `../audio/hacker/${audioCfg}`,
+    `../audio/${audioCfg}`,
+    '../audio/hacker/audio-hacker-3.mp3',
+    '../audio/audio-hacker-3.mp3',
+    '../audio/hacker/hacker_derrota.mp3',
+    '../audio/hacker_derrota.mp3'
   ];
 
   let typewritingStarted = false;
@@ -933,7 +933,7 @@ function startBattleIntroAmbience() {
       bossIntroAmbience.pause();
       bossIntroAmbience.currentTime = 0;
     }
-    bossIntroAmbience = new Audio('/audio/sfx/battle_intro_ambience.wav');
+    bossIntroAmbience = new Audio('../audio/sfx/battle_intro_ambience.wav');
     bossIntroAmbience.volume = 0.55;
     bossIntroAmbience.loop = true;
     const playPromise = bossIntroAmbience.play();
@@ -958,7 +958,7 @@ function stopBattleIntroAmbience() {
 function playRealisticSound(filename, volume = 0.8, fallbackFn = null) {
   if (isMuted) return;
   try {
-    const audio = new Audio(`/audio/sfx/${filename}`);
+    const audio = new Audio(`../audio/sfx/${filename}`);
     audio.volume = Math.min(1, Math.max(0, volume));
     const playPromise = audio.play();
     if (playPromise !== undefined) {
@@ -981,7 +981,7 @@ function playBossFinalDestructionMusic(volume = 0.95) {
       bossFinalMusic.currentTime = 0;
     }
     // Cargar la canción subida por el usuario: final-music.mp3
-    bossFinalMusic = new Audio('/audio/sfx/final-music.mp3');
+    bossFinalMusic = new Audio('../audio/sfx/final-music.mp3');
     bossFinalMusic.volume = Math.min(1, Math.max(0, volume));
     bossFinalMusic.loop = false; // Canción con timing exacto (~5.8s)
     const playPromise = bossFinalMusic.play();
@@ -989,7 +989,7 @@ function playBossFinalDestructionMusic(volume = 0.95) {
       playPromise.catch(e => {
         console.warn('final-music.mp3 bloqueado por autoplay o error, usando fallback:', e);
         try {
-          bossFinalMusic = new Audio('/audio/sfx/final_cinematic_music.wav');
+          bossFinalMusic = new Audio('../audio/sfx/final_cinematic_music.wav');
           bossFinalMusic.volume = volume;
           bossFinalMusic.play().catch(() => {});
         } catch (_) {}
@@ -1009,7 +1009,7 @@ function startFinalCinematicMusic() {
       bossFinalMusic.pause();
       bossFinalMusic.currentTime = 0;
     }
-    bossFinalMusic = new Audio('/audio/sfx/final_cinematic_music.wav');
+    bossFinalMusic = new Audio('../audio/sfx/final_cinematic_music.wav');
     bossFinalMusic.volume = 0.55;
     bossFinalMusic.loop = true;
     const playPromise = bossFinalMusic.play();
