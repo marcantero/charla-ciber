@@ -73,7 +73,7 @@ function initPlayerSocket(teamId) {
       });
     }
   } else {
-    console.warn('[SOCKET] Cliente de Socket.io no disponible (modo individual).');
+    console.info('[SOCKET] Modo individual / offline activado.');
   }
 }
 

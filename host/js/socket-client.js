@@ -6,8 +6,13 @@
 let socket = null;
 
 function initHostSocket() {
-  if (typeof io === 'undefined') {
-    console.error('Socket.io no cargado.');
+  if (typeof io === 'undefined' || window.location.hostname.includes('github.io')) {
+    console.info('[HOST] Modo autónomo / GitHub Pages (sin servidor central Socket.io).');
+    const chipText = document.getElementById('server-status-text');
+    if (chipText) {
+      chipText.textContent = 'AUTÓNOMO';
+      chipText.style.color = '#00ff88';
+    }
     return;
   }
 

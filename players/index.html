@@ -493,7 +493,11 @@
   </div>
 
   <!-- SCRIPTS MODULARES Y SOCKET.IO -->
-  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    if (!window.location.hostname.includes('github.io') && window.location.protocol !== 'file:') {
+      document.write('<script src="/socket.io/socket.io.js"><\/script>');
+    }
+  </script>
   <script src="js/audio.js"></script>
   <script src="js/matrix.js"></script>
   <script src="js/timer.js"></script>

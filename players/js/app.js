@@ -7,6 +7,14 @@ let appConfig = null;
 
 async function fetchPlayerConfig() {
   try {
+    if (window.location.hostname.includes('github.io') || window.location.protocol === 'file:') {
+      const res = await fetch('../config.json');
+      if (res.ok) {
+        appConfig = await res.json();
+        applyPlayerConfig(appConfig);
+        return;
+      }
+    }
     let res = await fetch('/api/config');
     if (!res.ok) {
       res = await fetch('../config.json');

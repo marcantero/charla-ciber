@@ -521,6 +521,8 @@ function playVictoryFanfare() {
     osc.start(startTime);
     osc.stop(startTime + dur + 0.1);
   });
+}
+
 const unlockHostAudio = () => {
   initAudio();
   if (audioCtx && audioCtx.state === 'suspended') {

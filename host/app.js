@@ -11,6 +11,14 @@ let appConfig = {
 
 async function fetchHostConfig() {
   try {
+    if (window.location.hostname.includes('github.io') || window.location.protocol === 'file:') {
+      const res = await fetch('../config.json');
+      if (res.ok) {
+        const data = await res.json();
+        applyConfigToHost(data);
+        return;
+      }
+    }
     let res = await fetch('/api/config');
     if (!res.ok) {
       res = await fetch('../config.json');
