@@ -31,8 +31,7 @@ function initAudio() {
     reverbNode.connect(wetBus);
     dryBus.connect(masterGain);
     wetBus.connect(masterGain);
-    startAmbientDrone();
-    startRandomGlitches();
+    // Audio de fondo y glitches desactivados a petición del usuario
   } catch (e) {
     console.warn('AudioContext no inicializado:', e);
   }
@@ -56,159 +55,34 @@ function buildReverb() {
 function mix(node) { node.connect(dryBus); node.connect(reverbNode); }
 
 // -- Ambient drone: 5 osc + noise + dual LFOs ------------------
+// -- Ambient drone: Desactivado a petición del usuario --
 function startAmbientDrone() {
-  const filt = audioCtx.createBiquadFilter();
-  filt.type = 'lowpass'; filt.frequency.value = 160; filt.Q.value = 2.8;
-  // Filter cutoff LFO
-  const fLfo = audioCtx.createOscillator(); const fLfoG = audioCtx.createGain();
-  fLfo.frequency.value = 0.06; fLfoG.gain.value = 80;
-  fLfo.connect(fLfoG); fLfoG.connect(filt.frequency); fLfo.start();
-  // Oscillator stack
-  [
-    { type:'sawtooth', f:36,    g:0.11 },
-    { type:'sawtooth', f:36.22, g:0.09 },
-    { type:'sine',     f:72.1,  g:0.055 },
-    { type:'sine',     f:108.3, g:0.035 },
-    { type:'sine',     f:144.8, g:0.022 },
-  ].forEach(function(o) {
-    var osc = audioCtx.createOscillator(); var g = audioCtx.createGain();
-    osc.type = o.type; osc.frequency.value = o.f; g.gain.value = o.g;
-    osc.connect(g); g.connect(filt); osc.start();
-  });
-  // Fan noise (bandpass white noise, looping)
-  const nLen = audioCtx.sampleRate * 2;
-  const nBuf = audioCtx.createBuffer(1, nLen, audioCtx.sampleRate);
-  const nD   = nBuf.getChannelData(0);
-  for (let i = 0; i < nLen; i++) nD[i] = Math.random() * 2 - 1;
-  const nSrc = audioCtx.createBufferSource();
-  const nHPF = audioCtx.createBiquadFilter();
-  const nLPF = audioCtx.createBiquadFilter();
-  const nG   = audioCtx.createGain();
-  nSrc.buffer = nBuf; nSrc.loop = true;
-  nHPF.type = 'highpass'; nHPF.frequency.value = 400;
-  nLPF.type = 'lowpass';  nLPF.frequency.value = 900;
-  nG.gain.value = 0.02;
-  nSrc.connect(nHPF); nHPF.connect(nLPF); nLPF.connect(nG); nG.connect(filt);
-  nSrc.start();
-  // Volume tremolo LFO
-  const droneG = audioCtx.createGain(); droneG.gain.value = 0.50;
-  const vLfo = audioCtx.createOscillator(); const vLfoG = audioCtx.createGain();
-  vLfo.frequency.value = 0.15; vLfoG.gain.value = 0.065;
-  vLfo.connect(vLfoG); vLfoG.connect(droneG.gain); vLfo.start();
-  filt.connect(droneG); droneG.connect(dryBus); droneG.connect(reverbNode);
+  // Silenciado
 }
 
-// -- Glitch bursts (4 varieties) --------------------------------
+// -- Glitch bursts: Desactivado a petición del usuario --
 function startRandomGlitches() {
-  (function loop() {
-    setTimeout(function() {
-      if (!isMuted && audioCtx) {
-        [glitchNoise, glitchTone, glitchScratch, glitchStutter][Math.floor(Math.random()*4)]();
-      }
-      loop();
-    }, 1500 + Math.random() * 5000);
-  })();
+  // Silenciado
 }
 
-function glitchNoise() {
-  const dur = 0.025 + Math.random() * 0.07;
-  const sz  = Math.floor(audioCtx.sampleRate * dur);
-  const buf = audioCtx.createBuffer(1, sz, audioCtx.sampleRate);
-  const d   = buf.getChannelData(0);
-  for (let i = 0; i < sz; i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/sz, 1.8);
-  const src = audioCtx.createBufferSource(); src.buffer = buf;
-  const bp  = audioCtx.createBiquadFilter(); bp.type='bandpass'; bp.Q.value = 4+Math.random()*6;
-  bp.frequency.value = 300 + Math.random()*5000;
-  const g = audioCtx.createGain(); g.gain.value = 0.07+Math.random()*0.09;
-  src.connect(bp); bp.connect(g); g.connect(masterGain); src.start();
-}
-
-function glitchTone() {
-  const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
-  const t = audioCtx.currentTime;
-  const f = [110,220,440,880,1760][Math.floor(Math.random()*5)];
-  osc.type = Math.random()>.5 ? 'square' : 'sawtooth'; osc.frequency.value = f;
-  osc.frequency.exponentialRampToValueAtTime(f*(0.4+Math.random()*1.2), t+0.07);
-  g.gain.setValueAtTime(0.08, t); g.gain.exponentialRampToValueAtTime(0.0001, t+0.08);
-  osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t+0.09);
-}
-
-function glitchScratch() {
-  const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
-  const t = audioCtx.currentTime; const dur = 0.12+Math.random()*0.22;
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(1400, t);
-  osc.frequency.linearRampToValueAtTime(60,   t+dur*0.3);
-  osc.frequency.linearRampToValueAtTime(1100,  t+dur*0.6);
-  osc.frequency.linearRampToValueAtTime(180,  t+dur);
-  g.gain.setValueAtTime(0.0, t); g.gain.linearRampToValueAtTime(0.1, t+0.015);
-  g.gain.exponentialRampToValueAtTime(0.0001, t+dur+0.02);
-  osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t+dur+0.04);
-}
-
-function glitchStutter() {
-  const n = 3+Math.floor(Math.random()*4);
-  for (let p = 0; p < n; p++) {
-    const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
-    const t = audioCtx.currentTime + p*0.038;
-    osc.type = 'square'; osc.frequency.value = 500+Math.random()*600;
-    g.gain.setValueAtTime(0.065, t); g.gain.exponentialRampToValueAtTime(0.0001, t+0.03);
-    osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t+0.035);
-  }
-}
+function glitchNoise() {}
+function glitchTone() {}
+function glitchScratch() {}
+function glitchStutter() {}
 
 // -- Keyboard click: noise transient + pitched thud ------------
 function playKeyClick() {
-  if (!audioCtx || isMuted) return;
-  const t = audioCtx.currentTime;
-  // Noise transient (attack)
-  const nSz  = Math.floor(audioCtx.sampleRate * 0.007);
-  const nBuf = audioCtx.createBuffer(1, nSz, audioCtx.sampleRate);
-  const nD   = nBuf.getChannelData(0);
-  for (let i = 0; i < nSz; i++) nD[i] = (Math.random()*2-1) * (1-i/nSz);
-  const nSrc = audioCtx.createBufferSource(); nSrc.buffer = nBuf;
-  const nHP  = audioCtx.createBiquadFilter(); nHP.type='highpass'; nHP.frequency.value = 2500;
-  const nG   = audioCtx.createGain(); nG.gain.value = 0.2;
-  nSrc.connect(nHP); nHP.connect(nG); nG.connect(masterGain); nSrc.start(t);
-  // Pitched thud
-  const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
-  osc.type = 'triangle';
-  osc.frequency.setValueAtTime(260 + Math.random()*130, t);
-  osc.frequency.exponentialRampToValueAtTime(75, t+0.028);
-  g.gain.setValueAtTime(0.09, t); g.gain.exponentialRampToValueAtTime(0.0001, t+0.032);
-  osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t+0.036);
+  // Silenciado sonido de tecleo continuo
 }
 
-// -- Progress tick: pitch rises with bar % --------------------
+// -- Progress tick: Silenciado a petición del usuario ----------
 function playProgressTick(pct) {
-  if (!audioCtx || isMuted) return;
-  pct = pct || 50;
-  const t    = audioCtx.currentTime;
-  const freq = 330 * Math.pow(4, pct/100);
-  const osc  = audioCtx.createOscillator(); const g = audioCtx.createGain();
-  const osc2 = audioCtx.createOscillator(); const g2= audioCtx.createGain();
-  osc.type='sine';  osc.frequency.value = freq;
-  osc2.type='sine'; osc2.frequency.value = freq*2; g2.gain.value = 0.25;
-  osc2.connect(g2); g2.connect(g);
-  g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t+0.09);
-  osc.connect(g); mix(g); osc.start(t); osc.stop(t+0.11); osc2.start(t); osc2.stop(t+0.11);
+  // Silenciado
 }
 
-// -- File complete: sweep down + double-ping ------------------
+// -- File complete: Silenciado a petición del usuario ----------
 function playFileComplete() {
-  if (!audioCtx || isMuted) return;
-  const t = audioCtx.currentTime;
-  const sw = audioCtx.createOscillator(); const swG = audioCtx.createGain();
-  sw.type = 'sawtooth';
-  sw.frequency.setValueAtTime(1046, t); sw.frequency.exponentialRampToValueAtTime(52, t+0.5);
-  swG.gain.setValueAtTime(0.16, t); swG.gain.exponentialRampToValueAtTime(0.0001, t+0.52);
-  sw.connect(swG); mix(swG); sw.start(t); sw.stop(t+0.55);
-  [0.56, 0.68].forEach(function(d) {
-    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-    o.type = 'sine'; o.frequency.value = 1319;
-    g.gain.setValueAtTime(0.11, t+d); g.gain.exponentialRampToValueAtTime(0.0001, t+d+0.12);
-    o.connect(g); mix(g); o.start(t+d); o.stop(t+d+0.14);
-  });
+  // Silenciado
 }
 
 // -- Success: ascending arp + shimmer -------------------------

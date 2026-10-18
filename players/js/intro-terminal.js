@@ -54,7 +54,6 @@ function typeTerminal() {
   const interval = setInterval(() => {
     if (i < cmd.length) {
       el.textContent += cmd[i++];
-      playKeyClick();
     } else {
       clearInterval(interval);
       terminalReady = true;
@@ -103,7 +102,6 @@ function startNextFile() {
 
   // Animate progress 0 → 100
   let progress = 0;
-  let lastTickAt = 0;
   terminalProgressInterval = setInterval(() => {
     if (currentScreen !== 'intro-screen') {
       clearInterval(terminalProgressInterval);
@@ -123,20 +121,9 @@ function startNextFile() {
     fill.style.width   = progress + '%';
     pct.textContent    = Math.floor(progress) + '%';
 
-    // Tick sound every ~10%
-    if (Math.floor(progress) % 10 === 0 && Math.floor(progress) !== lastTickAt) {
-      lastTickAt = Math.floor(progress);
-      if (currentScreen === 'intro-screen') {
-        playProgressTick(Math.floor(progress));
-      }
-    }
-
     if (progress >= 100) {
       clearInterval(terminalProgressInterval);
       terminalProgressInterval = null;
-      if (currentScreen === 'intro-screen') {
-        playFileComplete();
-      }
       // Brief pause at 100%, then next file
       if (currentScreen === 'intro-screen') {
         terminalTimeout = setTimeout(() => startNextFile(), 600);
