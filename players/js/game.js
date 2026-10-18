@@ -106,7 +106,16 @@ function checkAnswer(phaseNum) {
 
   const cleanUser = userAnswer.replace(/[\s\-_]/g, '');
   const cleanCorrect = correctAnswer.replace(/[\s\-_]/g, '');
-  const isMatch = (userAnswer === correctAnswer) || (cleanUser === cleanCorrect);
+  let isMatch = (userAnswer === correctAnswer) || (cleanUser === cleanCorrect);
+
+  if (phaseNum === 5) {
+    const SHARED_FINAL = 'FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}';
+    const cleanFinal = SHARED_FINAL.replace(/[\s\-_{}]/g, '');
+    const cleanUserNoBraces = userAnswer.replace(/[\s\-_{}]/g, '');
+    if (userAnswer === SHARED_FINAL || cleanUserNoBraces === cleanFinal || cleanUserNoBraces.includes('NUNC4C0NF13SYS1GU34PR3ND13ND0')) {
+      isMatch = true;
+    }
+  }
 
   if (isMatch) {
     playSuccess();
@@ -219,3 +228,91 @@ document.addEventListener('keydown', (e) => {
     showScreen('briefing-screen');
   }
 });
+
+// ================================================================
+// RETO 5: Fragmentos de script por equipo y ejecución interactiva
+// ================================================================
+const TEAM_FRAGMENTS = {
+  1: 'FLAG{NUNC4_',
+  2: 'C0NF13S_',
+  3: 'Y_',
+  4: 'S1GU3_',
+  5: '4PR3ND13ND0}',
+  6: 'R3D_',
+  7: 'S3CUR3_',
+  8: '2026}'
+};
+
+let scriptRunning = false;
+
+function runTeamScript() {
+  if (scriptRunning) return;
+  scriptRunning = true;
+  const term = document.getElementById('script-terminal-body');
+  if (!term) return;
+
+  const teamId = (typeof currentTeamId !== 'undefined' && currentTeamId) ? currentTeamId : 1;
+  const fragment = TEAM_FRAGMENTS[teamId] || 'FLAG{NUNC4_';
+
+  term.innerHTML = `<div class="fterm-line"><span class="fterm-prompt">$</span> python3 script_nodo.py</div>`;
+
+  const steps = [
+    { text: '> [1/3] Conectando con cortafuegos del instituto... [OK]', cls: 'fterm-result', delay: 350 },
+    { text: `> [2/3] Identificando firma de seguridad del Equipo 0${teamId}...`, cls: 'fterm-result', delay: 700 },
+    { text: '> [3/3] Desencriptando bloque cifrado del nodo...', cls: 'fterm-result', delay: 1050 },
+    { text: `> ============================================================`, cls: 'fterm-result', delay: 1350 },
+    { text: `> [✓] TU FRAGMENTO DE FLAG: <span style="color:#00ff88; font-weight:bold; font-size:1.15em; background:rgba(0,255,136,0.12); padding:3px 8px; border:1px solid #00ff88; border-radius:3px;">${fragment}</span>`, cls: 'fterm-key', delay: 1600 },
+    { text: `> ============================================================`, cls: 'fterm-result', delay: 1800 },
+    { text: `> 💡 ¡Pon en común este fragmento con el resto de grupos de la clase para parar al hacker!`, cls: 'fterm-hidden', delay: 2000 }
+  ];
+
+  steps.forEach(item => {
+    setTimeout(() => {
+      const lineEl = document.createElement('div');
+      lineEl.className = 'fterm-line ' + (item.cls || '');
+      lineEl.innerHTML = item.text;
+      term.appendChild(lineEl);
+      term.scrollTop = term.scrollHeight;
+    }, item.delay);
+  });
+
+  setTimeout(() => {
+    scriptRunning = false;
+    const fragDisplay = document.getElementById(`frag-display-${teamId}`);
+    if (fragDisplay) {
+      fragDisplay.textContent = fragment;
+      fragDisplay.classList.add('revealed');
+      fragDisplay.style.color = '#00ff88';
+      fragDisplay.style.borderColor = '#00ff88';
+    }
+  }, 2200);
+}
+
+function downloadScriptFile() {
+  const teamId = (typeof currentTeamId !== 'undefined' && currentTeamId) ? currentTeamId : 1;
+  const fragment = TEAM_FRAGMENTS[teamId] || 'FLAG{NUNC4_';
+  const pyCode = `#!/usr/bin/env python3
+# ============================================================
+# ESCAPE ROOM CIBERSEGURIDAD - SCRIPT DE NODO (EQUIPO ${teamId})
+# ============================================================
+import time
+
+print("[+] Conectando al cortafuegos central del instituto...")
+time.sleep(0.8)
+print("[+] Desencriptando bloque cifrado del Equipo ${teamId}...")
+time.sleep(0.8)
+print("\\n============================================================")
+print(" [✓] TU FRAGMENTO DE LA FLAG:  ${fragment}")
+print("============================================================\\n")
+print("[*] Pon este fragmento en común con los demás grupos de la clase.")
+print("[*] Juntos formad la flag completa para detener al hacker.")
+`;
+  const blob = new Blob([pyCode], { type: 'text/x-python' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `script_nodo_${teamId}.py`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}

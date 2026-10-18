@@ -448,31 +448,63 @@
   <div class="screen hidden phase-screen" id="phase-5-screen">
     <div class="phase-header">
       <div class="phase-badge mono">// FASE 05 / CLÍMAX</div>
-      <div class="phase-tool mono">Colaboración en el aula</div>
+      <div class="phase-tool mono glitched-target"><span class="censor-tag">[TERMINAL // SCRIPT & COLABORACIÓN]</span></div>
     </div>
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN FINAL</div>
-        <p class="mission-text">¡Tenéis todos los códigos! Ahora hay que combinarlos para descifrar el sistema.<br><strong>Tendréis que poner en común los trozos de cada flag y ponerla cada uno en su máquina.</strong></p>
+        <p class="mission-text">Ejecuta el script y consigue una parte de la flag. Para completar el 5º y último reto, tendréis que poner en común todas las partes de las flags con todos los grupos para parar al hacker.</p>
       </div>
-      <div class="climax-codes mono">
-        <div class="code-collect">
-          <div class="code-item"><span class="code-phase">FASE 01</span><span class="code-val" id="col-code-1">[ ???
-              ]</span></div>
-          <div class="code-item"><span class="code-phase">FASE 02</span><span class="code-val" id="col-code-2">[ ???
-              ]</span></div>
-          <div class="code-item"><span class="code-phase">FASE 03</span><span class="code-val" id="col-code-3">[ ???
-              ]</span></div>
-          <div class="code-item"><span class="code-phase">FASE 04</span><span class="code-val" id="col-code-4">[ ???
-              ]</span></div>
+
+      <div class="clue-box">
+        <div class="clue-label mono">// RECURSO CRÍTICO //</div>
+        <div class="clue-content" style="margin-bottom: 8px;">
+          <span class="clue-file mono">script_nodo.py</span>
+          <span class="clue-hint mono">[pista: ejecuta el script para desencriptar el fragmento de tu grupo]</span>
+        </div>
+
+        <!-- Terminal interactiva para ejecutar el script -->
+        <div class="fake-terminal mono" style="margin-top: 10px; border-color: rgba(0, 240, 255, 0.35);">
+          <div class="terminal-header" style="background: rgba(0,0,0,0.6); padding: 8px 12px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <span class="terminal-dot red" style="width: 10px; height: 10px; border-radius: 50%; background: #ff3366; display: inline-block;"></span>
+            <span class="terminal-dot yellow" style="width: 10px; height: 10px; border-radius: 50%; background: #ffaa00; display: inline-block;"></span>
+            <span class="terminal-dot green" style="width: 10px; height: 10px; border-radius: 50%; background: #00ff88; display: inline-block;"></span>
+            <span class="terminal-title mono" style="font-size: 0.72rem; color: #888; margin-left: 8px;">bash - python3 script_nodo.py</span>
+          </div>
+          <div class="fake-term-body" id="script-terminal-body" style="min-height: 80px; padding: 12px 14px;">
+            <div class="fterm-line text-muted">// Haz clic en "EJECUTAR SCRIPT" para extraer el fragmento de este equipo...</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="cyber-link-btn mono" onclick="runTeamScript()" id="btn-run-script" style="background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.5); color: #00ff88;">
+            <span class="play-icon">▶</span>
+            <span>EJECUTAR SCRIPT EN TERMINAL</span>
+          </button>
+          <button class="cyber-link-btn mono" style="opacity: 0.85; border-color: rgba(255,255,255,0.25); color: #fff;" onclick="downloadScriptFile()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>DESCARGAR SCRIPT (.PY)</span>
+          </button>
         </div>
       </div>
+
+      <!-- Resumen visual de fragmentos de la clase -->
+      <div class="climax-codes mono">
+        <div class="code-collect">
+          <div class="code-item"><span class="code-phase">EQUIPO 01</span><span class="code-val" id="frag-display-1">[ ? ]</span></div>
+          <div class="code-item"><span class="code-phase">EQUIPO 02</span><span class="code-val" id="frag-display-2">[ ? ]</span></div>
+          <div class="code-item"><span class="code-phase">EQUIPO 03</span><span class="code-val" id="frag-display-3">[ ? ]</span></div>
+          <div class="code-item"><span class="code-phase">EQUIPO 04</span><span class="code-val" id="frag-display-4">[ ? ]</span></div>
+          <div class="code-item"><span class="code-phase">EQUIPO 05</span><span class="code-val" id="frag-display-5">[ ? ]</span></div>
+        </div>
+      </div>
+
       <div class="answer-section">
-        <div class="answer-label mono">SECUENCIA FINAL (poned en común los trozos de cada flag):</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG FINAL COMPLETA (en común con todos los grupos):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-5" type="text" placeholder="FLAG1-FLAG2-FLAG3-FLAG4" maxlength="120"
+          <input class="hack-input" id="ans-5" type="text" placeholder="FLAG{...}" maxlength="120"
             autocomplete="off">
-          <button class="btn-submit" onclick="checkAnswer(5)">DESCIFRAR</button>
+          <button class="btn-submit" onclick="checkAnswer(5)">DESCIFRAR Y PARAR AL HACKER</button>
         </div>
         <div class="answer-feedback" id="feedback-5"></div>
       </div>
