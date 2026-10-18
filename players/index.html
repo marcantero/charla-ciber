@@ -90,9 +90,6 @@
             <span class="title-white">TE HAN</span><br>
             <span class="title-red glitch-text" data-text="HACKEADO">HACKEADO</span>
           </h1>
-          <div class="subtitle-badge">
-            <span class="subtitle-text">POR UNA IA, DICEN</span>
-          </div>
         </div>
         <div class="terminal-box" id="terminal-box">
           <div class="terminal-header">
@@ -125,7 +122,7 @@
         </div>
         <div class="mission-brief">
           <div class="brief-header mono">// MISIÓN //</div>
-          <p class="brief-text">Una IA ha tomado el control de los sistemas de nuestro instituto.<br>Tienes <strong>5
+          <p class="brief-text"><br>Tienes <strong>5
               retos</strong> para recuperarlo. Falla y lo pierdes todo.</p>
         </div>
         <button class="btn-hack" id="start-btn" onclick="startMission()">
@@ -285,14 +282,14 @@
       <div class="clue-box" style="margin-top: 1rem; border-left: 3px solid var(--neon-cyan); background: rgba(0, 255, 234, 0.05); padding: 0.75rem 1rem;">
         <div class="clue-label mono" style="color: var(--neon-cyan);">// FORMATO DE LA FLAG //</div>
         <p class="mission-text mono" style="margin: 0; font-size: 0.95rem; color: #ffffff;">
-          💡 <strong>Formato requerido:</strong> El formato de la flag es: <code>FLAG{ip}</code> (ejemplo: <code>FLAG{127.0.0.1}</code>).
+          💡 <strong>Formato requerido:</strong> El formato de la flag es: <code>FLAG{ip}</code> (ejemplo: <code>FLAG{234.23.34.12}</code>).
         </p>
       </div>
 
       <div class="answer-section">
         <div class="answer-label mono">INTRODUCE LA FLAG (formato FLAG{ip}):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-1" type="text" placeholder="FLAG{127.0.0.1}" maxlength="35" autocomplete="off">
+          <input class="hack-input" id="ans-1" type="text" placeholder="FLAG{234.23.34.12}" maxlength="35" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(1)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-1"></div>
