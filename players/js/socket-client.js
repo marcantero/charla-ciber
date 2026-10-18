@@ -5,9 +5,30 @@
 
 let socket = null;
 let mqttPlayerClient = null;
+let localBroadcast = null;
 let currentTeamId = null;
 let currentTeamName = 'Equipo 1';
 let playerHeartbeatTimer = null;
+
+if (typeof BroadcastChannel !== 'undefined') {
+  try {
+    localBroadcast = new BroadcastChannel('charla_ciber_vilaromana');
+    localBroadcast.onmessage = (event) => {
+      const data = event.data;
+      if (!data) return;
+      if (data.type === 'host_ping') {
+        sendPlayerJoinMqtt();
+      } else if (data.type === 'game_reset') {
+        handlePlayerGameReset();
+      } else if (data.type === 'host_update') {
+        if (data && data.teams && data.teams[currentTeamId]) {
+          applyStateFromHost({ team: data.teams[currentTeamId], config: data.config });
+        }
+      }
+    };
+    console.log('[PLAYER] Canal directo entre pestañas activo (BroadcastChannel: 0ms).');
+  } catch (e) {}
+}
 
 const MQTT_BROKERS = [
   'wss://test.mosquitto.org:8081',
@@ -188,22 +209,23 @@ function initPlayerMqtt(retryCount = 0) {
       `${MQTT_CHANNEL}/host/update`,
       `${MQTT_CHANNEL}/game/reset`,
       `${MQTT_CHANNEL}/host/ping`
-    ], { qos: 1 }, (err) => {
+    ], { qos: 0 }, (err) => {
       if (!err) {
         sendPlayerJoinMqtt();
       }
     });
 
-    // Heartbeat periódico (cada 12s)
+    // Heartbeat periódico (cada 10s)
     if (playerHeartbeatTimer) clearInterval(playerHeartbeatTimer);
     playerHeartbeatTimer = setInterval(() => {
-      if (mqttPlayerClient && mqttPlayerClient.connected) {
-        mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/heartbeat`, JSON.stringify({
-          teamId: currentTeamId,
-          timestamp: Date.now()
-        }));
+      const hb = { teamId: currentTeamId, timestamp: Date.now() };
+      if (localBroadcast) {
+        localBroadcast.postMessage({ type: 'player_heartbeat', ...hb });
       }
-    }, 12000);
+      if (mqttPlayerClient && mqttPlayerClient.connected) {
+        mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/heartbeat`, JSON.stringify(hb), { qos: 0 });
+      }
+    }, 10000);
   });
 
   mqttPlayerClient.on('message', (topic, payload) => {
@@ -249,12 +271,20 @@ function tryNextPlayerBroker() {
 }
 
 function sendPlayerJoinMqtt() {
+  const payload = {
+    teamId: currentTeamId,
+    teamName: currentTeamName,
+    timestamp: Date.now()
+  };
+
+  // 1. Notificar por BroadcastChannel si hay pestañas abiertas en el mismo navegador (0ms)
+  if (localBroadcast) {
+    localBroadcast.postMessage({ type: 'player_join', ...payload });
+  }
+
+  // 2. Notificar por Cloud MQTT
   if (mqttPlayerClient && mqttPlayerClient.connected) {
-    mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/join`, JSON.stringify({
-      teamId: currentTeamId,
-      teamName: currentTeamName,
-      timestamp: Date.now()
-    }), { qos: 1 });
+    mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/join`, JSON.stringify(payload), { qos: 0 });
     console.log(`[CLOUD SYNC] Mensaje de unión emitido para ${currentTeamName}`);
   }
 }
@@ -263,31 +293,32 @@ function sendPlayerPhaseAdvance(phaseNum) {
   const p = parseInt(phaseNum, 10);
   console.log(`[ADVANCE] Enviando reto ${p} superado por ${currentTeamName}...`);
 
-  // 1. Emitir DIRECTO por Socket.io en RED LOCAL (Latencia: 0ms)
+  const payload = {
+    teamId: currentTeamId,
+    teamName: currentTeamName,
+    phase: p,
+    fase_completada: p,
+    timestamp: Date.now()
+  };
+
+  // 1. Notificar por BroadcastChannel (0ms latencia)
+  if (localBroadcast) {
+    localBroadcast.postMessage({ type: 'player_advance', ...payload });
+  }
+
+  // 2. Emitir DIRECTO por Socket.io en RED LOCAL (Latencia: 0ms)
   if (socket && typeof socket.emit === 'function' && socket !== mqttPlayerClient) {
     try {
-      socket.emit('player:phase_complete', {
-        teamId: currentTeamId,
-        teamName: currentTeamName,
-        phase: p,
-        fase_completada: p,
-        timestamp: Date.now()
-      });
+      socket.emit('player:phase_complete', payload);
       console.log(`[SOCKET LOCAL] ✓ Paquete de avance enviado al Host en red local.`);
     } catch (e) {
       console.warn('[SOCKET LOCAL] Error emitiendo por socket:', e);
     }
   }
 
-  // 2. Emitir por Cloud MQTT como respaldo si estuviera conectado
+  // 3. Emitir por Cloud MQTT como respaldo si estuviera conectado
   if (mqttPlayerClient && mqttPlayerClient.connected) {
-    mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/advance`, JSON.stringify({
-      teamId: currentTeamId,
-      teamName: currentTeamName,
-      phase: p,
-      fase_completada: p,
-      timestamp: Date.now()
-    }), { qos: 1 });
+    mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/advance`, JSON.stringify(payload), { qos: 0 });
   }
 }
 

@@ -5,6 +5,26 @@
 
 let socket = null;
 let mqttHostClient = null;
+let localBroadcast = null;
+
+if (typeof BroadcastChannel !== 'undefined') {
+  try {
+    localBroadcast = new BroadcastChannel('charla_ciber_vilaromana');
+    localBroadcast.onmessage = (event) => {
+      const data = event.data;
+      if (!data) return;
+      if (data.type === 'player_join') {
+        handlePlayerJoinEvent(data);
+      } else if (data.type === 'player_advance') {
+        handlePlayerAdvanceEvent(data);
+      } else if (data.type === 'player_heartbeat') {
+        handlePlayerHeartbeatEvent(data);
+      }
+    };
+    console.log('[HOST] Canal de comunicación directa entre pestañas activo (BroadcastChannel: 0ms).');
+  } catch (e) {}
+}
+
 const MQTT_BROKERS = [
   'wss://test.mosquitto.org:8081',
   'wss://broker.emqx.io:8084/mqtt',
@@ -314,18 +334,29 @@ function handlePlayerHeartbeatEvent(data) {
 }
 
 function broadcastHostUpdate() {
+  if (localBroadcast) {
+    localBroadcast.postMessage({
+      type: 'host_update',
+      teams: teamsState,
+      config: appConfig,
+      timestamp: Date.now()
+    });
+  }
   if (mqttHostClient && mqttHostClient.connected) {
     mqttHostClient.publish(`${MQTT_CHANNEL}/host/update`, JSON.stringify({
       teams: teamsState,
       config: appConfig,
       timestamp: Date.now()
-    }), { qos: 1 });
+    }), { qos: 0 });
   }
 }
 
 function broadcastHostPing() {
+  if (localBroadcast) {
+    localBroadcast.postMessage({ type: 'host_ping', timestamp: Date.now() });
+  }
   if (mqttHostClient && mqttHostClient.connected) {
-    mqttHostClient.publish(`${MQTT_CHANNEL}/host/ping`, JSON.stringify({ timestamp: Date.now() }));
+    mqttHostClient.publish(`${MQTT_CHANNEL}/host/ping`, JSON.stringify({ timestamp: Date.now() }), { qos: 0 });
   }
 }
 
@@ -376,14 +407,19 @@ function confirmResetGame() {
     logTerminalEvent('Se ha emitido la orden de REINICIAR toda la partida a todos los alumnos.', 'log-alert');
   }
 
-  // Notificar por Socket.io si existe
+  // Notificar por BroadcastChannel local (0ms)
+  if (localBroadcast) {
+    localBroadcast.postMessage({ type: 'game_reset', timestamp: Date.now() });
+  }
+
+  // Notificar por Socket.io local si existe (0ms)
   if (socket && socket.connected && typeof socket.emit === 'function') {
     socket.emit('host:reset_game');
   }
 
   // Notificar por Cloud Realtime (MQTT)
   if (mqttHostClient && mqttHostClient.connected) {
-    mqttHostClient.publish(`${MQTT_CHANNEL}/game/reset`, JSON.stringify({ timestamp: Date.now() }), { qos: 1 });
+    mqttHostClient.publish(`${MQTT_CHANNEL}/game/reset`, JSON.stringify({ timestamp: Date.now() }), { qos: 0 });
     broadcastHostUpdate();
   }
 }
