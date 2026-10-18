@@ -1,11 +1,28 @@
 // ================================================================
 //  PLAYERS - socket-client.js
-//  Gestión de equipo, persistencia y comunicación Socket.io
+//  Gestión de equipo, persistencia y sincronización Cloud en Tiempo Real
 // ================================================================
 
 let socket = null;
+let mqttPlayerClient = null;
 let currentTeamId = null;
 let currentTeamName = 'Equipo 1';
+let playerHeartbeatTimer = null;
+
+const MQTT_BROKER_URL = 'wss://broker.emqx.io:8084/mqtt';
+const MQTT_BACKUP_URL = 'wss://broker.hivemq.com:8884/mqtt';
+const MQTT_CHANNEL = 'charla_ciber_vilaromana';
+
+function updatePlayerStatusBadge(isOnline) {
+  const teamLabel = document.getElementById('player-team-label');
+  if (teamLabel && currentTeamId) {
+    if (isOnline) {
+      teamLabel.innerHTML = `EQUIPO 0${currentTeamId} <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#00ff88; box-shadow:0 0 8px #00ff88; margin-left:6px; vertical-align:middle;" title="En línea con el Host"></span>`;
+    } else {
+      teamLabel.textContent = `EQUIPO 0${currentTeamId}`;
+    }
+  }
+}
 
 function initPlayerSocket(teamId) {
   currentTeamId = parseInt(teamId, 10);
@@ -26,13 +43,23 @@ function initPlayerSocket(teamId) {
     modal.classList.add('hidden');
   }
 
-  // Conectar a Socket.io
-  if (typeof io !== 'undefined') {
-    if (!socket) {
-      socket = io();
+  // Cargar claves específicas de este equipo
+  if (typeof applyTeamKeys === 'function') {
+    applyTeamKeys(currentTeamId);
+  }
+
+  const isGithub = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+
+  // 1. Si no es GitHub y socket.io está disponible, probar conexión local
+  if (!isGithub && typeof io !== 'undefined') {
+    try {
+      socket = io({ timeout: 3000 });
+      let localConnected = false;
 
       socket.on('connect', () => {
-        console.log(`[SOCKET] Conectado al servidor central como ${currentTeamName}`);
+        localConnected = true;
+        console.log(`[SOCKET LOCAL] Conectado como ${currentTeamName}`);
+        updatePlayerStatusBadge(true);
         socket.emit('player:join', {
           teamId: currentTeamId,
           teamName: currentTeamName
@@ -40,41 +67,189 @@ function initPlayerSocket(teamId) {
       });
 
       socket.on('player:init_state', (data) => {
-        console.log('[SOCKET] Estado recibido del servidor:', data);
-        if (data && data.team && Array.isArray(data.team.completedPhases)) {
-          data.team.completedPhases.forEach(p => {
-            collectedCodes[p] = ANSWERS[p];
-            const row = document.getElementById('row-' + p);
-            if (row) {
-              const statusEl = row.querySelector('.ph-status');
-              if (statusEl) {
-                statusEl.textContent = 'COMPLETADO';
-                statusEl.className = 'ph-col ph-status status-done';
-              }
-            }
-            const codeDisplay = document.getElementById('col-code-' + p);
-            if (codeDisplay) {
-              codeDisplay.textContent = ANSWERS[p];
-              codeDisplay.classList.add('revealed');
-            }
-          });
-        }
+        applyStateFromHost(data);
       });
 
-      socket.on('game:reset', (data) => {
-        console.warn('[SOCKET] El escape room ha sido reiniciado por el host.');
-        alert('⚠️ ATENCIÓN: El Host ha reiniciado la partida.');
-        location.reload();
+      socket.on('game:reset', () => {
+        handlePlayerGameReset();
       });
-    } else {
-      socket.emit('player:join', {
-        teamId: currentTeamId,
-        teamName: currentTeamName
+
+      socket.on('disconnect', () => {
+        updatePlayerStatusBadge(false);
       });
+
+      setTimeout(() => {
+        if (!localConnected) {
+          console.info('[PLAYER] Servidor local no detectado. Iniciando Cloud Realtime (MQTT)...');
+          initPlayerMqtt();
+        }
+      }, 2500);
+
+      return;
+    } catch (e) {
+      console.warn('[PLAYER] Error iniciando Socket.io local:', e);
     }
-  } else {
-    console.info('[SOCKET] Modo individual / offline activado.');
   }
+
+  // 2. Conexión Cloud Realtime (MQTT)
+  initPlayerMqtt();
+}
+
+function initPlayerMqtt() {
+  if (typeof mqtt === 'undefined') {
+    console.warn('[PLAYER MQTT] Librería mqtt no disponible.');
+    return;
+  }
+
+  // Mock de socket para que cualquier llamada a socket.emit funcione transparentemente
+  socket = {
+    connected: true,
+    emit: function(event, data) {
+      if (event === 'player:phase_complete') {
+        sendPlayerPhaseAdvance(data.phase || data.fase_completada);
+      } else if (event === 'player:join') {
+        sendPlayerJoinMqtt();
+      }
+    },
+    on: function() {}
+  };
+
+  const clientId = 'player_' + currentTeamId + '_' + Math.random().toString(16).substring(2, 8);
+
+  try {
+    mqttPlayerClient = mqtt.connect(MQTT_BROKER_URL, {
+      clientId: clientId,
+      clean: true,
+      keepalive: 30,
+      connectTimeout: 5000
+    });
+  } catch (e) {
+    console.warn('[PLAYER MQTT] Fallback a broker secundario...');
+    mqttPlayerClient = mqtt.connect(MQTT_BACKUP_URL, { clientId: clientId, clean: true });
+  }
+
+  mqttPlayerClient.on('connect', () => {
+    console.log(`[CLOUD SYNC] ${currentTeamName} conectado al broker Cloud.`);
+    updatePlayerStatusBadge(true);
+
+    // Suscribirse a canales del host
+    mqttPlayerClient.subscribe([
+      `${MQTT_CHANNEL}/host/update`,
+      `${MQTT_CHANNEL}/game/reset`,
+      `${MQTT_CHANNEL}/host/ping`
+    ], { qos: 1 }, (err) => {
+      if (!err) {
+        sendPlayerJoinMqtt();
+      }
+    });
+
+    // Heartbeat periódico (cada 12s)
+    if (playerHeartbeatTimer) clearInterval(playerHeartbeatTimer);
+    playerHeartbeatTimer = setInterval(() => {
+      if (mqttPlayerClient && mqttPlayerClient.connected) {
+        mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/heartbeat`, JSON.stringify({
+          teamId: currentTeamId,
+          timestamp: Date.now()
+        }));
+      }
+    }, 12000);
+  });
+
+  mqttPlayerClient.on('message', (topic, payload) => {
+    try {
+      const data = JSON.parse(payload.toString());
+      if (topic === `${MQTT_CHANNEL}/host/ping`) {
+        sendPlayerJoinMqtt();
+      } else if (topic === `${MQTT_CHANNEL}/game/reset`) {
+        handlePlayerGameReset();
+      } else if (topic === `${MQTT_CHANNEL}/host/update`) {
+        if (data && data.teams && data.teams[currentTeamId]) {
+          applyStateFromHost({ team: data.teams[currentTeamId], config: data.config });
+        }
+      }
+    } catch (e) {
+      console.warn('[PLAYER MQTT] Error procesando mensaje:', e);
+    }
+  });
+
+  mqttPlayerClient.on('error', (err) => {
+    console.warn('[PLAYER MQTT] Error:', err);
+    updatePlayerStatusBadge(false);
+  });
+
+  mqttPlayerClient.on('offline', () => {
+    updatePlayerStatusBadge(false);
+  });
+}
+
+function sendPlayerJoinMqtt() {
+  if (mqttPlayerClient && mqttPlayerClient.connected) {
+    mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/join`, JSON.stringify({
+      teamId: currentTeamId,
+      teamName: currentTeamName,
+      timestamp: Date.now()
+    }), { qos: 1 });
+    console.log(`[CLOUD SYNC] Mensaje de unión emitido para ${currentTeamName}`);
+  }
+}
+
+// Función global para emitir el avance de fase del alumno al Host
+function sendPlayerPhaseAdvance(phaseNum) {
+  const p = parseInt(phaseNum, 10);
+  console.log(`[CLOUD SYNC] Enviando reto ${p} superado por ${currentTeamName}...`);
+
+  // 1. Emitir por Cloud MQTT
+  if (mqttPlayerClient && mqttPlayerClient.connected) {
+    mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/advance`, JSON.stringify({
+      teamId: currentTeamId,
+      teamName: currentTeamName,
+      phase: p,
+      fase_completada: p,
+      timestamp: Date.now()
+    }), { qos: 1 });
+  }
+
+  // 2. Emitir por Socket.io si existe y está conectado
+  if (socket && typeof socket.emit === 'function' && socket !== mqttPlayerClient) {
+    try {
+      socket.emit('player:phase_complete', {
+        teamId: currentTeamId,
+        teamName: currentTeamName,
+        phase: p,
+        fase_completada: p,
+        timestamp: Date.now()
+      });
+    } catch (e) {}
+  }
+}
+
+function applyStateFromHost(data) {
+  if (data && data.team && Array.isArray(data.team.completedPhases)) {
+    data.team.completedPhases.forEach(p => {
+      if (typeof collectedCodes !== 'undefined' && typeof ANSWERS !== 'undefined') {
+        collectedCodes[p] = ANSWERS[p];
+      }
+      const row = document.getElementById('row-' + p);
+      if (row) {
+        const statusEl = row.querySelector('.ph-status');
+        if (statusEl) {
+          statusEl.textContent = '[ COMPLETADO ]';
+          statusEl.className = 'ph-col ph-status status-done';
+        }
+      }
+      const codeDisplay = document.getElementById('col-code-' + p);
+      if (codeDisplay && typeof ANSWERS !== 'undefined') {
+        codeDisplay.textContent = ANSWERS[p];
+        codeDisplay.classList.add('revealed');
+      }
+    });
+  }
+}
+
+function handlePlayerGameReset() {
+  console.warn('[ESCAPE ROOM] La partida ha sido reiniciada por el Host.');
+  alert('⚠️ ATENCIÓN: El Host ha reiniciado la partida.');
+  location.reload();
 }
 
 function selectTeam(num) {

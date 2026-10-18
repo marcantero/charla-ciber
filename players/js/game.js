@@ -115,7 +115,9 @@ function checkAnswer(phaseNum) {
     collectedCodes[phaseNum] = ANSWERS[phaseNum];
 
     // [MULTIJUGADOR] Emitir evento al servidor y al Host
-    if (typeof socket !== 'undefined' && socket && socket.connected) {
+    if (typeof sendPlayerPhaseAdvance === 'function') {
+      sendPlayerPhaseAdvance(phaseNum);
+    } else if (typeof socket !== 'undefined' && socket && socket.connected) {
       socket.emit('player:phase_complete', {
         teamId: currentTeamId,
         teamName: currentTeamName,
