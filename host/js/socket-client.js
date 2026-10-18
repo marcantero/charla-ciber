@@ -27,22 +27,42 @@ function updateHostServerChip(status, isOnline = true) {
   }
 }
 
+function getHostServerUrl() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('server')) {
+    const s = params.get('server');
+    return s.startsWith('http') ? s : `http://${s}`;
+  }
+  if (window.location.protocol.startsWith('http') && window.location.port) {
+    return window.location.origin;
+  }
+  return 'http://' + (window.location.hostname || 'localhost') + ':4000';
+}
+
 function initHostSocket() {
-  // 1. Si no es GitHub Pages y socket.io está disponible, probar conexión local
-  const isGithub = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+  const serverUrl = getHostServerUrl();
+  const isGithub = window.location.hostname.includes('github.io');
   
-  if (!isGithub && typeof io !== 'undefined') {
+  if (typeof io !== 'undefined') {
     try {
-      socket = io({ timeout: 3000 });
+      console.log('[SOCKET HOST] Conectando por red local a:', serverUrl);
+      socket = io(serverUrl, {
+        timeout: 2500,
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionAttempts: 20,
+        reconnectionDelay: 1000
+      });
       let localConnected = false;
 
       socket.on('connect', () => {
         localConnected = true;
-        console.log('[SOCKET HOST] Conectado al servidor local Node.js.');
-        updateHostServerChip('CONECTADO (LOCAL)', true);
+        console.log('[SOCKET HOST] ¡Conectado al servidor local Node.js! Latencia: 0ms.');
+        const serverHost = window.location.hostname || 'LAN';
+        updateHostServerChip('CONECTADO (RED LOCAL)', true);
         socket.emit('host:init');
         if (typeof logTerminalEvent === 'function') {
-          logTerminalEvent('Conexión con servidor local establecida.', 'log-sys');
+          logTerminalEvent('Conexión Socket.io local activa en ' + serverUrl + ' (Latencia: <1ms)', 'log-sys');
         }
       });
 
@@ -66,13 +86,14 @@ function initHostSocket() {
         handleLocalReset();
       });
 
-      // Si en 2.5s no conecta en local, activar Cloud MQTT
-      setTimeout(() => {
-        if (!localConnected) {
-          console.info('[HOST] Servidor local no disponible. Iniciando Cloud Realtime (MQTT)...');
-          initHostMqtt();
-        }
-      }, 2500);
+      if (isGithub) {
+        setTimeout(() => {
+          if (!localConnected) {
+            console.info('[HOST] Servidor local no disponible. Iniciando Cloud Realtime (MQTT)...');
+            initHostMqtt();
+          }
+        }, 2000);
+      }
 
       return;
     } catch (e) {
@@ -80,7 +101,7 @@ function initHostSocket() {
     }
   }
 
-  // 2. En GitHub Pages o modo online directo: Iniciar Cloud Realtime
+  // 2. Fallback a MQTT
   initHostMqtt();
 }
 

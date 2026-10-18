@@ -1036,12 +1036,10 @@
     </div>
   </div>
 
-  <!-- Socket.io cliente y módulos del host -->
-  <script>
-    if (!window.location.hostname.includes('github.io') && window.location.protocol !== 'file:') {
-      document.write('<script src="/socket.io/socket.io.js"><\/script>');
-    }
-  </script>
+  <!-- Sincronización Local Socket.io (0ms de latencia en LAN) -->
+  <script src="../js/socket.io.min.js"></script>
+  <script src="js/socket.io.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <!-- Sincronización en tiempo real sin servidor (MQTT Cloud) -->
   <script src="../js/mqtt.min.js"></script>
   <script src="js/mqtt.min.js"></script>

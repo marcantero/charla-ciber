@@ -29,6 +29,19 @@ function updatePlayerStatusBadge(isOnline) {
   }
 }
 
+function getPlayerServerUrl() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('server')) {
+    const s = params.get('server');
+    return s.startsWith('http') ? s : `http://${s}`;
+  }
+  // Si se sirve desde el servidor Node (ej: http://192.168.1.36:4000/players)
+  if (window.location.protocol.startsWith('http') && window.location.port) {
+    return window.location.origin;
+  }
+  return 'http://' + (window.location.hostname || 'localhost') + ':4000';
+}
+
 function initPlayerSocket(teamId) {
   currentTeamId = parseInt(teamId, 10);
   currentTeamName = `Equipo ${currentTeamId}`;
@@ -53,17 +66,25 @@ function initPlayerSocket(teamId) {
     applyTeamKeys(currentTeamId);
   }
 
-  const isGithub = window.location.hostname.includes('github.io') || window.location.protocol === 'file:';
+  const serverUrl = getPlayerServerUrl();
+  const isGithub = window.location.hostname.includes('github.io');
 
-  // 1. Si no es GitHub y socket.io está disponible, probar conexión local
-  if (!isGithub && typeof io !== 'undefined') {
+  // 1. Probar conexión local Socket.io directa (Latencia 0ms)
+  if (typeof io !== 'undefined') {
     try {
-      socket = io({ timeout: 3000 });
+      console.log(`[SOCKET LOCAL] Conectando a ${serverUrl} como ${currentTeamName}...`);
+      socket = io(serverUrl, {
+        timeout: 2500,
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionAttempts: 25,
+        reconnectionDelay: 1000
+      });
       let localConnected = false;
 
       socket.on('connect', () => {
         localConnected = true;
-        console.log(`[SOCKET LOCAL] Conectado como ${currentTeamName}`);
+        console.log(`[SOCKET LOCAL] ¡Conectado al servidor Node.js en ${serverUrl}! Latencia: 0ms.`);
         updatePlayerStatusBadge(true);
         socket.emit('player:join', {
           teamId: currentTeamId,
@@ -83,12 +104,14 @@ function initPlayerSocket(teamId) {
         updatePlayerStatusBadge(false);
       });
 
-      setTimeout(() => {
-        if (!localConnected) {
-          console.info('[PLAYER] Servidor local no detectado. Iniciando Cloud Realtime (MQTT)...');
-          initPlayerMqtt();
-        }
-      }, 2500);
+      if (isGithub) {
+        setTimeout(() => {
+          if (!localConnected) {
+            console.info('[PLAYER] Servidor local no detectado. Iniciando Cloud Realtime (MQTT)...');
+            initPlayerMqtt();
+          }
+        }, 2000);
+      }
 
       return;
     } catch (e) {
@@ -236,23 +259,11 @@ function sendPlayerJoinMqtt() {
   }
 }
 
-// Función global para emitir el avance de fase del alumno al Host
 function sendPlayerPhaseAdvance(phaseNum) {
   const p = parseInt(phaseNum, 10);
-  console.log(`[CLOUD SYNC] Enviando reto ${p} superado por ${currentTeamName}...`);
+  console.log(`[ADVANCE] Enviando reto ${p} superado por ${currentTeamName}...`);
 
-  // 1. Emitir por Cloud MQTT
-  if (mqttPlayerClient && mqttPlayerClient.connected) {
-    mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/advance`, JSON.stringify({
-      teamId: currentTeamId,
-      teamName: currentTeamName,
-      phase: p,
-      fase_completada: p,
-      timestamp: Date.now()
-    }), { qos: 1 });
-  }
-
-  // 2. Emitir por Socket.io si existe y está conectado
+  // 1. Emitir DIRECTO por Socket.io en RED LOCAL (Latencia: 0ms)
   if (socket && typeof socket.emit === 'function' && socket !== mqttPlayerClient) {
     try {
       socket.emit('player:phase_complete', {
@@ -262,9 +273,24 @@ function sendPlayerPhaseAdvance(phaseNum) {
         fase_completada: p,
         timestamp: Date.now()
       });
-    } catch (e) {}
+      console.log(`[SOCKET LOCAL] ✓ Paquete de avance enviado al Host en red local.`);
+    } catch (e) {
+      console.warn('[SOCKET LOCAL] Error emitiendo por socket:', e);
+    }
+  }
+
+  // 2. Emitir por Cloud MQTT como respaldo si estuviera conectado
+  if (mqttPlayerClient && mqttPlayerClient.connected) {
+    mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/advance`, JSON.stringify({
+      teamId: currentTeamId,
+      teamName: currentTeamName,
+      phase: p,
+      fase_completada: p,
+      timestamp: Date.now()
+    }), { qos: 1 });
   }
 }
+
 
 function applyStateFromHost(data) {
   if (data && data.team && Array.isArray(data.team.completedPhases)) {

@@ -94,6 +94,14 @@ app.use('/players', express.static(path.join(__dirname, 'players')));
 // Ruta para archivos de audio opcionales (mp3, wav)
 app.use('/audio', express.static(path.join(__dirname, 'audio')));
 
+// Ruta para librerías compartidas (socket.io, mqtt, etc.)
+app.use('/js', express.static(path.join(__dirname, 'js')));
+
+// Servir config.json directamente si se solicita
+app.get('/config.json', (req, res) => {
+  res.sendFile(path.join(__dirname, 'config.json'));
+});
+
 // Redirección por defecto a /host o portal
 app.get('/', (req, res) => {
   res.redirect('/host');
