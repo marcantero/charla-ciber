@@ -7,12 +7,23 @@ let appConfig = { nombreInstituto: 'IES Tecnológico', numeroEquipos: 5, claves:
 
 async function fetchRootConfig() {
   try {
-    const res = await fetch('/api/config');
+    let res = await fetch('/api/config');
+    if (!res.ok) {
+      res = await fetch('config.json');
+    }
     if (res.ok) {
       appConfig = await res.json();
       applyRootConfig(appConfig);
     }
-  } catch(e) {}
+  } catch(e) {
+    try {
+      const res = await fetch('config.json');
+      if (res.ok) {
+        appConfig = await res.json();
+        applyRootConfig(appConfig);
+      }
+    } catch(err) {}
+  }
 }
 
 function applyRootConfig(cfg) {

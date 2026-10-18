@@ -11,13 +11,25 @@ let appConfig = {
 
 async function fetchHostConfig() {
   try {
-    const res = await fetch('/api/config');
+    let res = await fetch('/api/config');
+    if (!res.ok) {
+      res = await fetch('../config.json');
+    }
     if (res.ok) {
       const data = await res.json();
       applyConfigToHost(data);
+      return;
     }
   } catch (e) {
-    console.warn('Usando configuración local:', e);
+    try {
+      const res = await fetch('../config.json');
+      if (res.ok) {
+        const data = await res.json();
+        applyConfigToHost(data);
+      }
+    } catch (err) {
+      console.warn('Usando configuración local:', err);
+    }
   }
 }
 

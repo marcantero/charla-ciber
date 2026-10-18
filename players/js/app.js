@@ -7,13 +7,25 @@ let appConfig = null;
 
 async function fetchPlayerConfig() {
   try {
-    const res = await fetch('/api/config');
+    let res = await fetch('/api/config');
+    if (!res.ok) {
+      res = await fetch('../config.json');
+    }
     if (res.ok) {
       appConfig = await res.json();
       applyPlayerConfig(appConfig);
+      return;
     }
   } catch(e) {
-    console.warn('Config local fallback:', e);
+    try {
+      const res = await fetch('../config.json');
+      if (res.ok) {
+        appConfig = await res.json();
+        applyPlayerConfig(appConfig);
+      }
+    } catch(err) {
+      console.warn('Config local fallback:', err);
+    }
   }
 }
 
