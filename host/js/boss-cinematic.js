@@ -49,7 +49,7 @@ const MANIFESTO_PARAGRAPHS = [
   },
   {
     prefix: '> [SYSTEM_FLAG]: ',
-    text: 'Vuestra flag final: FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}',
+    text: 'Vuestra flag final: FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}',
     cls: 'text-flag'
   },
   {
@@ -720,7 +720,7 @@ function revealEpicFlag() {
     playVictoryFanfare();
   }
 
-  logTerminalEvent('🏆 FLAG DE SEGURIDAD EMITIDA: FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}', 'log-advance');
+  logTerminalEvent('🏆 FLAG DE SEGURIDAD EMITIDA: FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}', 'log-advance');
 
   // Después de 5 segundos mostrando la flag, transición al final épico del boss y mensaje de gracias
   if (bossDepartureTimer) clearTimeout(bossDepartureTimer);
@@ -902,7 +902,7 @@ function renderThanksNames(customNames) {
 }
 
 function copyBossFlag(btn) {
-  const flagCode = 'FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}';
+  const flagCode = 'FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}';
   navigator.clipboard.writeText(flagCode).then(() => {
     const original = btn.innerHTML;
     btn.innerHTML = '<span>✓ ¡COPIADA!</span>';

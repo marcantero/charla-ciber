@@ -17,7 +17,7 @@ const ANSWERS = {
   2: 'ALFA-7743',            // Terminal directory
   3: 'W3HY4_H0I1K1H4I4',     // Encrypted password in metadata
   4: 'R3CT4_C0D1F1C4D4',     // Decrypted image password
-  5: 'FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}' // Final shared flag
+  5: 'FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}' // Final shared flag
 };
 
 const CORRECT_MSG = [
@@ -109,10 +109,10 @@ function checkAnswer(phaseNum) {
   let isMatch = (userAnswer === correctAnswer) || (cleanUser === cleanCorrect);
 
   if (phaseNum === 5) {
-    const SHARED_FINAL = 'FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}';
+    const SHARED_FINAL = 'FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}';
     const cleanFinal = SHARED_FINAL.replace(/[\s\-_{}]/g, '');
     const cleanUserNoBraces = userAnswer.replace(/[\s\-_{}]/g, '');
-    if (userAnswer === SHARED_FINAL || cleanUserNoBraces === cleanFinal || cleanUserNoBraces.includes('NUNC4C0NF13SYS1GU34PR3ND13ND0')) {
+    if (userAnswer === SHARED_FINAL || cleanUserNoBraces === cleanFinal || cleanUserNoBraces.includes('S1ST3M4V1L4R3CUP3R4D02026')) {
       isMatch = true;
     }
   }
@@ -233,13 +233,13 @@ document.addEventListener('keydown', (e) => {
 // RETO 5: Fragmentos de script por equipo y ejecución interactiva
 // ================================================================
 const TEAM_FRAGMENTS = {
-  1: 'FLAG{NUNC4_',
-  2: 'C0NF13S_',
-  3: 'Y_',
-  4: 'S1GU3_',
-  5: '4PR3ND13ND0}',
-  6: 'R3D_',
-  7: 'S3CUR3_',
+  1: 'FLAG{',
+  2: 'S1ST3M4_',
+  3: 'V1L4_',
+  4: 'R3CUP3R4D0_',
+  5: '2026}',
+  6: 'IES_',
+  7: 'CIBER_',
   8: '2026}'
 };
 
@@ -252,7 +252,7 @@ function runTeamScript() {
   if (!term) return;
 
   const teamId = (typeof currentTeamId !== 'undefined' && currentTeamId) ? currentTeamId : 1;
-  const fragment = TEAM_FRAGMENTS[teamId] || 'FLAG{NUNC4_';
+  const fragment = TEAM_FRAGMENTS[teamId] || 'FLAG{';
 
   term.innerHTML = `<div class="fterm-line"><span class="fterm-prompt">$</span> python3 script_nodo.py</div>`;
 
@@ -290,7 +290,7 @@ function runTeamScript() {
 
 function downloadScriptFile() {
   const teamId = (typeof currentTeamId !== 'undefined' && currentTeamId) ? currentTeamId : 1;
-  const fragment = TEAM_FRAGMENTS[teamId] || 'FLAG{NUNC4_';
+  const fragment = TEAM_FRAGMENTS[teamId] || 'FLAG{';
   const pyCode = `#!/usr/bin/env python3
 # ============================================================
 # ESCAPE ROOM CIBERSEGURIDAD - SCRIPT DE NODO (EQUIPO ${teamId})

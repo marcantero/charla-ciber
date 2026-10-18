@@ -27,7 +27,7 @@
     },
     "hito3": {
       "umbral": 0,
-      "frase": "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Pensabais que resolviendo cuatro pistas ibais a recuperar vuestros archivos... Bienvenidos al mundo real. Vuestros datos... expedientes, historiales, notas y contraseñas... ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Habéis demostrado que sabéis abrir una terminal y mirar donde otros no miran. Nada mal para empezar. Pero si de verdad queréis jugar en las grandes ligas... si algún día pretendéis cazar a alguien como yo... vais a tener que aprender muchísimo más. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso. Vuestra flag final: FLAG{NUNC4_C0NF13S_Y_S1GU3_4PR3ND13ND0}. Nos vemos en la red... analistas.",
+      "frase": "Vaya, vaya... Habéis llegado al final. Habéis seguido cada rastro, habéis roto los cifrados y habéis completado el reto. ¿De verdad creíais que esto era un juego con final feliz, verdad? Pensabais que resolviendo cuatro pistas ibais a recuperar vuestros archivos... Bienvenidos al mundo real. Vuestros datos... expedientes, historiales, notas y contraseñas... ya no están en este sistema. Hace exactamente diez minutos que terminó la copia, y no van a volver. En la red nadie devuelve lo que ya ha robado. Habéis demostrado que sabéis abrir una terminal y mirar donde otros no miran. Nada mal para empezar. Pero si de verdad queréis jugar en las grandes ligas... si algún día pretendéis cazar a alguien como yo... vais a tener que aprender muchísimo más. Tomadlo como una lección: esto no era una prueba de rescate, era un aviso. Vuestra flag final: FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}. Nos vemos en la red... analistas.",
       "audio": "audio-hacker-3.mp3"
     }
   },
@@ -37,56 +37,56 @@
       "reto2": "ALFA-7743",
       "reto3": "W3HY4_H0I1K1H4I4",
       "reto4": "R3CT4_C0D1F1C4D4",
-      "reto5": "FLAG{127.0.0.1}-ALFA-7743-W3HY4_H0I1K1H4I4-R3CT4_C0D1F1C4D4"
+      "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "2": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "DELTA-8821",
       "reto3": "IB1VH0UB4R14_4R1P",
       "reto4": "CR1PT0GR4F14_4F1N",
-      "reto5": "FLAG{127.0.0.1}-DELTA-8821-IB1VH0UB4R14_4R1P-CR1PT0GR4F14_4F1N"
+      "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "3": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "EPSILON-9904",
       "reto3": "3GY4G10R_V3GX4",
       "reto4": "3CU4C10N_R3CT4",
-      "reto5": "FLAG{127.0.0.1}-EPSILON-9904-3GY4G10R_V3GX4-3CU4C10N_R3CT4"
+      "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "4": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "SIGMA-6632",
       "reto3": "H1QA4K0_I1O34I",
       "reto4": "C1FR4D0_L1N34L",
-      "reto5": "FLAG{127.0.0.1}-SIGMA-6632-H1QA4K0_I1O34I-C1FR4D0_L1N34L"
+      "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "5": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "ZETA-5519",
       "reto3": "HQ4A3_1SA3WX4",
       "reto4": "CL4V3_1NV3RS4",
-      "reto5": "FLAG{127.0.0.1}-ZETA-5519-HQ4A3_1SA3WX4-CL4V3_1NV3RS4"
+      "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "6": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "LAMBDA-1234",
       "reto3": "IOTA-5678",
       "reto4": "R3CT4_C0D1F1C4D4",
-      "reto5": "FLAG{127.0.0.1}-LAMBDA-1234-IOTA-5678-R3CT4_C0D1F1C4D4"
+      "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "7": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "RHO-4321",
       "reto3": "PSI-8765",
       "reto4": "CR1PT0GR4F14_4F1N",
-      "reto5": "FLAG{127.0.0.1}-RHO-4321-PSI-8765-CR1PT0GR4F14_4F1N"
+      "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "8": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "TAU-9876",
       "reto3": "ETA-5432",
       "reto4": "3CU4C10N_R3CT4",
-      "reto5": "FLAG{127.0.0.1}-TAU-9876-ETA-5432-3CU4C10N_R3CT4"
+      "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     }
   }
 }
