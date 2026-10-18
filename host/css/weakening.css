@@ -965,8 +965,47 @@
 .reset-modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 14px;
   margin-top: 24px;
+}
+.btn-hud-control,
+.reset-modal-actions button {
+  font-family: var(--font-mono, 'Share Tech Mono', monospace);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  padding: 10px 22px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--white-muted, #ccc);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  outline: none;
+}
+.btn-hud-control:hover,
+.reset-modal-actions button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+.btn-hud-control.btn-hud-danger,
+.reset-modal-actions button.btn-hud-danger {
+  background: rgba(255, 0, 60, 0.25);
+  border-color: var(--red, #ff003c);
+  color: #fff;
+  box-shadow: 0 0 15px var(--red-glow, rgba(255, 0, 60, 0.4));
+  font-weight: 700;
+}
+.btn-hud-control.btn-hud-danger:hover,
+.reset-modal-actions button.btn-hud-danger:hover {
+  background: var(--red, #ff003c);
+  color: #fff;
+  box-shadow: 0 0 25px var(--red, #ff003c);
 }
 
 /* Adaptación Responsive para Proyector / Pantalla Pequeña */
