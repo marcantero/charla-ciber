@@ -404,7 +404,7 @@
   <div class="screen hidden phase-screen" id="phase-4-screen">
     <div class="phase-header">
       <div class="phase-badge mono">// FASE 04 / CRIPTO</div>
-      <div class="phase-tool mono">GeoGebra (y = ax + b)</div>
+      <div class="phase-tool mono glitched-target"><span class="censor-tag">[HERRAMIENTA: CYBERCHEF]</span></div>
     </div>
     <div class="phase-body">
       <div class="phase-mission-box">
@@ -413,15 +413,30 @@
       </div>
       <div class="clue-box">
         <div class="clue-label mono">// ARCHIVO PROTEGIDO //</div>
-        <div class="clue-content">
-          <span class="clue-file mono">imagen_cifrada.png</span>
-          <span class="clue-hint mono">[pista: Encuentra el tipo de cifrado usado. Página para descifrar: <a href="https://cyberchef.io/" target="_blank" rel="noopener noreferrer" style="color:var(--neon-cyan); text-decoration:underline;">https://cyberchef.io/</a>]</span>
+        <div class="clue-content" style="display: flex; flex-direction: column; gap: 14px; margin-top: 6px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <span class="clue-file mono">imagen_cifrada.png</span>
+            <span class="clue-hint mono">[pista: Encuentra el tipo de cifrado usado]</span>
+          </div>
+
+          <!-- Enlace decorado interactivo a CyberChef -->
+          <div style="margin-top: 4px;">
+            <a href="https://cyberchef.io/" target="_blank" rel="noopener noreferrer" class="cyber-link-btn mono" title="Abrir CyberChef en una pestaña nueva">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+              <span>HERRAMIENTA DE DESXIFRADO: <strong>CYBERCHEF.IO</strong></span>
+              <span class="cyber-link-arrow">↗</span>
+            </a>
+          </div>
         </div>
       </div>
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE LA FLAG (código de la imagen ya descifrada):</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG (contraseña ya descifrada):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-4" type="text" placeholder="CÓDIGO_IMAGEN_DESCIFRADA" maxlength="40" autocomplete="off">
+          <input class="hack-input" id="ans-4" type="text" placeholder="CONTRASEÑA_YA_DESCIFRADA" maxlength="40" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(4)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-4"></div>
