@@ -6,6 +6,9 @@
 let socket = null;
 let mqttHostClient = null;
 let localBroadcast = null;
+let peerHost = null;
+const peerConnections = new Map();
+const PEER_HOST_ID = 'charla-ciber-vilaromana-host';
 
 if (typeof BroadcastChannel !== 'undefined') {
   try {
@@ -23,6 +26,77 @@ if (typeof BroadcastChannel !== 'undefined') {
     };
     console.log('[HOST] Canal de comunicación directa entre pestañas activo (BroadcastChannel: 0ms).');
   } catch (e) {}
+}
+
+function initHostPeer(retryCount = 0) {
+  if (typeof Peer === 'undefined') {
+    if (retryCount < 10) {
+      setTimeout(() => initHostPeer(retryCount + 1), 300);
+    }
+    return;
+  }
+
+  try {
+    console.log(`[PEER P2P] Inicializando servidor Host WebRTC con ID: ${PEER_HOST_ID}...`);
+    peerHost = new Peer(PEER_HOST_ID, { debug: 1 });
+
+    peerHost.on('open', (id) => {
+      console.log(`[PEER P2P] ✓ Servidor WebRTC Directo P2P LISTO con ID: ${id}`);
+      updateHostServerChip('P2P WEBRTC ONLINE', true);
+      if (typeof logTerminalEvent === 'function') {
+        logTerminalEvent(`Canal WebRTC P2P activo (ID: ${id}). Latencia directa: <2ms.`, 'log-sys');
+      }
+    });
+
+    peerHost.on('connection', (conn) => {
+      console.log('[PEER P2P] Nuevo dispositivo conectado por WebRTC P2P:', conn.peer);
+      peerConnections.set(conn.peer, conn);
+
+      conn.on('open', () => {
+        conn.send({
+          type: 'host_update',
+          teams: teamsState,
+          config: appConfig,
+          timestamp: Date.now()
+        });
+      });
+
+      conn.on('data', (data) => {
+        if (!data) return;
+        console.log('[PEER P2P] Paquete recibido de alumno vía WebRTC:', data.type, data);
+        if (data.type === 'player_join') {
+          handlePlayerJoinEvent(data);
+        } else if (data.type === 'player_advance') {
+          handlePlayerAdvanceEvent(data);
+        } else if (data.type === 'player_heartbeat') {
+          handlePlayerHeartbeatEvent(data);
+        }
+      });
+
+      conn.on('close', () => {
+        peerConnections.delete(conn.peer);
+      });
+
+      conn.on('error', (err) => {
+        console.warn('[PEER P2P] Error en conexión con peer:', err);
+        peerConnections.delete(conn.peer);
+      });
+    });
+
+    peerHost.on('error', (err) => {
+      console.warn('[PEER P2P] Error en Host Peer:', err.type, err);
+      if (err.type === 'unavailable-id') {
+        setTimeout(() => {
+          if (peerHost && !peerHost.destroyed) {
+            try { peerHost.destroy(); } catch (e) {}
+          }
+          initHostPeer(0);
+        }, 3000);
+      }
+    });
+  } catch (e) {
+    console.warn('[PEER P2P] Excepción iniciando PeerJS en Host:', e);
+  }
 }
 
 const MQTT_BROKERS = [
@@ -62,6 +136,9 @@ function getHostServerUrl() {
 function initHostSocket() {
   const serverUrl = getHostServerUrl();
   const isGithub = window.location.hostname.includes('github.io');
+
+  // Inicializar WebRTC P2P (PeerJS: 0ms directo en LAN y GitHub Pages)
+  initHostPeer();
   
   if (typeof io !== 'undefined') {
     try {
@@ -334,29 +411,43 @@ function handlePlayerHeartbeatEvent(data) {
 }
 
 function broadcastHostUpdate() {
+  const updatePayload = {
+    type: 'host_update',
+    teams: teamsState,
+    config: appConfig,
+    timestamp: Date.now()
+  };
+
+  // 1. Canal entre pestañas del mismo navegador (0ms)
   if (localBroadcast) {
-    localBroadcast.postMessage({
-      type: 'host_update',
-      teams: teamsState,
-      config: appConfig,
-      timestamp: Date.now()
-    });
+    localBroadcast.postMessage(updatePayload);
   }
+
+  // 2. WebRTC P2P a todos los dispositivos conectados (0-2ms directo en LAN)
+  peerConnections.forEach((conn) => {
+    if (conn.open) {
+      try { conn.send(updatePayload); } catch (e) {}
+    }
+  });
+
+  // 3. Cloud MQTT
   if (mqttHostClient && mqttHostClient.connected) {
-    mqttHostClient.publish(`${MQTT_CHANNEL}/host/update`, JSON.stringify({
-      teams: teamsState,
-      config: appConfig,
-      timestamp: Date.now()
-    }), { qos: 0 });
+    mqttHostClient.publish(`${MQTT_CHANNEL}/host/update`, JSON.stringify(updatePayload), { qos: 0 });
   }
 }
 
 function broadcastHostPing() {
+  const pingPayload = { type: 'host_ping', timestamp: Date.now() };
   if (localBroadcast) {
-    localBroadcast.postMessage({ type: 'host_ping', timestamp: Date.now() });
+    localBroadcast.postMessage(pingPayload);
   }
+  peerConnections.forEach((conn) => {
+    if (conn.open) {
+      try { conn.send(pingPayload); } catch (e) {}
+    }
+  });
   if (mqttHostClient && mqttHostClient.connected) {
-    mqttHostClient.publish(`${MQTT_CHANNEL}/host/ping`, JSON.stringify({ timestamp: Date.now() }), { qos: 0 });
+    mqttHostClient.publish(`${MQTT_CHANNEL}/host/ping`, JSON.stringify(pingPayload), { qos: 0 });
   }
 }
 
@@ -407,19 +498,28 @@ function confirmResetGame() {
     logTerminalEvent('Se ha emitido la orden de REINICIAR toda la partida a todos los alumnos.', 'log-alert');
   }
 
-  // Notificar por BroadcastChannel local (0ms)
+  const resetPayload = { type: 'game_reset', timestamp: Date.now() };
+
+  // 1. Notificar por BroadcastChannel local (0ms)
   if (localBroadcast) {
-    localBroadcast.postMessage({ type: 'game_reset', timestamp: Date.now() });
+    localBroadcast.postMessage(resetPayload);
   }
 
-  // Notificar por Socket.io local si existe (0ms)
+  // 2. Notificar por WebRTC P2P directo a cada móvil/PC (0ms)
+  peerConnections.forEach((conn) => {
+    if (conn.open) {
+      try { conn.send(resetPayload); } catch (e) {}
+    }
+  });
+
+  // 3. Notificar por Socket.io local si existe (0ms)
   if (socket && socket.connected && typeof socket.emit === 'function') {
     socket.emit('host:reset_game');
   }
 
-  // Notificar por Cloud Realtime (MQTT)
+  // 4. Notificar por Cloud Realtime (MQTT)
   if (mqttHostClient && mqttHostClient.connected) {
-    mqttHostClient.publish(`${MQTT_CHANNEL}/game/reset`, JSON.stringify({ timestamp: Date.now() }), { qos: 0 });
+    mqttHostClient.publish(`${MQTT_CHANNEL}/game/reset`, JSON.stringify(resetPayload), { qos: 0 });
     broadcastHostUpdate();
   }
 }

@@ -6,6 +6,9 @@
 let socket = null;
 let mqttPlayerClient = null;
 let localBroadcast = null;
+let playerPeer = null;
+let playerPeerConn = null;
+const PEER_HOST_ID = 'charla-ciber-vilaromana-host';
 let currentTeamId = null;
 let currentTeamName = 'Equipo 1';
 let playerHeartbeatTimer = null;
@@ -28,6 +31,82 @@ if (typeof BroadcastChannel !== 'undefined') {
     };
     console.log('[PLAYER] Canal directo entre pestañas activo (BroadcastChannel: 0ms).');
   } catch (e) {}
+}
+
+function initPlayerPeer(retryCount = 0) {
+  if (typeof Peer === 'undefined') {
+    if (retryCount < 10) {
+      setTimeout(() => initPlayerPeer(retryCount + 1), 300);
+    }
+    return;
+  }
+
+  try {
+    const peerId = 'player_' + currentTeamId + '_' + Math.random().toString(36).substring(2, 7);
+    console.log(`[PEER P2P] Creando nodo WebRTC del jugador (${peerId})...`);
+    playerPeer = new Peer(peerId, { debug: 1 });
+
+    playerPeer.on('open', (id) => {
+      console.log(`[PEER P2P] ✓ Nodo del jugador listo (${id}). Conectando al Host: ${PEER_HOST_ID}`);
+      connectToHostPeer();
+    });
+
+    playerPeer.on('error', (err) => {
+      console.warn('[PEER P2P] Error en Peer jugador:', err);
+    });
+  } catch (e) {
+    console.warn('[PEER P2P] Excepción inicializando jugador PeerJS:', e);
+  }
+}
+
+function connectToHostPeer() {
+  if (!playerPeer) return;
+  try {
+    playerPeerConn = playerPeer.connect(PEER_HOST_ID, { reliable: true });
+
+    playerPeerConn.on('open', () => {
+      console.log('[PEER P2P] ✓ ¡CONECTADO DIRECTO POR WEBRTC P2P AL HOST! Latencia: 0ms.');
+      updatePlayerStatusBadge(true);
+      sendPlayerJoinP2P();
+    });
+
+    playerPeerConn.on('data', (data) => {
+      if (!data) return;
+      console.log('[PEER P2P] Datos recibidos del Host vía WebRTC:', data.type);
+      if (data.type === 'host_update') {
+        if (data.teams && data.teams[currentTeamId]) {
+          applyStateFromHost({ team: data.teams[currentTeamId], config: data.config });
+        }
+      } else if (data.type === 'game_reset') {
+        handlePlayerGameReset();
+      } else if (data.type === 'host_ping') {
+        sendPlayerJoinP2P();
+      }
+    });
+
+    playerPeerConn.on('close', () => {
+      console.warn('[PEER P2P] Conexión P2P cerrada con el Host. Reintentando en 3s...');
+      setTimeout(connectToHostPeer, 3000);
+    });
+
+    playerPeerConn.on('error', (err) => {
+      console.warn('[PEER P2P] Error de conexión P2P con el Host:', err);
+      setTimeout(connectToHostPeer, 3000);
+    });
+  } catch (e) {
+    console.warn('[PEER P2P] Excepción conectando al Host:', e);
+  }
+}
+
+function sendPlayerJoinP2P() {
+  if (playerPeerConn && playerPeerConn.open) {
+    playerPeerConn.send({
+      type: 'player_join',
+      teamId: currentTeamId,
+      teamName: currentTeamName,
+      timestamp: Date.now()
+    });
+  }
 }
 
 const MQTT_BROKERS = [
@@ -86,6 +165,9 @@ function initPlayerSocket(teamId) {
   if (typeof applyTeamKeys === 'function') {
     applyTeamKeys(currentTeamId);
   }
+
+  // Iniciar nodo WebRTC P2P directo con el Host (0ms de latencia en GitHub Pages y LAN)
+  initPlayerPeer();
 
   const serverUrl = getPlayerServerUrl();
   const isGithub = window.location.hostname.includes('github.io');
@@ -218,9 +300,12 @@ function initPlayerMqtt(retryCount = 0) {
     // Heartbeat periódico (cada 10s)
     if (playerHeartbeatTimer) clearInterval(playerHeartbeatTimer);
     playerHeartbeatTimer = setInterval(() => {
-      const hb = { teamId: currentTeamId, timestamp: Date.now() };
+      const hb = { type: 'player_heartbeat', teamId: currentTeamId, timestamp: Date.now() };
+      if (playerPeerConn && playerPeerConn.open) {
+        try { playerPeerConn.send(hb); } catch (e) {}
+      }
       if (localBroadcast) {
-        localBroadcast.postMessage({ type: 'player_heartbeat', ...hb });
+        localBroadcast.postMessage(hb);
       }
       if (mqttPlayerClient && mqttPlayerClient.connected) {
         mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/heartbeat`, JSON.stringify(hb), { qos: 0 });
@@ -272,17 +357,23 @@ function tryNextPlayerBroker() {
 
 function sendPlayerJoinMqtt() {
   const payload = {
+    type: 'player_join',
     teamId: currentTeamId,
     teamName: currentTeamName,
     timestamp: Date.now()
   };
 
-  // 1. Notificar por BroadcastChannel si hay pestañas abiertas en el mismo navegador (0ms)
-  if (localBroadcast) {
-    localBroadcast.postMessage({ type: 'player_join', ...payload });
+  // 1. Notificar por WebRTC P2P directo al Host si está conectado (0-2ms)
+  if (playerPeerConn && playerPeerConn.open) {
+    try { playerPeerConn.send(payload); } catch(e) {}
   }
 
-  // 2. Notificar por Cloud MQTT
+  // 2. Notificar por BroadcastChannel si hay pestañas abiertas en el mismo navegador (0ms)
+  if (localBroadcast) {
+    localBroadcast.postMessage(payload);
+  }
+
+  // 3. Notificar por Cloud MQTT
   if (mqttPlayerClient && mqttPlayerClient.connected) {
     mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/join`, JSON.stringify(payload), { qos: 0 });
     console.log(`[CLOUD SYNC] Mensaje de unión emitido para ${currentTeamName}`);
@@ -294,6 +385,7 @@ function sendPlayerPhaseAdvance(phaseNum) {
   console.log(`[ADVANCE] Enviando reto ${p} superado por ${currentTeamName}...`);
 
   const payload = {
+    type: 'player_advance',
     teamId: currentTeamId,
     teamName: currentTeamName,
     phase: p,
@@ -301,12 +393,22 @@ function sendPlayerPhaseAdvance(phaseNum) {
     timestamp: Date.now()
   };
 
-  // 1. Notificar por BroadcastChannel (0ms latencia)
-  if (localBroadcast) {
-    localBroadcast.postMessage({ type: 'player_advance', ...payload });
+  // 1. Notificar por WebRTC P2P DIRECTO al Host (0-2ms, sin pasar por servidores)
+  if (playerPeerConn && playerPeerConn.open) {
+    try {
+      playerPeerConn.send(payload);
+      console.log(`[PEER P2P] ✓ Reto ${p} enviado DIRECTO al Host vía WebRTC P2P (0ms).`);
+    } catch (e) {
+      console.warn('[PEER P2P] Error emitiendo por PeerJS:', e);
+    }
   }
 
-  // 2. Emitir DIRECTO por Socket.io en RED LOCAL (Latencia: 0ms)
+  // 2. Notificar por BroadcastChannel entre pestañas (0ms latencia)
+  if (localBroadcast) {
+    localBroadcast.postMessage(payload);
+  }
+
+  // 3. Emitir DIRECTO por Socket.io en RED LOCAL si estuviera disponible
   if (socket && typeof socket.emit === 'function' && socket !== mqttPlayerClient) {
     try {
       socket.emit('player:phase_complete', payload);
@@ -316,7 +418,7 @@ function sendPlayerPhaseAdvance(phaseNum) {
     }
   }
 
-  // 3. Emitir por Cloud MQTT como respaldo si estuviera conectado
+  // 4. Emitir por Cloud MQTT como respaldo si estuviera conectado
   if (mqttPlayerClient && mqttPlayerClient.connected) {
     mqttPlayerClient.publish(`${MQTT_CHANNEL}/player/advance`, JSON.stringify(payload), { qos: 0 });
   }

@@ -543,7 +543,14 @@
   <!-- Sincronización Local Socket.io (0ms de latencia en LAN) -->
   <script src="../js/socket.io.min.js"></script>
   <script src="js/socket.io.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
+  <!-- Sincronización WebRTC P2P (PeerJS - 0ms de latencia en GitHub Pages) -->
+  <script src="../js/peerjs.min.js"></script>
+  <script src="js/peerjs.min.js"></script>
+  <script>
+    if (typeof Peer === 'undefined') {
+      document.write('<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"><\/script>');
+    }
+  </script>
   <!-- Sincronización en tiempo real sin servidor (MQTT Cloud) -->
   <script src="../js/mqtt.min.js"></script>
   <script src="js/mqtt.min.js"></script>
