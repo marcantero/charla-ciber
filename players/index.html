@@ -281,10 +281,18 @@
         </div>
       </div>
 
+      <!-- Pista Reto 1 -->
+      <div class="clue-box" style="margin-top: 1rem; border-left: 3px solid var(--neon-cyan); background: rgba(0, 255, 234, 0.05); padding: 0.75rem 1rem;">
+        <div class="clue-label mono" style="color: var(--neon-cyan);">// FORMATO DE LA FLAG //</div>
+        <p class="mission-text mono" style="margin: 0; font-size: 0.95rem; color: #ffffff;">
+          💡 <strong>Formato requerido:</strong> El formato de la flag es: <code>FLAG{ip}</code> (ejemplo: <code>FLAG{127.0.0.1}</code>).
+        </p>
+      </div>
+
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE EL CÓDIGO ENCONTRADO:</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG (formato FLAG{ip}):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-1" type="text" placeholder="XXXX" maxlength="20" autocomplete="off">
+          <input class="hack-input" id="ans-1" type="text" placeholder="FLAG{127.0.0.1}" maxlength="35" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(1)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-1"></div>
@@ -336,10 +344,18 @@
           </div>
         </div>
       </div>
+      <!-- Pista Reto 2 -->
+      <div class="clue-box" style="margin-top: 1rem; border-left: 3px solid var(--neon-cyan); background: rgba(0, 255, 234, 0.05); padding: 0.75rem 1rem;">
+        <div class="clue-label mono" style="color: var(--neon-cyan);">// PISTA DEL RETO //</div>
+        <p class="mission-text mono" style="margin: 0; font-size: 0.95rem; color: #ffffff;">
+          💡 <strong>Pista:</strong> El nombre de la flag es: el directorio donde se encuentran las pistas.
+        </p>
+      </div>
+
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE LA CLAVE ENCONTRADA:</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG (el directorio donde se encuentran las pistas):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-2" type="text" placeholder="XXXX-YYYY" maxlength="20" autocomplete="off">
+          <input class="hack-input" id="ans-2" type="text" placeholder="DIRECTORIO" maxlength="30" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(2)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-2"></div>
@@ -356,28 +372,27 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha escondido datos en los metadatos de una imagen.<br>Utiliza
-          <strong>exiftool</strong> para inspeccionarla y <strong>unzip</strong> si hace falta descomprimir archivos.
+        <p class="mission-text">La IA ha escondido datos en los metadatos de una imagen.<br><strong>De flag tendréis que poner la contraseña cifrada encontrada.</strong>
         </p>
       </div>
       <div class="clue-box">
         <div class="clue-label mono">// ARCHIVO SOSPECHOSO //</div>
         <div class="clue-content">
           <span class="clue-file mono">foto_instituto.jpg</span>
-          <span class="clue-hint mono">[pista: exiftool foto_instituto.jpg | grep Comment]</span>
+          <span class="clue-hint mono">[pista: inspecciona los metadatos del archivo para extraer la contraseña]</span>
         </div>
         <div class="exif-output mono">
           <div class="exif-line"><span class="exif-key">File Name</span> : foto_instituto.jpg</div>
           <div class="exif-line"><span class="exif-key">File Size</span> : 2.4 MB</div>
           <div class="exif-line"><span class="exif-key">Camera Model</span> : HACKER_CAM_v2</div>
-          <div class="exif-line highlight-line"><span class="exif-key">Comment</span> : CÓDIGO: BETA-4491</div>
+          <div class="exif-line highlight-line"><span class="exif-key">Comment</span> : CONTRASEÑA CIFRADA ENCONTRADA</div>
           <div class="exif-line"><span class="exif-key">GPS Position</span> : [CIFRADO]</div>
         </div>
       </div>
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE EL CÓDIGO DE LOS METADATOS:</div>
+        <div class="answer-label mono">INTRODUCE LA CONTRASEÑA CIFRADA ENCONTRADA:</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-3" type="text" placeholder="XXXX-YYYY" maxlength="20" autocomplete="off">
+          <input class="hack-input" id="ans-3" type="text" placeholder="CONTRASEÑA_CIFRADA" maxlength="40" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(3)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-3"></div>
@@ -394,24 +409,19 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha cifrado el código final con una función matemática.<br>Descubre los valores
-          <strong>a</strong> y <strong>b</strong> usando GeoGebra y la recta <strong>y = ax + b</strong>.</p>
+        <p class="mission-text">Descifra la imagen protegida por la IA para recuperar la clave de acceso.<br><strong>De flag tendréis que poner la imagen ya descifrada.</strong></p>
       </div>
       <div class="clue-box">
-        <div class="clue-label mono">// DATOS INTERCEPTADOS //</div>
-        <div class="crypto-data mono">
-          <div class="crypto-row"><span class="crypto-label">Punto A:</span><span class="crypto-val">(2, 7)</span></div>
-          <div class="crypto-row"><span class="crypto-label">Punto B:</span><span class="crypto-val">(5, 13)</span>
-          </div>
-          <div class="crypto-row"><span class="crypto-label">Incógnita:</span><span class="crypto-val">cuando x = 10, y
-              = ?</span></div>
+        <div class="clue-label mono">// ARCHIVO PROTEGIDO //</div>
+        <div class="clue-content">
+          <span class="clue-file mono">imagen_cifrada.png</span>
+          <span class="clue-hint mono">[pista: analiza y descifra la imagen para extraer el código oculto]</span>
         </div>
-        <div class="crypto-hint mono">// La respuesta es el código descifrado //</div>
       </div>
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE EL VALOR DE y (cuando x=10):</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG (código de la imagen ya descifrada):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-4" type="number" placeholder="y = ?" maxlength="10" autocomplete="off">
+          <input class="hack-input" id="ans-4" type="text" placeholder="CÓDIGO_IMAGEN_DESCIFRADA" maxlength="40" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(4)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-4"></div>
@@ -428,8 +438,7 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN FINAL</div>
-        <p class="mission-text">Tenéis todos los códigos. Ahora hay que combinarlos para descifrar el
-          sistema.<br><strong>Toda la clase debe ponerse de acuerdo</strong> e introducir la secuencia final.</p>
+        <p class="mission-text">¡Tenéis todos los códigos! Ahora hay que combinarlos para descifrar el sistema.<br><strong>Tendréis que poner en común los trozos de cada flag y ponerla cada uno en su máquina.</strong></p>
       </div>
       <div class="climax-codes mono">
         <div class="code-collect">
@@ -444,9 +453,9 @@
         </div>
       </div>
       <div class="answer-section">
-        <div class="answer-label mono">SECUENCIA FINAL (combina todos los códigos):</div>
+        <div class="answer-label mono">SECUENCIA FINAL (poned en común los trozos de cada flag):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-5" type="text" placeholder="FASE1-FASE2-FASE3-FASE4" maxlength="50"
+          <input class="hack-input" id="ans-5" type="text" placeholder="FLAG1-FLAG2-FLAG3-FLAG4" maxlength="120"
             autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(5)">DESCIFRAR</button>
         </div>

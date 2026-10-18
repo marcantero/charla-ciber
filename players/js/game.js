@@ -13,11 +13,11 @@ const PHASES = [
 
 // Respuestas por defecto (insensible a mayúsculas/minúsculas)
 const ANSWERS = {
-  1: 'HACK',       // Audio clue answer
-  2: 'ALFA-7743',  // Terminal key
-  3: 'BETA-4491',  // EXIF metadata code
-  4: '23',         // GeoGebra: y=2x+3, x=10 -> y=23
-  5: 'HACK-ALFA-7743-BETA-4491-23' // Final combination
+  1: 'FLAG{127.0.0.1}',       // Audio clue answer (IP format)
+  2: 'ALFA-7743',            // Terminal directory
+  3: 'BETA-4491',            // Encrypted password in metadata
+  4: 'R3CT4_C0D1F1C4D4',     // Decrypted image password
+  5: 'FLAG{127.0.0.1}-ALFA-7743-BETA-4491-R3CT4_C0D1F1C4D4' // Final combination
 };
 
 const CORRECT_MSG = [
@@ -104,7 +104,11 @@ function checkAnswer(phaseNum) {
   const userAnswer = input.value.trim().toUpperCase();
   const correctAnswer = String(ANSWERS[phaseNum]).toUpperCase();
 
-  if (userAnswer === correctAnswer) {
+  const cleanUser = userAnswer.replace(/[\s\-_]/g, '');
+  const cleanCorrect = correctAnswer.replace(/[\s\-_]/g, '');
+  const isMatch = (userAnswer === correctAnswer) || (cleanUser === cleanCorrect);
+
+  if (isMatch) {
     playSuccess();
     feedback.textContent = CORRECT_MSG[phaseNum - 1];
     feedback.className = 'answer-feedback correct';

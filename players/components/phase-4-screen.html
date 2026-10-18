@@ -7,24 +7,19 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">La IA ha cifrado el código final con una función matemática.<br>Descubre los valores
-          <strong>a</strong> y <strong>b</strong> usando GeoGebra y la recta <strong>y = ax + b</strong>.</p>
+        <p class="mission-text">Descifra la imagen protegida por la IA para recuperar la clave de acceso.<br><strong>De flag tendréis que poner la imagen ya descifrada.</strong></p>
       </div>
       <div class="clue-box">
-        <div class="clue-label mono">// DATOS INTERCEPTADOS //</div>
-        <div class="crypto-data mono">
-          <div class="crypto-row"><span class="crypto-label">Punto A:</span><span class="crypto-val">(2, 7)</span></div>
-          <div class="crypto-row"><span class="crypto-label">Punto B:</span><span class="crypto-val">(5, 13)</span>
-          </div>
-          <div class="crypto-row"><span class="crypto-label">Incógnita:</span><span class="crypto-val">cuando x = 10, y
-              = ?</span></div>
+        <div class="clue-label mono">// ARCHIVO PROTEGIDO //</div>
+        <div class="clue-content">
+          <span class="clue-file mono">imagen_cifrada.png</span>
+          <span class="clue-hint mono">[pista: analiza y descifra la imagen para extraer el código oculto]</span>
         </div>
-        <div class="crypto-hint mono">// La respuesta es el código descifrado //</div>
       </div>
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE EL VALOR DE y (cuando x=10):</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG (código de la imagen ya descifrada):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-4" type="number" placeholder="y = ?" maxlength="10" autocomplete="off">
+          <input class="hack-input" id="ans-4" type="text" placeholder="CÓDIGO_IMAGEN_DESCIFRADA" maxlength="40" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(4)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-4"></div>

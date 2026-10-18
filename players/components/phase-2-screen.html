@@ -41,11 +41,18 @@
             <div class="cheat-desc">Lee y muestra el contenido completo de un archivo de texto en pantalla.</div>
           </div>
         </div>
+      <!-- Pista Reto 2 -->
+      <div class="clue-box" style="margin-top: 1rem; border-left: 3px solid var(--neon-cyan); background: rgba(0, 255, 234, 0.05); padding: 0.75rem 1rem;">
+        <div class="clue-label mono" style="color: var(--neon-cyan);">// PISTA DEL RETO //</div>
+        <p class="mission-text mono" style="margin: 0; font-size: 0.95rem; color: #ffffff;">
+          💡 <strong>Pista:</strong> El nombre de la flag es: el directorio donde se encuentran las pistas.
+        </p>
       </div>
+
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE LA CLAVE ENCONTRADA:</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG (el directorio donde se encuentran las pistas):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-2" type="text" placeholder="XXXX-YYYY" maxlength="20" autocomplete="off">
+          <input class="hack-input" id="ans-2" type="text" placeholder="DIRECTORIO" maxlength="30" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(2)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-2"></div>

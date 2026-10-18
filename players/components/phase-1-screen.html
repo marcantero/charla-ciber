@@ -56,12 +56,18 @@
             DESCARGAR ARCHIVO (.WAV)
           </a>
         </div>
+      <!-- Pista Reto 1 -->
+      <div class="clue-box" style="margin-top: 1rem; border-left: 3px solid var(--neon-cyan); background: rgba(0, 255, 234, 0.05); padding: 0.75rem 1rem;">
+        <div class="clue-label mono" style="color: var(--neon-cyan);">// FORMATO DE LA FLAG //</div>
+        <p class="mission-text mono" style="margin: 0; font-size: 0.95rem; color: #ffffff;">
+          💡 <strong>Formato requerido:</strong> El formato de la flag es: <code>FLAG{ip}</code> (ejemplo: <code>FLAG{127.0.0.1}</code>).
+        </p>
       </div>
 
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE EL CÓDIGO ENCONTRADO:</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG (formato FLAG{ip}):</div>
         <div class="answer-input-row">
-          <input class="hack-input" id="ans-1" type="text" placeholder="XXXX" maxlength="20" autocomplete="off">
+          <input class="hack-input" id="ans-1" type="text" placeholder="FLAG{127.0.0.1}" maxlength="35" autocomplete="off">
           <button class="btn-submit" onclick="checkAnswer(1)">VERIFICAR</button>
         </div>
         <div class="answer-feedback" id="feedback-1"></div>

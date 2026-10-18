@@ -33,60 +33,60 @@
   },
   "claves": {
     "1": {
-      "reto1": "HACK",
+      "reto1": "FLAG{127.0.0.1}",
       "reto2": "ALFA-7743",
       "reto3": "BETA-4491",
-      "reto4": "23",
-      "reto5": "HACK-ALFA-7743-BETA-4491-23"
+      "reto4": "R3CT4_C0D1F1C4D4",
+      "reto5": "FLAG{127.0.0.1}-ALFA-7743-BETA-4491-R3CT4_C0D1F1C4D4"
     },
     "2": {
-      "reto1": "CYBER",
+      "reto1": "FLAG{127.0.0.1}",
       "reto2": "DELTA-8821",
       "reto3": "GAMMA-3312",
-      "reto4": "42",
-      "reto5": "CYBER-DELTA-8821-GAMMA-3312-42"
+      "reto4": "CR1PT0GR4F14_4F1N",
+      "reto5": "FLAG{127.0.0.1}-DELTA-8821-GAMMA-3312-CR1PT0GR4F14_4F1N"
     },
     "3": {
-      "reto1": "SHIELD",
+      "reto1": "FLAG{127.0.0.1}",
       "reto2": "EPSILON-9904",
       "reto3": "OMEGA-1150",
-      "reto4": "17",
-      "reto5": "SHIELD-EPSILON-9904-OMEGA-1150-17"
+      "reto4": "3CU4C10N_R3CT4",
+      "reto5": "FLAG{127.0.0.1}-EPSILON-9904-OMEGA-1150-3CU4C10N_R3CT4"
     },
     "4": {
-      "reto1": "SECURE",
+      "reto1": "FLAG{127.0.0.1}",
       "reto2": "SIGMA-6632",
       "reto3": "KAPPA-7721",
-      "reto4": "35",
-      "reto5": "SECURE-SIGMA-6632-KAPPA-7721-35"
+      "reto4": "C1FR4D0_L1N34L",
+      "reto5": "FLAG{127.0.0.1}-SIGMA-6632-KAPPA-7721-C1FR4D0_L1N34L"
     },
     "5": {
-      "reto1": "FIREWALL",
+      "reto1": "FLAG{127.0.0.1}",
       "reto2": "ZETA-5519",
       "reto3": "THETA-8843",
-      "reto4": "28",
-      "reto5": "FIREWALL-ZETA-5519-THETA-8843-28"
+      "reto4": "CL4V3_1NV3RS4",
+      "reto5": "FLAG{127.0.0.1}-ZETA-5519-THETA-8843-CL4V3_1NV3RS4"
     },
     "6": {
-      "reto1": "PHISHING",
+      "reto1": "FLAG{127.0.0.1}",
       "reto2": "LAMBDA-1234",
       "reto3": "IOTA-5678",
-      "reto4": "19",
-      "reto5": "PHISHING-LAMBDA-1234-IOTA-5678-19"
+      "reto4": "R3CT4_C0D1F1C4D4",
+      "reto5": "FLAG{127.0.0.1}-LAMBDA-1234-IOTA-5678-R3CT4_C0D1F1C4D4"
     },
     "7": {
-      "reto1": "DEFENDER",
+      "reto1": "FLAG{127.0.0.1}",
       "reto2": "RHO-4321",
       "reto3": "PSI-8765",
-      "reto4": "31",
-      "reto5": "DEFENDER-RHO-4321-PSI-8765-31"
+      "reto4": "CR1PT0GR4F14_4F1N",
+      "reto5": "FLAG{127.0.0.1}-RHO-4321-PSI-8765-CR1PT0GR4F14_4F1N"
     },
     "8": {
-      "reto1": "ENCRYPT",
+      "reto1": "FLAG{127.0.0.1}",
       "reto2": "TAU-9876",
       "reto3": "ETA-5432",
-      "reto4": "45",
-      "reto5": "ENCRYPT-TAU-9876-ETA-5432-45"
+      "reto4": "3CU4C10N_R3CT4",
+      "reto5": "FLAG{127.0.0.1}-TAU-9876-ETA-5432-3CU4C10N_R3CT4"
     }
   }
 }

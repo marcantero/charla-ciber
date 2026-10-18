@@ -71,17 +71,17 @@ function getTeamKey(teamId, phaseNum) {
   }
   // Fallbacks predeterminados por equipo si no están definidos
   const DEFAULT_MAP = {
-    1: { 1: 'HACK', 2: 'ALFA-7743', 3: 'BETA-4491', 4: '23' },
-    2: { 1: 'CYBER', 2: 'DELTA-8821', 3: 'GAMMA-3312', 4: '42' },
-    3: { 1: 'SHIELD', 2: 'EPSILON-9904', 3: 'OMEGA-1150', 4: '17' },
-    4: { 1: 'SECURE', 2: 'SIGMA-6632', 3: 'KAPPA-7721', 4: '35' },
-    5: { 1: 'FIREWALL', 2: 'ZETA-5519', 3: 'THETA-8843', 4: '28' }
+    1: { 1: 'FLAG{127.0.0.1}', 2: 'ALFA-7743', 3: 'BETA-4491', 4: 'R3CT4_C0D1F1C4D4' },
+    2: { 1: 'FLAG{127.0.0.1}', 2: 'DELTA-8821', 3: 'GAMMA-3312', 4: 'CR1PT0GR4F14_4F1N' },
+    3: { 1: 'FLAG{127.0.0.1}', 2: 'EPSILON-9904', 3: 'OMEGA-1150', 4: '3CU4C10N_R3CT4' },
+    4: { 1: 'FLAG{127.0.0.1}', 2: 'SIGMA-6632', 3: 'KAPPA-7721', 4: 'C1FR4D0_L1N34L' },
+    5: { 1: 'FLAG{127.0.0.1}', 2: 'ZETA-5519', 3: 'THETA-8843', 4: 'CL4V3_1NV3RS4' }
   };
   const tDefault = DEFAULT_MAP[teamId] || DEFAULT_MAP[1];
   if (phaseNum === 5) {
     return `${tDefault[1]}-${tDefault[2]}-${tDefault[3]}-${tDefault[4]}`;
   }
-  return tDefault[phaseNum] || 'HACK';
+  return tDefault[phaseNum] || 'FLAG{127.0.0.1}';
 }
 
 function applyTeamKeys(teamId) {
