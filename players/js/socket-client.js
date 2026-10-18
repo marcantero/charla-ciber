@@ -9,9 +9,14 @@ let currentTeamId = null;
 let currentTeamName = 'Equipo 1';
 let playerHeartbeatTimer = null;
 
-const MQTT_BROKER_URL = 'wss://broker.emqx.io:8084/mqtt';
-const MQTT_BACKUP_URL = 'wss://broker.hivemq.com:8884/mqtt';
+const MQTT_BROKERS = [
+  'wss://test.mosquitto.org:8081',
+  'wss://broker.emqx.io:8084/mqtt',
+  'wss://broker.hivemq.com:8884/mqtt'
+];
 const MQTT_CHANNEL = 'charla_ciber_vilaromana';
+let currentPlayerBrokerIndex = 0;
+let mqttPlayerConnectingTimer = null;
 
 function updatePlayerStatusBadge(isOnline) {
   const teamLabel = document.getElementById('player-team-label');
@@ -95,9 +100,13 @@ function initPlayerSocket(teamId) {
   initPlayerMqtt();
 }
 
-function initPlayerMqtt() {
+function initPlayerMqtt(retryCount = 0) {
   if (typeof mqtt === 'undefined') {
-    console.warn('[PLAYER MQTT] Librería mqtt no disponible.');
+    if (retryCount < 10) {
+      setTimeout(() => initPlayerMqtt(retryCount + 1), 250);
+      return;
+    }
+    console.warn('[PLAYER MQTT] Librería mqtt no disponible tras varios reintentos.');
     return;
   }
 
@@ -114,22 +123,41 @@ function initPlayerMqtt() {
     on: function() {}
   };
 
+  const brokerUrl = MQTT_BROKERS[currentPlayerBrokerIndex];
   const clientId = 'player_' + currentTeamId + '_' + Math.random().toString(16).substring(2, 8);
+  console.log(`[PLAYER CLOUD] Conectando a ${brokerUrl}...`);
 
+  if (mqttPlayerClient) {
+    try { mqttPlayerClient.end(true); } catch(e) {}
+    mqttPlayerClient = null;
+  }
+
+  let isConnected = false;
   try {
-    mqttPlayerClient = mqtt.connect(MQTT_BROKER_URL, {
+    mqttPlayerClient = mqtt.connect(brokerUrl, {
       clientId: clientId,
       clean: true,
       keepalive: 30,
-      connectTimeout: 5000
+      connectTimeout: 4000
     });
   } catch (e) {
-    console.warn('[PLAYER MQTT] Fallback a broker secundario...');
-    mqttPlayerClient = mqtt.connect(MQTT_BACKUP_URL, { clientId: clientId, clean: true });
+    console.warn('[PLAYER MQTT] Error en mqtt.connect:', e);
+    tryNextPlayerBroker();
+    return;
   }
 
+  if (mqttPlayerConnectingTimer) clearTimeout(mqttPlayerConnectingTimer);
+  mqttPlayerConnectingTimer = setTimeout(() => {
+    if (!isConnected) {
+      console.warn(`[PLAYER CLOUD] Timeout conectando a ${brokerUrl}. Probando broker alternativo...`);
+      tryNextPlayerBroker();
+    }
+  }, 4500);
+
   mqttPlayerClient.on('connect', () => {
-    console.log(`[CLOUD SYNC] ${currentTeamName} conectado al broker Cloud.`);
+    isConnected = true;
+    if (mqttPlayerConnectingTimer) clearTimeout(mqttPlayerConnectingTimer);
+    console.log(`[CLOUD SYNC] ${currentTeamName} conectado al broker Cloud (${brokerUrl}).`);
     updatePlayerStatusBadge(true);
 
     // Suscribirse a canales del host
@@ -174,12 +202,27 @@ function initPlayerMqtt() {
 
   mqttPlayerClient.on('error', (err) => {
     console.warn('[PLAYER MQTT] Error:', err);
-    updatePlayerStatusBadge(false);
+    if (!isConnected) {
+      tryNextPlayerBroker();
+    } else {
+      updatePlayerStatusBadge(false);
+    }
   });
 
   mqttPlayerClient.on('offline', () => {
     updatePlayerStatusBadge(false);
   });
+}
+
+function tryNextPlayerBroker() {
+  if (mqttPlayerConnectingTimer) clearTimeout(mqttPlayerConnectingTimer);
+  if (mqttPlayerClient) {
+    try { mqttPlayerClient.end(true); } catch(e) {}
+    mqttPlayerClient = null;
+  }
+  currentPlayerBrokerIndex = (currentPlayerBrokerIndex + 1) % MQTT_BROKERS.length;
+  console.info(`[PLAYER CLOUD] Reintentando con broker [${currentPlayerBrokerIndex}]: ${MQTT_BROKERS[currentPlayerBrokerIndex]}`);
+  setTimeout(() => initPlayerMqtt(), 500);
 }
 
 function sendPlayerJoinMqtt() {

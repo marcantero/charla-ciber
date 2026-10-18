@@ -5,9 +5,14 @@
 
 let socket = null;
 let mqttHostClient = null;
-const MQTT_BROKER_URL = 'wss://broker.emqx.io:8084/mqtt';
-const MQTT_BACKUP_URL = 'wss://broker.hivemq.com:8884/mqtt';
+const MQTT_BROKERS = [
+  'wss://test.mosquitto.org:8081',
+  'wss://broker.emqx.io:8084/mqtt',
+  'wss://broker.hivemq.com:8884/mqtt'
+];
 const MQTT_CHANNEL = 'charla_ciber_vilaromana';
+let currentHostBrokerIndex = 0;
+let mqttHostConnectingTimer = null;
 
 function updateHostServerChip(status, isOnline = true) {
   const chipText = document.getElementById('server-status-text');
@@ -79,33 +84,56 @@ function initHostSocket() {
   initHostMqtt();
 }
 
-function initHostMqtt() {
+function initHostMqtt(retryCount = 0) {
   if (typeof mqtt === 'undefined') {
-    console.error('[HOST MQTT] Librería mqtt no disponible.');
+    if (retryCount < 10) {
+      setTimeout(() => initHostMqtt(retryCount + 1), 250);
+      return;
+    }
+    console.error('[HOST MQTT] Librería mqtt no disponible tras varios reintentos.');
     updateHostServerChip('ERROR LIBRERÍA', false);
     return;
   }
 
+  const brokerUrl = MQTT_BROKERS[currentHostBrokerIndex];
   updateHostServerChip('CONECTANDO CLOUD...', false);
   const clientId = 'host_' + Math.random().toString(16).substring(2, 10);
+  console.log(`[HOST CLOUD] Conectando a ${brokerUrl}...`);
 
+  if (mqttHostClient) {
+    try { mqttHostClient.end(true); } catch(e) {}
+    mqttHostClient = null;
+  }
+
+  let isConnected = false;
   try {
-    mqttHostClient = mqtt.connect(MQTT_BROKER_URL, {
+    mqttHostClient = mqtt.connect(brokerUrl, {
       clientId: clientId,
       clean: true,
       keepalive: 30,
-      connectTimeout: 5000
+      connectTimeout: 4000
     });
   } catch (err) {
-    console.warn('[HOST MQTT] Error conectando a broker principal, intentando backup...', err);
-    mqttHostClient = mqtt.connect(MQTT_BACKUP_URL, { clientId: clientId, clean: true });
+    console.warn('[HOST MQTT] Error en mqtt.connect:', err);
+    tryNextHostBroker();
+    return;
   }
 
+  if (mqttHostConnectingTimer) clearTimeout(mqttHostConnectingTimer);
+  mqttHostConnectingTimer = setTimeout(() => {
+    if (!isConnected) {
+      console.warn(`[HOST CLOUD] Timeout conectando a ${brokerUrl}. Probando broker alternativo...`);
+      tryNextHostBroker();
+    }
+  }, 4500);
+
   mqttHostClient.on('connect', () => {
-    console.log('[HOST CLOUD] ¡Conectado al broker MQTT en tiempo real!');
+    isConnected = true;
+    if (mqttHostConnectingTimer) clearTimeout(mqttHostConnectingTimer);
+    console.log(`[HOST CLOUD] ¡Conectado al broker MQTT (${brokerUrl}) en tiempo real!`);
     updateHostServerChip('EN LÍNEA (CLOUD)', true);
     if (typeof logTerminalEvent === 'function') {
-      logTerminalEvent('Conexión Cloud Realtime establecida. Monitorizando equipos...', 'log-sys');
+      logTerminalEvent('Conexión Cloud Realtime establecida (' + brokerUrl.split('/')[2] + '). Monitorizando equipos...', 'log-sys');
     }
 
     // Suscribirse a eventos de jugadores
@@ -139,7 +167,11 @@ function initHostMqtt() {
 
   mqttHostClient.on('error', (err) => {
     console.warn('[HOST CLOUD] Error en la conexión MQTT:', err);
-    updateHostServerChip('RECONECTANDO...', false);
+    if (!isConnected) {
+      tryNextHostBroker();
+    } else {
+      updateHostServerChip('RECONECTANDO...', false);
+    }
   });
 
   mqttHostClient.on('offline', () => {
@@ -149,6 +181,17 @@ function initHostMqtt() {
   mqttHostClient.on('reconnect', () => {
     updateHostServerChip('RECONECTANDO...', false);
   });
+}
+
+function tryNextHostBroker() {
+  if (mqttHostConnectingTimer) clearTimeout(mqttHostConnectingTimer);
+  if (mqttHostClient) {
+    try { mqttHostClient.end(true); } catch(e) {}
+    mqttHostClient = null;
+  }
+  currentHostBrokerIndex = (currentHostBrokerIndex + 1) % MQTT_BROKERS.length;
+  console.info(`[HOST CLOUD] Reintentando con broker [${currentHostBrokerIndex}]: ${MQTT_BROKERS[currentHostBrokerIndex]}`);
+  setTimeout(() => initHostMqtt(), 500);
 }
 
 // ----------------------------------------------------------------

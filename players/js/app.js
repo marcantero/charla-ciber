@@ -79,7 +79,7 @@ function getTeamKey(teamId, phaseNum) {
   };
   const tDefault = DEFAULT_MAP[teamId] || DEFAULT_MAP[1];
   if (phaseNum === 5) {
-    return `${tDefault[1]}-${tDefault[2]}-${tDefault[3]}-${tDefault[4]}`;
+    return 'FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}';
   }
   return tDefault[phaseNum] || 'FLAG{127.0.0.1}';
 }
