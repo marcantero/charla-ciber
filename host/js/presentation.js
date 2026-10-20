@@ -1,10 +1,10 @@
 // ================================================================
 //  HOST - presentation.js
-//  Navegación de diapositivas formales (1 a 4)
+//  Navegación de diapositivas del taller (1 a 6)
 // ================================================================
 
 let currentSlide = 1;
-const totalSlides = 4;
+const totalSlides = 6;
 
 function goToSlide(n) {
   if (isHackingActive) return;
