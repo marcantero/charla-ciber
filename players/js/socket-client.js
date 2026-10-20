@@ -445,6 +445,15 @@ function applyStateFromHost(data) {
         codeDisplay.classList.add('revealed');
       }
     });
+
+    if (data.team.completedPhases.includes(5) || data.team.completedPhases.length >= 5) {
+      if (typeof showScreen === 'function' && typeof currentScreen !== 'undefined' && currentScreen !== 'victory-screen') {
+        showScreen('victory-screen');
+        if (typeof launchVictoryEffect === 'function') {
+          launchVictoryEffect();
+        }
+      }
+    }
   }
 }
 

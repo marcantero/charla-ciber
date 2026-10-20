@@ -112,7 +112,13 @@ function checkAnswer(phaseNum) {
     const SHARED_FINAL = 'FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}';
     const cleanFinal = SHARED_FINAL.replace(/[\s\-_{}]/g, '');
     const cleanUserNoBraces = userAnswer.replace(/[\s\-_{}]/g, '');
-    if (userAnswer === SHARED_FINAL || cleanUserNoBraces === cleanFinal || cleanUserNoBraces.includes('S1ST3M4V1L4R3CUP3R4D02026')) {
+    const cleanCorrectNoBraces = correctAnswer.replace(/[\s\-_{}]/g, '');
+    if (
+      userAnswer === SHARED_FINAL ||
+      cleanUserNoBraces === cleanFinal ||
+      cleanUserNoBraces.includes('S1ST3M4V1L4R3CUP3R4D02026') ||
+      cleanUserNoBraces === cleanCorrectNoBraces
+    ) {
       isMatch = true;
     }
   }
@@ -154,9 +160,10 @@ function checkAnswer(phaseNum) {
       codeDisplay.classList.add('revealed');
     }
 
+    input.disabled = true;
+
     // Avanzar automáticamente tras pausa (salvo la fase 5 final)
     if (phaseNum < 5) {
-      input.disabled = true;
       setTimeout(() => {
         if (phaseNum === 4) {
           startPhase(5);

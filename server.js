@@ -214,6 +214,13 @@ io.on('connection', (socket) => {
           teams: teamsState,
           timestamp: Date.now()
         });
+
+        // Sincronizar en tiempo real con todos los miembros del equipo en red local
+        io.to(`team_${teamId}`).emit('player:init_state', {
+          team: team,
+          config: appConfig,
+          timestamp: Date.now()
+        });
       }
     }
   });
