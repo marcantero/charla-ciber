@@ -35,36 +35,36 @@
     "1": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "FLAG{DESCARGAS}",
-      "reto3": "W3HY4_H0I1K1H4I4",
-      "reto4": "R3CT4_C0D1F1C4D4",
+      "reto3": "FLAG{W3HY4_H0I1K1H4I4}",
+      "reto4": "FLAG{R3CT4_C0D1F1C4D4}",
       "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "2": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "FLAG{DOCUMENTOS}",
-      "reto3": "IB1VH0UB4R14_4R1P",
-      "reto4": "CR1PT0GR4F14_4F1N",
+      "reto3": "FLAG{IB1VH0UB4R14_4R1P}",
+      "reto4": "FLAG{CR1PT0GR4F14_4F1N}",
       "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "3": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "FLAG{ESCRITORIO}",
-      "reto3": "3GY4G10R_V3GX4",
-      "reto4": "3CU4C10N_R3CT4",
+      "reto3": "FLAG{3GY4G10R_V3GX4}",
+      "reto4": "FLAG{3CU4C10N_R3CT4}",
       "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "4": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "FLAG{IMÁGENES}",
-      "reto3": "H1QA4K0_I1O34I",
-      "reto4": "C1FR4D0_L1N34L",
+      "reto3": "FLAG{H1QA4K0_I1O34I}",
+      "reto4": "FLAG{C1FR4D0_L1N34L}",
       "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "5": {
       "reto1": "FLAG{127.0.0.1}",
       "reto2": "FLAG{PLANTILLAS}",
-      "reto3": "HQ4A3_1SA3WX4",
-      "reto4": "CL4V3_1NV3RS4",
+      "reto3": "FLAG{HQ4A3_1SA3WX4}",
+      "reto4": "FLAG{CL4V3_1NV3RS4}",
       "reto5": "FLAG{S1ST3M4_V1L4_R3CUP3R4D0_2026}"
     },
     "6": {

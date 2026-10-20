@@ -301,7 +301,7 @@
       </div>
 
       <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE LA FLAG (formato FLAG{ip}):</div>
+        <div class="answer-label mono">INTRODUCE LA FLAG (formato FLAG{IP}):</div>
         <div class="answer-input-row">
           <input class="hack-input" id="ans-1" type="text" placeholder="FLAG{234.23.34.12}" maxlength="35"
             autocomplete="off">
@@ -335,11 +335,6 @@
             <div class="cheat-desc">Lista los archivos y carpetas del directorio actual.</div>
           </div>
           <div class="cheat-item">
-            <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> ls -la</div>
-            <div class="cheat-desc">Lista todos los archivos detallados, <strong>incluyendo ocultos</strong> (que
-              empiezan por punto <code>.</code>).</div>
-          </div>
-          <div class="cheat-item">
             <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> cd &lt;carpeta&gt;</div>
             <div class="cheat-desc">Entra en una carpeta o directorio (<em>Change Directory</em>).</div>
           </div>
@@ -352,10 +347,6 @@
             <div class="cheat-desc">Muestra la ruta completa del directorio donde estás (<em>Print Working
                 Directory</em>).</div>
           </div>
-          <div class="cheat-item">
-            <div class="cheat-cmd mono"><span class="cheat-prompt">$</span> cat &lt;archivo&gt;</div>
-            <div class="cheat-desc">Lee y muestra el contenido completo de un archivo de texto en pantalla.</div>
-          </div>
         </div>
       </div>
       <!-- Pista Reto 2 -->
@@ -363,7 +354,9 @@
         style="margin-top: 1rem; border-left: 3px solid var(--neon-cyan); background: rgba(0, 255, 234, 0.05); padding: 0.75rem 1rem;">
         <div class="clue-label mono" style="color: var(--neon-cyan);">// PISTA DEL RETO //</div>
         <p class="mission-text mono" style="margin: 0; font-size: 0.95rem; color: #ffffff;">
-          💡 <strong>Pista:</strong> El nombre de la flag es: el directorio donde se encuentran las pistas.
+          La flag es el directorio dónde se encuentran las pistas.
+          💡 <strong>Formato de la flag:</strong> <code>FLAG{NOMBRE_DIRECTORIO}</code> (ejemplo:
+          <code>FLAG{VÍDEOS}</code>).
         </p>
       </div>
 
