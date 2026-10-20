@@ -354,7 +354,7 @@
         style="margin-top: 1rem; border-left: 3px solid var(--neon-cyan); background: rgba(0, 255, 234, 0.05); padding: 0.75rem 1rem;">
         <div class="clue-label mono" style="color: var(--neon-cyan);">// PISTA DEL RETO //</div>
         <p class="mission-text mono" style="margin: 0; font-size: 0.95rem; color: #ffffff;">
-          La flag es el directorio dónde se encuentran las pistas.
+          La flag es el nombre del directorio dónde se encuentran las pistas.
           💡 <strong>Formato de la flag:</strong> <code>FLAG{NOMBRE_DIRECTORIO}</code> (ejemplo:
           <code>FLAG{VÍDEOS}</code>).
         </p>
@@ -380,8 +380,10 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
-        <p class="mission-text">Encontrar la contraseña del zip.<br><strong>De flag tendréis que poner la contraseña
+        <p class="mission-text">Buscar pistas ocultas en las fotos.<br><strong>La flag es la clave
             cifrada encontrada.</strong>
+          💡 <strong>Formato de la flag:</strong> <code>FLAG{CLAVE_CIFRADA}</code> (ejemplo:
+          <code>FLAG{RC4U3_Y3ZRS1M4Y4}</code>).
         </p>
       </div>
       <div class="clue-box">
@@ -421,7 +423,10 @@
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN</div>
         <p class="mission-text">Descifra la contraseña encontrada.<br><strong>De flag tendréis que poner la contraseña
-            ya descifrada.</strong></p>
+            ya descifrada.</strong>
+          💡 <strong>Formato de la flag:</strong> <code>FLAG{CLAVE_DESCIFRADA}</code> (ejemplo:
+          <code>FLAG{CL4V3_D3SCR1F4D4}</code>).
+        </p>
       </div>
       <div class="clue-box">
         <div class="clue-label mono">// ARCHIVO PROTEGIDO //</div>
@@ -469,139 +474,90 @@
     <div class="phase-body">
       <div class="phase-mission-box">
         <div class="mission-label mono">MISIÓN FINAL</div>
-        <p class="mission-text">Ejecuta el script y consigue una parte de la flag. Para completar el 5º y último reto,
-          tendréis que poner en común todas las partes de las flags con todos los grupos para parar al hacker.</p>
+        <p class="mission-text">Ejecutad el script, detened la descarga de los archivos y conseguid la flag.
+          Solo cuando los 5 grupos hayan ejecutado el script y detenido la descarga lo habrán logrado.</p>
       </div>
 
       <div class="clue-box">
         <div class="clue-label mono">// RECURSO CRÍTICO //</div>
         <div class="clue-content" style="margin-bottom: 8px;">
           <span class="clue-file mono">script_nodo.py</span>
-          <span class="clue-hint mono">[pista: ejecuta el script para desencriptar el fragmento de tu grupo]</span>
+          <span class="clue-hint mono">[pista: cada equipo detendrá un trozo de la descarga,
+            por ello cada uno recibirá un trozo de recompensa]</span>
         </div>
 
-        <!-- Terminal interactiva para ejecutar el script -->
-        <div class="fake-terminal mono" style="margin-top: 10px; border-color: rgba(0, 240, 255, 0.35);">
-          <div class="terminal-header"
-            style="background: rgba(0,0,0,0.6); padding: 8px 12px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(255,255,255,0.08);">
-            <span class="terminal-dot red"
-              style="width: 10px; height: 10px; border-radius: 50%; background: #ff3366; display: inline-block;"></span>
-            <span class="terminal-dot yellow"
-              style="width: 10px; height: 10px; border-radius: 50%; background: #ffaa00; display: inline-block;"></span>
-            <span class="terminal-dot green"
-              style="width: 10px; height: 10px; border-radius: 50%; background: #00ff88; display: inline-block;"></span>
-            <span class="terminal-title mono" style="font-size: 0.72rem; color: #888; margin-left: 8px;">bash - python3
-              script_nodo.py</span>
+        <div class="answer-section">
+          <div class="answer-label mono">INTRODUCE LA FLAG FINAL COMPLETA (en común con todos los grupos):</div>
+          <div class="answer-input-row">
+            <input class="hack-input" id="ans-5" type="text" placeholder="FLAG{...}" maxlength="120" autocomplete="off">
+            <button class="btn-submit" onclick="checkAnswer(5)">DESCIFRAR Y PARAR AL HACKER</button>
           </div>
-          <div class="fake-term-body" id="script-terminal-body" style="min-height: 80px; padding: 12px 14px;">
-            <div class="fterm-line text-muted">// Haz clic en "EJECUTAR SCRIPT" para extraer el fragmento de este
-              equipo...</div>
-          </div>
+          <div class="answer-feedback" id="feedback-5"></div>
         </div>
-
-        <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-          <button class="cyber-link-btn mono" onclick="runTeamScript()" id="btn-run-script"
-            style="background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.5); color: #00ff88;">
-            <span class="play-icon">▶</span>
-            <span>EJECUTAR SCRIPT EN TERMINAL</span>
-          </button>
-          <button class="cyber-link-btn mono" style="opacity: 0.85; border-color: rgba(255,255,255,0.25); color: #fff;"
-            onclick="downloadScriptFile()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            <span>DESCARGAR SCRIPT (.PY)</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Resumen visual de fragmentos de la clase -->
-      <div class="climax-codes mono">
-        <div class="code-collect">
-          <div class="code-item"><span class="code-phase">EQUIPO 01</span><span class="code-val" id="frag-display-1">[ ?
-              ]</span></div>
-          <div class="code-item"><span class="code-phase">EQUIPO 02</span><span class="code-val" id="frag-display-2">[ ?
-              ]</span></div>
-          <div class="code-item"><span class="code-phase">EQUIPO 03</span><span class="code-val" id="frag-display-3">[ ?
-              ]</span></div>
-          <div class="code-item"><span class="code-phase">EQUIPO 04</span><span class="code-val" id="frag-display-4">[ ?
-              ]</span></div>
-          <div class="code-item"><span class="code-phase">EQUIPO 05</span><span class="code-val" id="frag-display-5">[ ?
-              ]</span></div>
-        </div>
-      </div>
-
-      <div class="answer-section">
-        <div class="answer-label mono">INTRODUCE LA FLAG FINAL COMPLETA (en común con todos los grupos):</div>
-        <div class="answer-input-row">
-          <input class="hack-input" id="ans-5" type="text" placeholder="FLAG{...}" maxlength="120" autocomplete="off">
-          <button class="btn-submit" onclick="checkAnswer(5)">DESCIFRAR Y PARAR AL HACKER</button>
-        </div>
-        <div class="answer-feedback" id="feedback-5"></div>
       </div>
     </div>
-  </div>
 
-  <!-- VICTORY SCREEN -->
-  <div class="screen hidden" id="victory-screen">
-    <div class="victory-container">
-      <div class="tech-frame">
-        <div class="frame-corner top-left"></div>
-        <div class="frame-corner top-right"></div>
-        <div class="frame-corner bottom-left"></div>
-        <div class="frame-corner bottom-right"></div>
-      </div>
-      <div class="victory-icon">&#128275;</div>
-      <div class="victory-tag mono">// INTRUSO NEUTRALIZADO // COPIA PARALELA EXFILTRADA //</div>
-      <h2 class="victory-title glitch-text" data-text="MISIÓN COMPLETADA... PERO EL ROBO CONTINÚA">MISIÓN COMPLETADA...
-        PERO EL ROBO CONTINÚA</h2>
-      <div class="divider"></div>
-      <p class="victory-text">
-        Habéis derrotado al atacante y bloqueado el acceso al servidor central.<br>
-        <span style="color:#ff5577; font-weight:600;">Sin embargo, la exfiltración se completó antes de vuestra llegada.
-          Nadie devuelve lo que ya ha robado.</span><br><br>
-        Habéis demostrado tener las habilidades para empezar a cazar ciberamenazas. Ahora os toca aprender a defender en
-        las grandes ligas.
-      </p>
+    <!-- VICTORY SCREEN -->
+    <div class="screen hidden" id="victory-screen">
+      <div class="victory-container">
+        <div class="tech-frame">
+          <div class="frame-corner top-left"></div>
+          <div class="frame-corner top-right"></div>
+          <div class="frame-corner bottom-left"></div>
+          <div class="frame-corner bottom-right"></div>
+        </div>
+        <div class="victory-icon">&#128275;</div>
+        <div class="victory-tag mono">// INTRUSO NEUTRALIZADO // COPIA PARALELA EXFILTRADA //</div>
+        <h2 class="victory-title glitch-text" data-text="MISIÓN COMPLETADA... PERO EL ROBO CONTINÚA">MISIÓN
+          COMPLETADA...
+          PERO EL ROBO CONTINÚA</h2>
+        <div class="divider"></div>
+        <p class="victory-text">
+          Habéis derrotado al atacante y bloqueado el acceso al servidor central.<br>
+          <span style="color:#ff5577; font-weight:600;">Sin embargo, la exfiltración se completó antes de vuestra
+            llegada.
+            Nadie devuelve lo que ya ha robado.</span><br><br>
+          Habéis demostrado tener las habilidades para empezar a cazar ciberamenazas. Ahora os toca aprender a defender
+          en
+          las grandes ligas.
+        </p>
 
-      <div class="victory-stats mono" style="margin-top: 30px;">
-        <span>5 / 5 FASES SUPERADAS</span>
-        <span class="sep-v">|</span>
-        <span>SISTEMA RESTAURADO</span>
-        <span class="sep-v">|</span>
-        <span>SEGUID APRENDIENDO</span>
+        <div class="victory-stats mono" style="margin-top: 30px;">
+          <span>5 / 5 FASES SUPERADAS</span>
+          <span class="sep-v">|</span>
+          <span>SISTEMA RESTAURADO</span>
+          <span class="sep-v">|</span>
+          <span>SEGUID APRENDIENDO</span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Sincronización Local Socket.io (0ms de latencia en LAN) -->
-  <script src="../js/socket.io.min.js"></script>
-  <script src="js/socket.io.min.js"></script>
-  <!-- Sincronización WebRTC P2P (PeerJS - 0ms de latencia en GitHub Pages) -->
-  <script src="../js/peerjs.min.js"></script>
-  <script src="js/peerjs.min.js"></script>
-  <script>
-    if (typeof Peer === 'undefined') {
-      document.write('<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"><\/script>');
-    }
-  </script>
-  <!-- Sincronización en tiempo real sin servidor (MQTT Cloud) -->
-  <script src="../js/mqtt.min.js"></script>
-  <script src="js/mqtt.min.js"></script>
-  <script>
-    if (typeof mqtt === 'undefined') {
-      document.write('<script src="https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js"><\/script>');
-    }
-  </script>
-  <script src="js/audio.js"></script>
-  <script src="js/matrix.js"></script>
-  <script src="js/timer.js"></script>
-  <script src="js/intro-terminal.js"></script>
-  <script src="js/game.js"></script>
-  <script src="js/socket-client.js"></script>
-  <script src="js/app.js"></script>
+    <!-- Sincronización Local Socket.io (0ms de latencia en LAN) -->
+    <script src="../js/socket.io.min.js"></script>
+    <script src="js/socket.io.min.js"></script>
+    <!-- Sincronización WebRTC P2P (PeerJS - 0ms de latencia en GitHub Pages) -->
+    <script src="../js/peerjs.min.js"></script>
+    <script src="js/peerjs.min.js"></script>
+    <script>
+      if (typeof Peer === 'undefined') {
+        document.write('<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"><\/script>');
+      }
+    </script>
+    <!-- Sincronización en tiempo real sin servidor (MQTT Cloud) -->
+    <script src="../js/mqtt.min.js"></script>
+    <script src="js/mqtt.min.js"></script>
+    <script>
+      if (typeof mqtt === 'undefined') {
+        document.write('<script src="https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js"><\/script>');
+      }
+    </script>
+    <script src="js/audio.js"></script>
+    <script src="js/matrix.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/intro-terminal.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/socket-client.js"></script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>
